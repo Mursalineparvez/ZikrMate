@@ -7,9 +7,10 @@ export const DEFAULT_ZIKRS: ZikrItem[] = [
     arabic: 'سُبْحَانَ ٱللَّٰهِ',
     transliteration: 'Subḥān Allāh',
     meaning: 'Glory be to Allah',
-    count: 0,
+    count: 33,
     target: 33,
     createdAt: 1700000000001,
+    updatedAt: 1700000000001,
     color: 'emerald'
   },
   {
@@ -18,9 +19,10 @@ export const DEFAULT_ZIKRS: ZikrItem[] = [
     arabic: 'ٱلْحَمْدُ لِلَّٰهِ',
     transliteration: 'Al-ḥamdu lillāh',
     meaning: 'All praise is due to Allah',
-    count: 0,
-    target: 33,
+    count: 50,
+    target: 50,
     createdAt: 1700000000002,
+    updatedAt: 1700000000002,
     color: 'teal'
   },
   {
@@ -29,20 +31,22 @@ export const DEFAULT_ZIKRS: ZikrItem[] = [
     arabic: 'ٱللَّٰهُ أَكْبَرُ',
     transliteration: 'Allāhu Akbar',
     meaning: 'Allah is the Greatest',
-    count: 0,
-    target: 34,
+    count: 100,
+    target: 100,
     createdAt: 1700000000003,
+    updatedAt: 1700000000003,
     color: 'amber'
   },
   {
-    id: 'astaghfirullah',
-    name: 'Astaghfirullah',
-    arabic: 'أَسْتَغْفِرُ ٱللَّٰهَ',
-    transliteration: 'Astaghfirullāh',
-    meaning: 'I seek forgiveness from Allah',
-    count: 0,
+    id: 'lailahaillallah',
+    name: 'La ilaha illallah',
+    arabic: 'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ',
+    transliteration: 'Lā ilāha illallāh',
+    meaning: 'There is no deity worthy of worship except Allah',
+    count: 25,
     target: 100,
     createdAt: 1700000000004,
+    updatedAt: 1700000000004,
     color: 'cyan'
   }
 ];

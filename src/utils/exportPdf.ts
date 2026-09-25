@@ -36,7 +36,7 @@ export async function generateZikrPdfReport(zikrs: ZikrItem[], masterTotal: numb
 
   const tableRowsHtml = zikrs.map((zikr, index) => {
     const percentageOfTotal = masterTotal > 0 ? Math.round((zikr.count / masterTotal) * 100) : 0;
-    const isCompleted = zikr.count >= zikr.target;
+    const isCompleted = zikr.target ? zikr.count >= zikr.target : false;
     return `
       <tr style="border-bottom: 1px solid #e2e8f0; background-color: ${index % 2 === 0 ? '#ffffff' : '#f8fafc'};">
         <td style="padding: 12px 14px; font-size: 13px; color: #64748b; font-weight: 600; text-align: center;">
@@ -51,7 +51,7 @@ export async function generateZikrPdfReport(zikrs: ZikrItem[], masterTotal: numb
           ${zikr.arabic || '-'}
         </td>
         <td style="padding: 12px 14px; text-align: center; font-size: 13px; color: #475569;">
-          ${zikr.target}
+          ${zikr.target || '-'}
         </td>
         <td style="padding: 12px 14px; text-align: right; font-size: 16px; font-weight: 800; color: #0f172a;">
           ${zikr.count.toLocaleString()}

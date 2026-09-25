@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Download, FileText, Plus, Smartphone, Code, Eye } from 'lucide-react';
+import { Volume2, VolumeX, FileText, Plus, Smartphone, Code, Home, Clock, Settings } from 'lucide-react';
 import { usePWAInstall } from '../hooks/usePWAInstall';
+import { ActiveTab } from './BottomNav';
 
 interface HeaderProps {
+  activeTab: ActiveTab;
+  onTabChange: (tab: ActiveTab) => void;
+  historyCount: number;
   soundEnabled: boolean;
   onToggleSound: () => void;
   onExportPdf: () => void;
@@ -12,6 +16,9 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
+  activeTab,
+  onTabChange,
+  historyCount,
   soundEnabled,
   onToggleSound,
   onExportPdf,
@@ -30,22 +37,12 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  const handleDirectDownloadStandaloneHtml = () => {
-    // Direct download trigger for the standalone HTML file
-    const link = document.createElement('a');
-    link.href = '/zikr-tasbeeh-standalone.html';
-    link.download = 'zikr-tasbeeh-pwa.html';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
-    <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-emerald-900/40 px-4 py-3 sm:px-6 shadow-md shadow-emerald-950/30">
+    <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-emerald-900/40 px-4 py-2.5 sm:px-6 shadow-md shadow-emerald-950/30">
       <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
         
         {/* Brand identity */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => onTabChange('home')}>
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-950 flex items-center justify-center shadow-lg shadow-emerald-900/50 border border-emerald-400/40">
             <span className="text-xl">📿</span>
           </div>
@@ -59,9 +56,53 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </div>
             <p className="text-[11px] text-emerald-400/80 font-medium hidden xs:block">
-              Serene Digital Zikr Companion
+              Digital Zikir &amp; Counter Companion
             </p>
           </div>
+        </div>
+
+        {/* Center Nav tabs for Desktop & Laptop */}
+        <div className="hidden sm:flex items-center gap-1 bg-slate-900/90 p-1 rounded-2xl border border-slate-800">
+          <button
+            onClick={() => onTabChange('home')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+              activeTab === 'home'
+                ? 'bg-emerald-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Home className="w-3.5 h-3.5" />
+            <span>Counters</span>
+          </button>
+
+          <button
+            onClick={() => onTabChange('history')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+              activeTab === 'history'
+                ? 'bg-emerald-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5" />
+            <span>History</span>
+            {historyCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-300 text-[10px]">
+                {historyCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => onTabChange('settings')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+              activeTab === 'settings'
+                ? 'bg-emerald-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Settings className="w-3.5 h-3.5" />
+            <span>Settings</span>
+          </button>
         </div>
 
         {/* Action Controls */}
@@ -75,23 +116,23 @@ export const Header: React.FC<HeaderProps> = ({
             aria-label="Toggle Sound"
           >
             {soundEnabled ? (
-              <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
+              <Volume2 className="w-4 h-4 text-emerald-400" />
             ) : (
-              <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500" />
+              <VolumeX className="w-4 h-4 text-slate-500" />
             )}
           </button>
 
           {/* Standalone HTML Export / Code modal button */}
           <button
             onClick={onOpenStandaloneModal}
-            title="Get Standalone Single-File HTML"
-            className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition active:scale-95"
+            title="Single-File HTML & APK Guide"
+            className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition active:scale-95"
           >
-            <Code className="w-4 h-4 text-teal-400" />
-            <span>Single-File HTML</span>
+            <Code className="w-3.5 h-3.5 text-teal-400" />
+            <span>Standalone HTML</span>
           </button>
 
-          {/* PDF Report Export Button (Deliverable 4) */}
+          {/* PDF Report Export Button */}
           <button
             onClick={onExportPdf}
             disabled={isExportingPdf}
@@ -99,10 +140,10 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/50 text-emerald-200 text-xs sm:text-sm font-semibold transition active:scale-95 disabled:opacity-50"
           >
             <FileText className="w-4 h-4 text-amber-300" />
-            <span className="hidden md:inline">
-              {isExportingPdf ? 'Exporting...' : 'Export PDF Report'}
+            <span className="hidden lg:inline">
+              {isExportingPdf ? 'Exporting...' : 'Export PDF'}
             </span>
-            <span className="md:hidden">PDF</span>
+            <span className="lg:hidden">PDF</span>
           </button>
 
           {/* PWA Install Button */}
@@ -113,7 +154,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-900/70 hover:bg-teal-800 border border-teal-500/50 text-teal-200 text-xs sm:text-sm font-semibold transition active:scale-95"
             >
               <Smartphone className="w-4 h-4 text-teal-300" />
-              <span className="hidden sm:inline">Install App</span>
+              <span className="hidden sm:inline">Install</span>
             </button>
           )}
 

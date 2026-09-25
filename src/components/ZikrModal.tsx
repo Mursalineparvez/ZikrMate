@@ -6,7 +6,7 @@ import { PRESET_ZIKR_SUGGESTIONS } from '../utils/constants';
 interface ZikrModalProps {
   isOpen: boolean;
   zikrToEdit: ZikrItem | null;
-  onSave: (data: Omit<ZikrItem, 'id' | 'createdAt' | 'count'>, id?: string) => void;
+  onSave: (data: Omit<ZikrItem, 'id' | 'createdAt' | 'count' | 'updatedAt'>, id?: string) => void;
   onClose: () => void;
 }
 
