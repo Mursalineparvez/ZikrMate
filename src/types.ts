@@ -27,6 +27,8 @@ export interface HistorySession {
 
 export type AppTheme = 'emerald' | 'midnight' | 'teal' | 'gold' | 'light';
 
+export type ThemeMode = 'day' | 'night';
+
 export type NavModule =
   | 'zikir_counter'
   | 'quran'
@@ -98,4 +100,5 @@ export interface AppSettings {
   vibrationEnabled: boolean;
   screenAwake: boolean;
   theme: AppTheme;
+  themeMode: ThemeMode;
 }

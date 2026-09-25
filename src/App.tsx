@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { ZikrItem, HistorySession, AppSettings, DuaItem, NavModule } from './types';
+import { ZikrItem, HistorySession, AppSettings, DuaItem, NavModule, ThemeMode } from './types';
 import { DEFAULT_ZIKRS } from './utils/constants';
 import { soundHaptics } from './utils/audioHaptics';
 import { generateZikrPdfReport } from './utils/exportPdf';
@@ -21,7 +21,7 @@ import { AamalTrackerView } from './components/AamalTrackerView';
 import { ZikrModal } from './components/ZikrModal';
 import { ConfirmModal } from './components/ConfirmModal';
 import { StandaloneExportModal } from './components/StandaloneExportModal';
-import { BookmarkCheck, BookOpen, BookMarked, Clock, Heart, Award, Sparkles } from 'lucide-react';
+import { BookmarkCheck, Sparkles } from 'lucide-react';
 
 export default function App() {
   // 1. LocalStorage state persistence for Zikr Items
@@ -57,7 +57,11 @@ export default function App() {
     try {
       const saved = localStorage.getItem('noor_zikr_settings');
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (!parsed.themeMode) {
+          parsed.themeMode = 'day';
+        }
+        return parsed;
       }
     } catch {}
     return {
@@ -65,6 +69,7 @@ export default function App() {
       vibrationEnabled: true,
       screenAwake: false,
       theme: 'emerald',
+      themeMode: 'day', // Default to Day mode matching the user's uploaded screenshot
     };
   });
 
@@ -100,145 +105,171 @@ export default function App() {
     }
   }, [historySessions]);
 
-  // Save settings to localStorage
+  // Save settings and sync body classes
   useEffect(() => {
     try {
       localStorage.setItem('noor_zikr_settings', JSON.stringify(settings));
     } catch (e) {
       console.error('Failed to save settings to localStorage', e);
     }
+    const isDay = settings.themeMode === 'day';
+    document.body.classList.toggle('theme-day', isDay);
+    document.body.classList.toggle('theme-night', !isDay);
   }, [settings]);
 
-  // Screen awake lock management
+  // Screen Awake Lock management
   useEffect(() => {
-    const handleVisibilityChange = async () => {
-      if (document.visibilityState === 'visible' && settings.screenAwake) {
+    const requestWakeLock = async () => {
+      if ('wakeLock' in navigator && settings.screenAwake) {
         try {
-          if ('wakeLock' in navigator) {
-            wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
-          }
+          wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
+        } catch {
+          // Ignored
+        }
+      } else if (wakeLockRef.current) {
+        try {
+          await wakeLockRef.current.release();
+          wakeLockRef.current = null;
         } catch {}
       }
     };
-
-    if (settings.screenAwake) {
-      if ('wakeLock' in navigator) {
-        (navigator as any).wakeLock
-          .request('screen')
-          .then((lock: any) => {
-            wakeLockRef.current = lock;
-          })
-          .catch(() => {});
-      }
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-    } else {
-      if (wakeLockRef.current) {
-        wakeLockRef.current.release().catch(() => {});
-        wakeLockRef.current = null;
-      }
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    }
-
-    return () => {
-      if (wakeLockRef.current) {
-        wakeLockRef.current.release().catch(() => {});
-      }
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
+    requestWakeLock();
   }, [settings.screenAwake]);
 
-  // Real-time calculation of Central Master Total
+  // Master Total Count
   const masterTotal = useMemo(() => {
-    return zikrs.reduce((sum, item) => sum + item.count, 0);
+    return zikrs.reduce((acc, curr) => acc + (curr.count || 0), 0);
   }, [zikrs]);
 
-  // Count of completed targets
+  // Completed Goals Count
   const completedGoals = useMemo(() => {
-    return zikrs.filter((z) => (z.target ? z.count >= z.target : false)).length;
+    return zikrs.filter((z) => z.target && z.target > 0 && z.count >= z.target).length;
   }, [zikrs]);
 
-  // Confirmation modal state
+  // Toast feedback helper
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  };
+
+  // Toggle Day and Night Mode
+  const handleToggleThemeMode = () => {
+    const newMode: ThemeMode = settings.themeMode === 'day' ? 'night' : 'day';
+    setSettings((prev) => ({ ...prev, themeMode: newMode }));
+    if (settings.soundEnabled) soundHaptics.playTap();
+    showToast(newMode === 'day' ? 'Switched to Day Mode ☀️' : 'Switched to Night Mode 🌙');
+  };
+
+  // Sound toggle
+  const handleToggleSound = () => {
+    const nextVal = !settings.soundEnabled;
+    setSettings((prev) => ({ ...prev, soundEnabled: nextVal }));
+    showToast(nextVal ? 'Sound effects enabled' : 'Muted audio');
+  };
+
+  // Increment Zikr
+  const handleIncrement = (id: string) => {
+    const targetZikr = zikrs.find((item) => item.id === id);
+    if (!targetZikr) return;
+
+    const newCount = targetZikr.count + 1;
+    const isGoalJustReached = targetZikr.target && newCount === targetZikr.target;
+
+    setZikrs((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, count: newCount, updatedAt: Date.now() } : item
+      )
+    );
+
+    if (settings.vibrationEnabled) {
+      if (isGoalJustReached) {
+        soundHaptics.triggerVibration('target');
+      } else {
+        soundHaptics.triggerVibration('tap');
+      }
+    }
+
+    if (settings.soundEnabled) {
+      if (isGoalJustReached) {
+        soundHaptics.playMilestone();
+      } else {
+        soundHaptics.playTap();
+      }
+    }
+
+    if (isGoalJustReached) {
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 },
+        colors: ['#1c6469', '#247b82', '#f59e0b', '#10b981'],
+      });
+      showToast(`Mabrook! Goal completed for ${targetZikr.name}!`);
+    }
+  };
+
+  // Decrement Zikr
+  const handleDecrement = (id: string) => {
+    const targetZikr = zikrs.find((item) => item.id === id);
+    if (!targetZikr || targetZikr.count <= 0) return;
+
+    setZikrs((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, count: Math.max(0, item.count - 1), updatedAt: Date.now() }
+          : item
+      )
+    );
+    if (settings.vibrationEnabled) soundHaptics.vibrate(30);
+    if (settings.soundEnabled) soundHaptics.playTap();
+  };
+
+  // Move Zikr up/down
+  const handleMoveUp = (index: number) => {
+    if (index === 0) return;
+    setZikrs((prev) => {
+      const copy = [...prev];
+      const temp = copy[index];
+      copy[index] = copy[index - 1];
+      copy[index - 1] = temp;
+      return copy;
+    });
+  };
+
+  const handleMoveDown = (index: number) => {
+    if (index >= zikrs.length - 1) return;
+    setZikrs((prev) => {
+      const copy = [...prev];
+      const temp = copy[index];
+      copy[index] = copy[index + 1];
+      copy[index + 1] = temp;
+      return copy;
+    });
+  };
+
+  // Confirmation modal dialog state
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     title: string;
     message: string;
-    confirmLabel?: string;
-    isDanger?: boolean;
+    confirmLabel: string;
+    isDanger: boolean;
     onConfirm: () => void;
   }>({
     isOpen: false,
     title: '',
     message: '',
+    confirmLabel: 'Confirm',
+    isDanger: false,
     onConfirm: () => {},
   });
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
-
-  // Sound toggle helper
-  const handleToggleSound = () => {
-    setSettings((prev) => {
-      const next = !prev.soundEnabled;
-      if (next) soundHaptics.playTap();
-      return { ...prev, soundEnabled: next };
-    });
-  };
-
-  // Increment individual counter
-  const handleIncrement = (id: string) => {
-    setZikrs((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          const nextCount = item.count + 1;
-          const targetReached = item.target && nextCount === item.target;
-
-          if (settings.vibrationEnabled) {
-            soundHaptics.vibrate(targetReached ? [50, 100, 50, 100] : 40);
-          }
-
-          if (settings.soundEnabled) {
-            if (targetReached) {
-              soundHaptics.playMilestone();
-              confetti({
-                particleCount: 50,
-                spread: 60,
-                origin: { y: 0.7 },
-                colors: ['#10b981', '#14b8a6', '#f59e0b', '#38bdf8'],
-              });
-            } else {
-              soundHaptics.playTap();
-            }
-          }
-
-          return { ...item, count: nextCount, updatedAt: Date.now() };
-        }
-        return item;
-      })
-    );
-  };
-
-  // Decrement individual counter
-  const handleDecrement = (id: string) => {
-    setZikrs((prev) =>
-      prev.map((item) => {
-        if (item.id === id && item.count > 0) {
-          if (settings.vibrationEnabled) soundHaptics.vibrate(30);
-          if (settings.soundEnabled) soundHaptics.playTap();
-          return { ...item, count: item.count - 1, updatedAt: Date.now() };
-        }
-        return item;
-      })
-    );
-  };
-
-  // Reset individual counter
+  // Reset single Zikr
   const handleConfirmResetIndividual = (zikr: ZikrItem) => {
     setConfirmDialog({
       isOpen: true,
       title: `Reset ${zikr.name}?`,
-      message: `Are you sure you want to reset the count for "${zikr.name}" from ${zikr.count} back to 0?`,
+      message: `Are you sure you want to reset the count of "${zikr.name}" from ${zikr.count} back to 0?`,
       confirmLabel: 'Reset to 0',
       isDanger: false,
       onConfirm: () => {
@@ -349,49 +380,28 @@ export default function App() {
     setZikrToEdit(null);
   };
 
-  // Reordering handlers
-  const handleMoveUp = (index: number) => {
-    if (index <= 0) return;
-    setZikrs((prev) => {
-      const copy = [...prev];
-      const temp = copy[index];
-      copy[index] = copy[index - 1];
-      copy[index - 1] = temp;
-      return copy;
-    });
-  };
-
-  const handleMoveDown = (index: number) => {
-    if (index >= zikrs.length - 1) return;
-    setZikrs((prev) => {
-      const copy = [...prev];
-      const temp = copy[index];
-      copy[index] = copy[index + 1];
-      copy[index + 1] = temp;
-      return copy;
-    });
-  };
-
   // Restore Default Zikrs
   const handleRestoreDefaults = () => {
     setConfirmDialog({
       isOpen: true,
-      title: 'Restore Default Prophetic Azkar?',
-      message: 'This will restore SubhanAllah, Alhamdulillah, Allahu Akbar, and La ilaha illallah.',
+      title: 'Restore Default Counters',
+      message: 'This will reset your counters list back to the authentic traditional Sunnah invocations.',
       confirmLabel: 'Restore Defaults',
       isDanger: false,
       onConfirm: () => {
         setZikrs(DEFAULT_ZIKRS);
         setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
-        showToast('Restored standard default Azkar');
+        showToast('Restored default zikrs');
       },
     });
   };
 
-  // Add a Dua directly to counters
+  // Add Dua to Counters
   const handleAddDuaToCounters = (dua: DuaItem) => {
-    const alreadyExists = zikrs.some((z) => z.name.toLowerCase() === dua.title.toLowerCase());
-    if (alreadyExists) {
+    const existing = zikrs.find(
+      (z) => z.name.toLowerCase() === dua.title.toLowerCase() || z.arabic === dua.arabic
+    );
+    if (existing) {
       showToast(`"${dua.title}" is already in your counters!`);
       setActiveModule('zikir_counter');
       return;
@@ -431,7 +441,7 @@ export default function App() {
     }
   };
 
-  // 7 module items metadata for the top hub
+  // 7 module items metadata
   const moduleTabs: Array<{
     id: NavModule;
     label: string;
@@ -448,14 +458,22 @@ export default function App() {
     { id: 'aamal_tracker', label: 'Aamal Tracker', arabic: 'الأعمال', icon: '📋' },
   ];
 
+  const isDay = settings.themeMode === 'day';
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white pb-20 md:pb-8">
+    <div
+      className={`min-h-screen flex flex-col font-sans transition-colors duration-300 pb-20 md:pb-8 selection:bg-teal-500 selection:text-white ${
+        isDay ? 'bg-[#edf5f4] text-[#133e42]' : 'bg-[#061a1c] text-[#f0fdfa]'
+      }`}
+    >
       {/* Top Header */}
       <Header
         activeModule={activeModule}
         onModuleChange={setActiveModule}
         soundEnabled={settings.soundEnabled}
         onToggleSound={handleToggleSound}
+        themeMode={settings.themeMode}
+        onToggleThemeMode={handleToggleThemeMode}
         onExportPdf={handleExportPdf}
         isExportingPdf={isExportingPdf}
         onOpenStandaloneModal={() => setIsStandaloneModalOpen(true)}
@@ -463,23 +481,42 @@ export default function App() {
 
       {/* Toast Notification Popup */}
       {toastMessage && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-2xl bg-emerald-950/95 border border-emerald-500/60 text-emerald-200 text-xs font-bold shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
-          <BookmarkCheck className="w-4 h-4 text-emerald-400" />
+        <div
+          className={`fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-2xl text-xs font-bold shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2 border ${
+            isDay
+              ? 'bg-[#1c6469] text-white border-teal-300 shadow-[#135d66]/30'
+              : 'bg-[#0a2f33] text-teal-200 border-teal-500/60 shadow-black/80'
+          }`}
+        >
+          <BookmarkCheck className="w-4 h-4 text-teal-300" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-6">
-        
-        {/* Islamic Greeting & Top Module Quick Switcher */}
-        <div className="bg-slate-900/60 backdrop-blur-md rounded-3xl p-3 sm:p-4 border border-slate-800/80 shadow-lg">
-          <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-800/60 flex-wrap gap-2 text-xs">
-            <div className="flex items-center gap-2 text-emerald-400 font-bold">
-              <Sparkles className="w-4 h-4 text-amber-400" />
+        {/* Top Islamic Greeting & Module Switcher Card (Matches the clean white card / category tabs in screenshot) */}
+        <div
+          className={`rounded-[26px] p-3.5 sm:p-4.5 border transition-colors shadow-md ${
+            isDay
+              ? 'bg-white border-[#dcebe8] shadow-[#135d66]/5'
+              : 'bg-[#0a2528] border-[#164449] shadow-black/40'
+          }`}
+        >
+          <div
+            className={`flex items-center justify-between pb-2.5 mb-2.5 border-b flex-wrap gap-2 text-xs ${
+              isDay ? 'border-[#e8f3f1]' : 'border-[#143c41]'
+            }`}
+          >
+            <div
+              className={`flex items-center gap-2 font-bold ${
+                isDay ? 'text-[#165a60]' : 'text-teal-300'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-amber-500" />
               <span className="font-arabic text-sm">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
             </div>
-            <div className="text-[11px] text-slate-400">
+            <div className={`text-[11px] font-medium ${isDay ? 'text-[#5f8488]' : 'text-teal-200/70'}`}>
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'short',
                 month: 'short',
@@ -489,7 +526,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Module Selector Bar (Only the 7 requested modules!) */}
+          {/* Module Selector Category Bar (Exact category pills from screenshot: "Bone", "Brain expert", etc.) */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             {moduleTabs.map((tab) => {
               const isActive = activeModule === tab.id;
@@ -497,18 +534,30 @@ export default function App() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveModule(tab.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all active:scale-95 cursor-pointer shrink-0 ${
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all active:scale-95 cursor-pointer shrink-0 border ${
                     isActive
-                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-950/50 scale-102'
-                      : 'bg-slate-800/70 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700/60'
+                      ? isDay
+                        ? 'bg-[#1c6469] text-white border-[#1c6469] shadow-md shadow-[#135d66]/20'
+                        : 'bg-[#14b8a6] text-[#041f21] border-[#14b8a6] shadow-md'
+                      : isDay
+                      ? 'bg-[#e6f3f2] hover:bg-[#d8ece9] text-[#2d6a70] border-[#d2ece9]'
+                      : 'bg-[#0f3438] hover:bg-[#133f44] text-teal-200/80 border-[#1a4e54]'
                   }`}
                 >
                   <span className="text-sm">{tab.icon}</span>
                   <span>{tab.label}</span>
                   {tab.badge !== undefined && (
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      isActive ? 'bg-emerald-900/90 text-emerald-200' : 'bg-slate-700 text-slate-300'
-                    }`}>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                        isActive
+                          ? isDay
+                            ? 'bg-white/20 text-white'
+                            : 'bg-black/20 text-[#041f21]'
+                          : isDay
+                          ? 'bg-white text-[#1c6469] border border-[#cbe4e1]'
+                          : 'bg-[#0a2528] text-teal-300'
+                      }`}
+                    >
                       {tab.badge}
                     </span>
                   )}
@@ -518,7 +567,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* 1. ZIKIR COUNTER VIEW */}
+        {/* 1. ZIKIR COUNTER VIEW (HOME PAGE) */}
         {activeModule === 'zikir_counter' && (
           <ZikirCounterView
             masterTotal={masterTotal}
@@ -543,6 +592,7 @@ export default function App() {
             onRestoreDefaults={handleRestoreDefaults}
             onExportPdf={handleExportPdf}
             isExportingPdf={isExportingPdf}
+            themeMode={settings.themeMode}
           />
         )}
 
@@ -579,26 +629,37 @@ export default function App() {
         {activeModule === 'aamal_tracker' && (
           <AamalTrackerView soundEnabled={settings.soundEnabled} />
         )}
-
       </main>
 
       {/* Serene Islamic Footer */}
-      <footer className="mt-auto border-t border-slate-900/90 bg-slate-950/80 backdrop-blur-md py-6 px-4 text-center">
+      <footer
+        className={`mt-auto border-t py-6 px-4 text-center transition-colors ${
+          isDay
+            ? 'bg-[#e2edea] border-[#cbe0dc] text-[#34595d]'
+            : 'bg-[#061a1c] border-[#12393d] text-teal-200/70'
+        }`}
+      >
         <div className="max-w-4xl mx-auto space-y-2">
-          <div className="font-arabic text-lg sm:text-xl text-emerald-400 font-bold">
+          <div
+            className={`font-arabic text-lg sm:text-xl font-bold ${
+              isDay ? 'text-[#165a60]' : 'text-teal-300'
+            }`}
+          >
             أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ
           </div>
-          <p className="text-xs italic text-slate-400">
+          <p className={`text-xs italic ${isDay ? 'text-[#507579]' : 'text-slate-400'}`}>
             "Verily, in the remembrance of Allah do hearts find rest." — Surah Ar-Ra'd (13:28)
           </p>
-          <div className="text-[11px] text-slate-500 pt-1 flex items-center justify-center gap-2 flex-wrap">
+          <div className="text-[11px] pt-1 flex items-center justify-center gap-2 flex-wrap opacity-80">
             <span>ZikrMate PWA</span>
             <span>•</span>
             <span>100% Offline &amp; Privacy-First</span>
             <span>•</span>
             <button
               onClick={() => setIsStandaloneModalOpen(true)}
-              className="text-emerald-400 hover:underline font-medium cursor-pointer"
+              className={`hover:underline font-bold cursor-pointer ${
+                isDay ? 'text-[#1c6469]' : 'text-teal-300'
+              }`}
             >
               Export Standalone APK Guide
             </button>
@@ -614,6 +675,7 @@ export default function App() {
           setZikrToEdit(null);
           setIsZikrModalOpen(true);
         }}
+        themeMode={settings.themeMode}
       />
 
       {/* Add / Edit Zikr Modal */}

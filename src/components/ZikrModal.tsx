@@ -67,7 +67,7 @@ export const ZikrModal: React.FC<ZikrModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-lg rounded-3xl bg-slate-900 border border-emerald-700/50 p-6 sm:p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-lg rounded-3xl bg-[#0a2528] border border-[#1e6065] p-6 sm:p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white rounded-lg transition"
@@ -190,7 +190,7 @@ export const ZikrModal: React.FC<ZikrModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-900/50 transition active:scale-95"
+              className="px-6 py-2.5 rounded-xl bg-[#1c6469] hover:bg-[#154f53] text-white font-bold text-sm shadow-lg shadow-[#135d66]/40 transition active:scale-95 cursor-pointer"
             >
               {zikrToEdit ? 'Update Zikr' : 'Add Zikr'}
             </button>

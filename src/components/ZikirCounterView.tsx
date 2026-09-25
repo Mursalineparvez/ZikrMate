@@ -1,8 +1,8 @@
-import React from 'react';
-import { ZikrItem } from '../types';
+import React, { useState } from 'react';
+import { ZikrItem, ThemeMode } from '../types';
 import { CircularCenterCounter } from './CircularCenterCounter';
 import { ZikrCard } from './ZikrCard';
-import { Plus, RotateCcw, FileText, Download, Sparkles } from 'lucide-react';
+import { Plus, FileText, CheckCircle2, Target, ListFilter } from 'lucide-react';
 
 interface ZikirCounterViewProps {
   masterTotal: number;
@@ -21,6 +21,7 @@ interface ZikirCounterViewProps {
   onRestoreDefaults: () => void;
   onExportPdf: () => void;
   isExportingPdf: boolean;
+  themeMode?: ThemeMode;
 }
 
 export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
@@ -40,7 +41,17 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
   onRestoreDefaults,
   onExportPdf,
   isExportingPdf,
+  themeMode = 'day',
 }) => {
+  const isDay = themeMode === 'day';
+  const [filterMode, setFilterMode] = useState<'all' | 'targets' | 'completed'>('all');
+
+  const filteredZikrs = zikrs.filter((z) => {
+    if (filterMode === 'targets') return z.target && z.target > 0;
+    if (filterMode === 'completed') return z.target && z.count >= z.target;
+    return true;
+  });
+
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Center: Large Circular Total Counter */}
@@ -50,46 +61,117 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
         completedGoals={completedGoals}
         onGlobalReset={onGlobalReset}
         onSaveSession={onSaveSession}
+        themeMode={themeMode}
       />
 
-      {/* List / Grid Header with Quick Actions */}
-      <div className="flex items-center justify-between px-1 pt-1 flex-wrap gap-2">
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
-            <span>Individual Zikr Counters</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 font-bold border border-emerald-800/60">
-              {zikrs.length}
-            </span>
-          </h2>
+      {/* Category Pills (Exact pill style from screenshot: "Bone", "Brain expert", "Dental", etc.) */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between px-1 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <h2
+              className={`text-base font-bold tracking-tight flex items-center gap-2 ${
+                isDay ? 'text-[#103e42]' : 'text-white'
+              }`}
+            >
+              <span>Active Counters</span>
+              <span
+                className={`text-xs px-2.5 py-0.5 rounded-full font-bold border ${
+                  isDay
+                    ? 'bg-[#e6f3f2] text-[#1c6469] border-[#cce5e2]'
+                    : 'bg-[#0f3438] text-teal-300 border-[#1a4e54]'
+                }`}
+              >
+                {zikrs.length}
+              </span>
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Export PDF Button */}
+            <button
+              onClick={onExportPdf}
+              disabled={isExportingPdf}
+              className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-2xl border transition active:scale-95 disabled:opacity-50 cursor-pointer ${
+                isDay
+                  ? 'bg-white hover:bg-[#eef7f6] text-[#1c6469] border-[#d2ece9] shadow-sm'
+                  : 'bg-[#0e3034] hover:bg-[#133d42] text-teal-200 border-[#184a50]'
+              }`}
+              title="Export PDF Report"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Export PDF</span>
+            </button>
+
+            {/* Add Zikr Button (Deep spruce teal from screenshot) */}
+            <button
+              onClick={onOpenAddModal}
+              className={`flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-2xl shadow-md transition active:scale-95 cursor-pointer ${
+                isDay
+                  ? 'bg-[#1c6469] hover:bg-[#154f53] text-white shadow-[#135d66]/20'
+                  : 'bg-[#14b8a6] hover:bg-[#0d9488] text-[#041f21]'
+              }`}
+            >
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Add Zikr</span>
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          {/* Export PDF Button */}
+        {/* Filter Pills row */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           <button
-            onClick={onExportPdf}
-            disabled={isExportingPdf}
-            className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white font-semibold px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 transition active:scale-95 disabled:opacity-50 cursor-pointer"
-            title="Export PDF Report"
+            onClick={() => setFilterMode('all')}
+            className={`px-3.5 py-1.5 rounded-2xl text-xs font-bold transition active:scale-95 cursor-pointer whitespace-nowrap border ${
+              filterMode === 'all'
+                ? isDay
+                  ? 'bg-[#1c6469] text-white border-[#1c6469] shadow-md shadow-[#135d66]/20'
+                  : 'bg-[#14b8a6] text-[#041f21] border-[#14b8a6] shadow-md'
+                : isDay
+                ? 'bg-[#e6f3f2] hover:bg-[#dceedb] text-[#2e6d73] border-[#d2ece9]'
+                : 'bg-[#0e3034] text-teal-200/80 border-[#184a50]'
+            }`}
           >
-            <FileText className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden sm:inline">Export PDF</span>
+            All ({zikrs.length})
           </button>
 
-          {/* Add Zikr Button */}
           <button
-            onClick={onOpenAddModal}
-            className="flex items-center gap-1.5 text-xs text-white font-semibold px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-md shadow-emerald-950/50 transition active:scale-95 cursor-pointer"
+            onClick={() => setFilterMode('targets')}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl text-xs font-bold transition active:scale-95 cursor-pointer whitespace-nowrap border ${
+              filterMode === 'targets'
+                ? isDay
+                  ? 'bg-[#1c6469] text-white border-[#1c6469] shadow-md shadow-[#135d66]/20'
+                  : 'bg-[#14b8a6] text-[#041f21] border-[#14b8a6] shadow-md'
+                : isDay
+                ? 'bg-[#e6f3f2] hover:bg-[#dceedb] text-[#2e6d73] border-[#d2ece9]'
+                : 'bg-[#0e3034] text-teal-200/80 border-[#184a50]'
+            }`}
           >
-            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>Add Zikr</span>
+            <Target className="w-3.5 h-3.5" />
+            <span>With Target</span>
+          </button>
+
+          <button
+            onClick={() => setFilterMode('completed')}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl text-xs font-bold transition active:scale-95 cursor-pointer whitespace-nowrap border ${
+              filterMode === 'completed'
+                ? isDay
+                  ? 'bg-[#1c6469] text-white border-[#1c6469] shadow-md shadow-[#135d66]/20'
+                  : 'bg-[#14b8a6] text-[#041f21] border-[#14b8a6] shadow-md'
+                : isDay
+                ? 'bg-[#e6f3f2] hover:bg-[#dceedb] text-[#2e6d73] border-[#d2ece9]'
+                : 'bg-[#0e3034] text-teal-200/80 border-[#184a50]'
+            }`}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>Completed ({completedGoals})</span>
           </button>
         </div>
       </div>
 
       {/* Below: List/Grid of Individual Zikr Cards */}
-      {zikrs.length > 0 ? (
+      {filteredZikrs.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-          {zikrs.map((zikr, index) => (
+          {filteredZikrs.map((zikr, index) => (
             <ZikrCard
               key={zikr.id}
               zikr={zikr}
@@ -100,49 +182,31 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
               onReset={() => onReset(zikr)}
               onDelete={() => onDelete(zikr)}
               onEdit={onEdit}
-              onMoveUp={handleSafeMoveUp(onMoveUp, index)}
-              onMoveDown={handleSafeMoveDown(onMoveDown, index)}
+              onMoveUp={onMoveUp}
+              onMoveDown={onMoveDown}
+              themeMode={themeMode}
             />
           ))}
         </div>
       ) : (
-        /* Empty State when all cards are removed */
-        <div className="text-center py-16 px-4 bg-slate-900/50 rounded-3xl border border-dashed border-slate-800 backdrop-blur-sm">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-3xl bg-emerald-950 flex items-center justify-center border border-emerald-700/40 text-3xl shadow-xl shadow-emerald-950/50">
-            📿
-          </div>
-          <h3 className="text-lg font-bold text-white mb-1">
-            No Zikr Counters Remaining
-          </h3>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto mb-6">
-            You can restore the standard prophetic Azkar or configure your own custom invocations.
+        <div
+          className={`p-10 text-center rounded-[28px] border ${
+            isDay
+              ? 'bg-white border-[#dcebe8] shadow-sm'
+              : 'bg-[#0a2528] border-[#164449]'
+          }`}
+        >
+          <p className={`text-sm font-semibold ${isDay ? 'text-[#103e42]' : 'text-slate-300'}`}>
+            No zikr counters found in this filter.
           </p>
-          <div className="flex justify-center gap-3">
-            <button
-              onClick={onRestoreDefaults}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition active:scale-95 cursor-pointer"
-            >
-              <RotateCcw className="w-4 h-4 text-emerald-400" />
-              <span>Restore Defaults</span>
-            </button>
-            <button
-              onClick={onOpenAddModal}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition active:scale-95 cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Custom Zikr</span>
-            </button>
-          </div>
+          <button
+            onClick={() => setFilterMode('all')}
+            className="mt-3 px-4 py-2 rounded-xl bg-[#1c6469] text-white text-xs font-bold transition active:scale-95"
+          >
+            Show All Counters
+          </button>
         </div>
       )}
     </div>
   );
 };
-
-function handleSafeMoveUp(fn: (index: number) => void, index: number) {
-  return () => fn(index);
-}
-
-function handleSafeMoveDown(fn: (index: number) => void, index: number) {
-  return () => fn(index);
-}

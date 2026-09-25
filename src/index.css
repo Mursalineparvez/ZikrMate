@@ -3,11 +3,10 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #030d0a;
-    color: #f1f5f9;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 }
 
@@ -15,29 +14,49 @@
   font-family: 'Amiri', 'Traditional Arabic', serif;
 }
 
-/* Islamic Geometric Subtle Motif */
-.islamic-pattern {
-  background-color: #030d0a;
-  background-image: radial-gradient(rgba(16, 185, 129, 0.08) 1.5px, transparent 1.5px),
-                    radial-gradient(rgba(245, 158, 11, 0.05) 1.5px, #030d0a 1.5px);
-  background-size: 40px 40px;
-  background-position: 0 0, 20px 20px;
+/* Day Mode (Medical & Modern Wellness Teal Palette from reference) */
+body.theme-day {
+  background-color: #edf5f4;
+  color: #133e42;
 }
 
-/* Custom Scrollbar for sleek mobile/desktop experience */
+/* Night Mode (Deep Nocturnal Sea-Pine Teal) */
+body.theme-night {
+  background-color: #061a1c;
+  color: #f0fdfa;
+}
+
+/* Subtle Teal Geometric Motif */
+.islamic-pattern-day {
+  background-color: #edf5f4;
+  background-image: radial-gradient(rgba(28, 100, 105, 0.07) 1.5px, transparent 1.5px),
+                    radial-gradient(rgba(245, 158, 11, 0.05) 1.5px, #edf5f4 1.5px);
+  background-size: 36px 36px;
+  background-position: 0 0, 18px 18px;
+}
+
+.islamic-pattern-night {
+  background-color: #061a1c;
+  background-image: radial-gradient(rgba(20, 184, 166, 0.08) 1.5px, transparent 1.5px),
+                    radial-gradient(rgba(245, 158, 11, 0.04) 1.5px, #061a1c 1.5px);
+  background-size: 36px 36px;
+  background-position: 0 0, 18px 18px;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(19, 62, 66, 0.08);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.3);
+  background: rgba(28, 100, 105, 0.35);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.6);
+  background: rgba(28, 100, 105, 0.6);
 }
 
 /* Smooth Touch Active Press */
@@ -46,17 +65,16 @@
   transition: transform 0.08s ease;
 }
 
-/* Custom pulse glow */
-@keyframes emeraldGlow {
+/* Pulse glow for teal elements */
+@keyframes tealGlow {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.3), inset 0 0 15px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 15px rgba(28, 100, 105, 0.25), inset 0 0 15px rgba(28, 100, 105, 0.15);
   }
   50% {
-    box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), inset 0 0 25px rgba(16, 185, 129, 0.35);
+    box-shadow: 0 0 25px rgba(28, 100, 105, 0.45), inset 0 0 25px rgba(28, 100, 105, 0.3);
   }
 }
 
-.glow-emerald {
-  animation: emeraldGlow 3s infinite ease-in-out;
+.glow-teal {
+  animation: tealGlow 3s infinite ease-in-out;
 }
-
