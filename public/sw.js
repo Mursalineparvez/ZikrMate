@@ -1,5 +1,5 @@
-// Service Worker for Noor Tasbeeh PWA
-const CACHE_NAME = 'noor-tasbeeh-v1';
+// Service Worker for ZikrMate PWA
+const CACHE_NAME = 'zikrmate-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

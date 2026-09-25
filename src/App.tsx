@@ -397,7 +397,7 @@ export default function App() {
   // JSON Backup export
   const handleExportBackupJson = () => {
     const backupData = {
-      app: 'Noor Tasbeeh',
+      app: 'ZikrMate',
       exportDate: new Date().toISOString(),
       zikrs,
       historySessions,
@@ -407,7 +407,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `noor-tasbeeh-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `zikrmate-backup-${new Date().toISOString().slice(0, 10)}.json`;
     link.click();
     URL.revokeObjectURL(url);
     showToast('Backup JSON downloaded');
@@ -616,7 +616,7 @@ export default function App() {
             "Verily, in the remembrance of Allah do hearts find rest." — Surah Ar-Ra'd (13:28)
           </p>
           <div className="text-[11px] text-slate-400 pt-1 flex items-center justify-center gap-2">
-            <span>Noor Tasbeeh PWA</span>
+            <span>ZikrMate PWA</span>
             <span>•</span>
             <span>100% Offline &amp; Privacy-First</span>
             <span>•</span>

@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Noor Tasbeeh - Digital Zikr PWA",
-  "short_name": "NoorTasbeeh",
-  "description": "Serene Digital Zikr and Tasbeeh Progressive Web App with individual counters, master total, local persistence, haptic touch, and PDF export.",
+  "name": "ZikrMate - Digital Zikr PWA",
+  "short_name": "ZikrMate",
+  "description": "Serene Digital Zikr and Tasbeeh Progressive Web App with individual counters, master circular total, local persistence, haptic touch, and PDF export.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

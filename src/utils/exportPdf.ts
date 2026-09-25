@@ -72,7 +72,7 @@ export async function generateZikrPdfReport(zikrs: ZikrItem[], masterTotal: numb
           بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
         </div>
         <h1 style="margin: 0; font-size: 22px; font-weight: 800; color: #064e3b; letter-spacing: 0.5px; text-transform: uppercase;">
-          Noor Tasbeeh — Zikr Record & Progress Report
+          ZikrMate — Zikr Record & Progress Report
         </h1>
         <p style="margin: 6px 0 0; font-size: 12px; color: #64748b;">
           Generated on <strong>${dateFormatted}</strong> at <strong>${timeFormatted}</strong>
@@ -143,7 +143,7 @@ export async function generateZikrPdfReport(zikrs: ZikrItem[], masterTotal: numb
           "And remember your Lord much and glorify [Him] in the evening and the morning." — Surah Ali 'Imran (3:41)
         </div>
         <div style="font-size: 10px; color: #94a3b8; margin-top: 8px;">
-          Generated via Noor Tasbeeh Progressive Web App • Stored Locally in Browser Storage
+          Generated via ZikrMate Progressive Web App • Stored Locally in Browser Storage
         </div>
       </div>
     </div>
@@ -153,7 +153,7 @@ export async function generateZikrPdfReport(zikrs: ZikrItem[], masterTotal: numb
 
   const opt = {
     margin: [8, 8, 8, 8],
-    filename: `Noor-Tasbeeh-Report-${now.toISOString().slice(0, 10)}.pdf`,
+    filename: `ZikrMate-Report-${now.toISOString().slice(0, 10)}.pdf`,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
       scale: 2,
