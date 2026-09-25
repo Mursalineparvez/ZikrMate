@@ -52,15 +52,12 @@ export default function App() {
     return [];
   });
 
-  // App settings state
+  // App settings state (Defaulting to 'night' - the requested sleek black type with upper given teal colors)
   const [settings, setSettings] = useState<AppSettings>(() => {
     try {
       const saved = localStorage.getItem('noor_zikr_settings');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (!parsed.themeMode) {
-          parsed.themeMode = 'day';
-        }
         return parsed;
       }
     } catch {}
@@ -69,12 +66,11 @@ export default function App() {
       vibrationEnabled: true,
       screenAwake: false,
       theme: 'emerald',
-      themeMode: 'day', // Default to Day mode matching the user's uploaded screenshot
+      themeMode: 'night', // Black type requested by user
     };
   });
 
-  // Active module navigation: only the 7 requested modules!
-  // 'zikir_counter' | 'quran' | 'kitab' | 'hadith' | 'salat_time' | 'dua' | 'aamal_tracker'
+  // Active module navigation
   const [activeModule, setActiveModule] = useState<NavModule>('zikir_counter');
 
   // Modals state
@@ -157,7 +153,7 @@ export default function App() {
     const newMode: ThemeMode = settings.themeMode === 'day' ? 'night' : 'day';
     setSettings((prev) => ({ ...prev, themeMode: newMode }));
     if (settings.soundEnabled) soundHaptics.playTap();
-    showToast(newMode === 'day' ? 'Switched to Day Mode ☀️' : 'Switched to Night Mode 🌙');
+    showToast(newMode === 'night' ? 'Switched to Black Type Theme 🌙' : 'Switched to Light Mint Theme ☀️');
   };
 
   // Sound toggle
@@ -202,7 +198,7 @@ export default function App() {
         particleCount: 50,
         spread: 60,
         origin: { y: 0.7 },
-        colors: ['#1c6469', '#247b82', '#f59e0b', '#10b981'],
+        colors: ['#1c6469', '#2dd4bf', '#f59e0b', '#10b981'],
       });
       showToast(`Mabrook! Goal completed for ${targetZikr.name}!`);
     }
@@ -463,7 +459,7 @@ export default function App() {
   return (
     <div
       className={`min-h-screen flex flex-col font-sans transition-colors duration-300 pb-20 md:pb-8 selection:bg-teal-500 selection:text-white ${
-        isDay ? 'bg-[#edf5f4] text-[#133e42]' : 'bg-[#061a1c] text-[#f0fdfa]'
+        isDay ? 'bg-[#edf5f4] text-[#133e42]' : 'bg-[#070e14] text-[#f1f8f7]'
       }`}
     >
       {/* Top Header */}
@@ -485,38 +481,38 @@ export default function App() {
           className={`fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-2xl text-xs font-bold shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2 border ${
             isDay
               ? 'bg-[#1c6469] text-white border-teal-300 shadow-[#135d66]/30'
-              : 'bg-[#0a2f33] text-teal-200 border-teal-500/60 shadow-black/80'
+              : 'bg-[#0e242d] text-[#2dd4bf] border-[#20525d] shadow-black/80'
           }`}
         >
-          <BookmarkCheck className="w-4 h-4 text-teal-300" />
+          <BookmarkCheck className="w-4 h-4 text-[#2dd4bf]" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-6">
-        {/* Top Islamic Greeting & Module Switcher Card (Matches the clean white card / category tabs in screenshot) */}
+        {/* Top Islamic Greeting & Module Switcher Card (Black type with teal accents) */}
         <div
-          className={`rounded-[26px] p-3.5 sm:p-4.5 border transition-colors shadow-md ${
+          className={`rounded-[26px] p-3.5 sm:p-4.5 border transition-colors shadow-xl ${
             isDay
               ? 'bg-white border-[#dcebe8] shadow-[#135d66]/5'
-              : 'bg-[#0a2528] border-[#164449] shadow-black/40'
+              : 'bg-[#0e1c26] border-[#1a3342] shadow-black/50'
           }`}
         >
           <div
             className={`flex items-center justify-between pb-2.5 mb-2.5 border-b flex-wrap gap-2 text-xs ${
-              isDay ? 'border-[#e8f3f1]' : 'border-[#143c41]'
+              isDay ? 'border-[#e8f3f1]' : 'border-[#152936]'
             }`}
           >
             <div
               className={`flex items-center gap-2 font-bold ${
-                isDay ? 'text-[#165a60]' : 'text-teal-300'
+                isDay ? 'text-[#165a60]' : 'text-[#2dd4bf]'
               }`}
             >
-              <Sparkles className="w-4 h-4 text-amber-500" />
+              <Sparkles className="w-4 h-4 text-amber-400" />
               <span className="font-arabic text-sm">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
             </div>
-            <div className={`text-[11px] font-medium ${isDay ? 'text-[#5f8488]' : 'text-teal-200/70'}`}>
+            <div className={`text-[11px] font-medium ${isDay ? 'text-[#5f8488]' : 'text-[#7ba3a9]'}`}>
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'short',
                 month: 'short',
@@ -526,7 +522,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Module Selector Category Bar (Exact category pills from screenshot: "Bone", "Brain expert", etc.) */}
+          {/* Module Selector Category Bar (Matches upper given pill buttons) */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             {moduleTabs.map((tab) => {
               const isActive = activeModule === tab.id;
@@ -538,10 +534,10 @@ export default function App() {
                     isActive
                       ? isDay
                         ? 'bg-[#1c6469] text-white border-[#1c6469] shadow-md shadow-[#135d66]/20'
-                        : 'bg-[#14b8a6] text-[#041f21] border-[#14b8a6] shadow-md'
+                        : 'bg-[#1c6469] text-white border-[#288a91] shadow-lg shadow-black/40'
                       : isDay
                       ? 'bg-[#e6f3f2] hover:bg-[#d8ece9] text-[#2d6a70] border-[#d2ece9]'
-                      : 'bg-[#0f3438] hover:bg-[#133f44] text-teal-200/80 border-[#1a4e54]'
+                      : 'bg-[#0a1620] hover:bg-[#102330] text-[#7ba3a9] hover:text-white border-[#162c3a]'
                   }`}
                 >
                   <span className="text-sm">{tab.icon}</span>
@@ -550,12 +546,10 @@ export default function App() {
                     <span
                       className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
                         isActive
-                          ? isDay
-                            ? 'bg-white/20 text-white'
-                            : 'bg-black/20 text-[#041f21]'
+                          ? 'bg-white/20 text-white'
                           : isDay
                           ? 'bg-white text-[#1c6469] border border-[#cbe4e1]'
-                          : 'bg-[#0a2528] text-teal-300'
+                          : 'bg-[#050e14] text-[#2dd4bf] border border-[#142834]'
                       }`}
                     >
                       {tab.badge}
@@ -636,18 +630,18 @@ export default function App() {
         className={`mt-auto border-t py-6 px-4 text-center transition-colors ${
           isDay
             ? 'bg-[#e2edea] border-[#cbe0dc] text-[#34595d]'
-            : 'bg-[#061a1c] border-[#12393d] text-teal-200/70'
+            : 'bg-[#060c11] border-[#142633] text-[#71969c]'
         }`}
       >
         <div className="max-w-4xl mx-auto space-y-2">
           <div
             className={`font-arabic text-lg sm:text-xl font-bold ${
-              isDay ? 'text-[#165a60]' : 'text-teal-300'
+              isDay ? 'text-[#165a60]' : 'text-[#2dd4bf]'
             }`}
           >
             أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ
           </div>
-          <p className={`text-xs italic ${isDay ? 'text-[#507579]' : 'text-slate-400'}`}>
+          <p className={`text-xs italic ${isDay ? 'text-[#507579]' : 'text-[#8daab0]'}`}>
             "Verily, in the remembrance of Allah do hearts find rest." — Surah Ar-Ra'd (13:28)
           </p>
           <div className="text-[11px] pt-1 flex items-center justify-center gap-2 flex-wrap opacity-80">
@@ -658,7 +652,7 @@ export default function App() {
             <button
               onClick={() => setIsStandaloneModalOpen(true)}
               className={`hover:underline font-bold cursor-pointer ${
-                isDay ? 'text-[#1c6469]' : 'text-teal-300'
+                isDay ? 'text-[#1c6469]' : 'text-[#2dd4bf]'
               }`}
             >
               Export Standalone APK Guide

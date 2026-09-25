@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { AUTHENTIC_HADITHS } from '../utils/hadithData';
-import { HadithItem } from '../types';
+import { HadithItem, ThemeMode } from '../types';
 import { BookOpen, Search, Bookmark, Check, Copy, Sparkles, Filter, Heart, Share2 } from 'lucide-react';
 import { soundHaptics } from '../utils/audioHaptics';
 
 interface HadithViewProps {
   soundEnabled: boolean;
+  themeMode?: ThemeMode;
 }
 
-export const HadithView: React.FC<HadithViewProps> = ({ soundEnabled }) => {
+export const HadithView: React.FC<HadithViewProps> = ({ soundEnabled, themeMode = 'day' }) => {
+  const isDay = themeMode === 'day';
   const [selectedTopic, setSelectedTopic] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -72,58 +74,91 @@ export const HadithView: React.FC<HadithViewProps> = ({ soundEnabled }) => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* Hadith Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950/90 via-slate-900 to-teal-950/80 border border-emerald-500/30 p-5 sm:p-6 shadow-2xl">
+      {/* Hadith Header Banner matching Home Page */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#144d52] via-[#1a5e64] to-[#257277] border border-teal-400/30 p-5 sm:p-6 shadow-xl text-white">
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 border border-white/30 text-teal-100 text-xs font-semibold mb-2 backdrop-blur-md">
             <BookOpen className="w-3.5 h-3.5" />
             <span>الحديث النبوي الشريف • Prophetic Traditions</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight drop-shadow-sm">
             Authentic Hadith Treasury
           </h2>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
+          <p className="text-xs sm:text-sm text-teal-100 mt-1 max-w-xl">
             Priceless sayings, guidance, and character insights of the Prophet Muhammad ﷺ from Sahih al-Bukhari, Sahih Muslim, and classical compendiums.
           </p>
         </div>
       </div>
 
       {/* Featured: Hadith of the Day */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-emerald-950/60 via-slate-900 to-teal-950/60 border border-emerald-500/40 shadow-xl relative overflow-hidden">
-        <div className="flex items-center justify-between pb-3 mb-3 border-b border-emerald-900/50">
-          <span className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
-            <Sparkles className="w-4 h-4 text-amber-400" />
+      <div
+        className={`p-6 rounded-3xl border shadow-sm relative overflow-hidden ${
+          isDay
+            ? 'bg-white border-[#dcebe8] text-[#103e42]'
+            : 'bg-[#0e2f36] border-[#1a515c] text-white'
+        }`}
+      >
+        <div
+          className={`flex items-center justify-between pb-3 mb-3 border-b ${
+            isDay ? 'border-[#e8f3f1]' : 'border-[#17434b]'
+          }`}
+        >
+          <span className="flex items-center gap-2 text-xs font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 text-amber-500" />
             <span>Hadith of the Day</span>
           </span>
-          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-900/80 text-emerald-300 font-semibold">
+          <span
+            className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold border ${
+              isDay
+                ? 'bg-[#e6f3f2] text-[#1c6469] border-[#cbe4e1]'
+                : 'bg-[#0a262c] text-[#2dd4bf] border-[#184850]'
+            }`}
+          >
             {dailyHadith.book} {dailyHadith.hadithNumber}
           </span>
         </div>
 
-        <div className="text-right font-arabic text-xl sm:text-2xl text-emerald-200 leading-relaxed font-bold my-3">
+        <div
+          dir="rtl"
+          className={`font-arabic text-xl sm:text-2xl leading-relaxed font-bold my-3 ${
+            isDay ? 'text-[#0d4f54]' : 'text-teal-200'
+          }`}
+        >
           {dailyHadith.arabicText}
         </div>
 
-        <p className="text-sm sm:text-base text-slate-200 font-medium leading-relaxed my-3">
+        <p
+          className={`text-sm sm:text-base font-medium leading-relaxed my-3 ${
+            isDay ? 'text-[#1e3b3e]' : 'text-slate-200'
+          }`}
+        >
           "{dailyHadith.englishTranslation}"
         </p>
 
-        <div className="flex items-center justify-between pt-3 border-t border-slate-800 text-xs text-slate-400">
-          <span className="font-semibold text-emerald-400/90">
+        <div
+          className={`flex items-center justify-between pt-3 border-t text-xs ${
+            isDay ? 'border-[#e8f3f1] text-[#507579]' : 'border-[#17434b] text-teal-200/80'
+          }`}
+        >
+          <span className="font-semibold text-teal-700 dark:text-teal-300">
             Narrated by {dailyHadith.narrator}
           </span>
           <button
             onClick={() => handleCopyHadith(dailyHadith)}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition active:scale-95 cursor-pointer"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition active:scale-95 cursor-pointer ${
+              isDay
+                ? 'bg-[#f0f7f6] hover:bg-[#e4f2f0] text-[#1c6469] border-[#d2ece9]'
+                : 'bg-[#0a262c] hover:bg-[#123e47] text-teal-200 border-[#184850]'
+            }`}
           >
             {copiedId === dailyHadith.id ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Copied</span>
+                <Check className="w-3.5 h-3.5 text-teal-600" />
+                <span className="text-teal-600">Copied</span>
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5" />
+                <Copy className="w-3.5 h-3.5 text-teal-600" />
                 <span>Share Hadith</span>
               </>
             )}
@@ -134,13 +169,19 @@ export const HadithView: React.FC<HadithViewProps> = ({ soundEnabled }) => {
       {/* Search & Topic Filters */}
       <div className="space-y-3">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 ${
+            isDay ? 'text-[#7ca2a7]' : 'text-teal-400'
+          }`} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search hadiths by keywords, narrator, or wisdom..."
-            className="w-full bg-slate-900/90 border border-slate-800 focus:border-emerald-500 rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition shadow-inner"
+            className={`w-full rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none transition shadow-sm border ${
+              isDay
+                ? 'bg-white border-[#cde5e2] text-[#103e42] placeholder-[#7ca2a7] focus:border-[#1c6469]'
+                : 'bg-[#0e2f36] border-[#1a515c] text-white placeholder-teal-600 focus:border-teal-400'
+            }`}
           />
         </div>
 
@@ -150,10 +191,12 @@ export const HadithView: React.FC<HadithViewProps> = ({ soundEnabled }) => {
             <button
               key={topic}
               onClick={() => setSelectedTopic(topic)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition active:scale-95 cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition active:scale-95 cursor-pointer border ${
                 selectedTopic === topic
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50'
-                  : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  ? 'bg-[#1c6469] text-white border-[#1c6469] shadow-md shadow-[#135d66]/20'
+                  : isDay
+                  ? 'bg-white hover:bg-[#eef7f6] text-[#2d6a70] border-[#d2ece9]'
+                  : 'bg-[#0e2f36] text-[#8ebac0] hover:text-white border-[#1a515c]'
               }`}
             >
               {topic === 'all' ? 'All Topics' : topic}
@@ -171,18 +214,38 @@ export const HadithView: React.FC<HadithViewProps> = ({ soundEnabled }) => {
           return (
             <div
               key={hadith.id}
-              className={`p-5 sm:p-6 rounded-3xl border transition-all duration-200 ${
+              className={`p-5 sm:p-6 rounded-3xl border transition-all duration-200 shadow-sm hover:shadow-md ${
                 isFavorite
-                  ? 'bg-slate-900/95 border-amber-500/40 shadow-lg'
-                  : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
+                  ? isDay
+                    ? 'bg-[#fffdf5] border-amber-300 shadow-sm'
+                    : 'bg-[#142e2b] border-amber-500/50 shadow-sm'
+                  : isDay
+                  ? 'bg-white border-[#dcebe8] hover:border-[#b5dcd6]'
+                  : 'bg-[#0e2f36] border-[#1a515c] hover:border-[#266e7c]'
               }`}
             >
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/80 text-xs">
+              <div
+                className={`flex items-center justify-between pb-3 mb-3 border-b text-xs ${
+                  isDay ? 'border-[#e8f3f1]' : 'border-[#17434b]'
+                }`}
+              >
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-400 font-semibold border border-emerald-800/50">
+                  <span
+                    className={`px-2.5 py-1 rounded-full font-semibold border ${
+                      isDay
+                        ? 'bg-[#e6f3f2] text-[#1c6469] border-[#cbe4e1]'
+                        : 'bg-[#0a262c] text-[#2dd4bf] border-[#184850]'
+                    }`}
+                  >
                     {hadith.book} #{hadith.hadithNumber}
                   </span>
-                  <span className="px-2 py-0.5 rounded-lg bg-teal-950 text-teal-300 font-medium text-[11px]">
+                  <span
+                    className={`px-2 py-0.5 rounded-lg font-medium text-[11px] border ${
+                      isDay
+                        ? 'bg-[#f0f7f6] text-[#2d6a70] border-[#d2ece9]'
+                        : 'bg-[#0a262c] text-teal-300 border-[#184850]'
+                    }`}
+                  >
                     {hadith.grade}
                   </span>
                 </div>
@@ -190,48 +253,71 @@ export const HadithView: React.FC<HadithViewProps> = ({ soundEnabled }) => {
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => toggleFavorite(hadith.id)}
-                    className={`p-1.5 rounded-lg transition active:scale-90 cursor-pointer ${
+                    className={`p-1.5 rounded-lg transition active:scale-90 cursor-pointer border ${
                       isFavorite
-                        ? 'text-rose-400 bg-rose-950/40 border border-rose-500/30'
-                        : 'text-slate-400 hover:text-white bg-slate-800/60'
+                        ? 'text-rose-500 bg-rose-50 border-rose-200'
+                        : isDay
+                        ? 'text-[#7ca2a7] hover:text-rose-500 bg-[#f0f7f6] border-[#d2ece9]'
+                        : 'text-teal-400 hover:text-white bg-[#0a262c] border-[#184850]'
                     }`}
                     title={isFavorite ? 'Remove Favorite' : 'Save to Favorites'}
                   >
                     <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
                   </button>
-
                   <button
                     onClick={() => handleCopyHadith(hadith)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-white bg-slate-800/60 transition active:scale-90 cursor-pointer"
+                    className={`p-1.5 rounded-lg transition active:scale-90 cursor-pointer border ${
+                      isDay
+                        ? 'text-[#507579] hover:text-[#1c6469] bg-[#f0f7f6] border-[#d2ece9]'
+                        : 'text-teal-300 hover:text-white bg-[#0a262c] border-[#184850]'
+                    }`}
                     title="Copy Hadith"
                   >
-                    {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                    {isCopied ? (
+                      <Check className="w-4 h-4 text-teal-600" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
                   </button>
                 </div>
               </div>
 
-              {/* Arabic Text */}
-              <div className="text-right font-arabic font-bold text-slate-100 text-lg sm:text-xl leading-loose my-3">
+              {/* Arabic Hadith */}
+              <div
+                dir="rtl"
+                className={`font-arabic text-lg sm:text-xl font-bold leading-relaxed mb-3 ${
+                  isDay ? 'text-[#0d4f54]' : 'text-teal-200'
+                }`}
+              >
                 {hadith.arabicText}
               </div>
 
               {/* English Translation */}
-              <p className="text-sm sm:text-base text-slate-200 leading-relaxed font-sans mb-3">
+              <p
+                className={`text-xs sm:text-sm font-sans leading-relaxed ${
+                  isDay ? 'text-[#1e3b3e]' : 'text-slate-200'
+                }`}
+              >
                 "{hadith.englishTranslation}"
               </p>
 
-              {/* Narrator */}
-              <div className="text-xs text-emerald-400/90 font-medium">
-                — Narrated by <span className="font-semibold text-white">{hadith.narrator}</span>
+              {/* Narrator & Topic Footer */}
+              <div
+                className={`flex items-center justify-between pt-3 mt-3 border-t text-[11px] ${
+                  isDay ? 'border-[#e8f3f1] text-[#507579]' : 'border-[#17434b] text-teal-200/80'
+                }`}
+              >
+                <span>Narrated by: <strong className={isDay ? 'text-[#103e42]' : 'text-white'}>{hadith.narrator}</strong></span>
+                <span
+                  className={`px-2 py-0.5 rounded-full border ${
+                    isDay
+                      ? 'bg-[#f0f7f6] text-[#2d6a70] border-[#d2ece9]'
+                      : 'bg-[#0a262c] text-teal-300 border-[#184850]'
+                  }`}
+                >
+                  {hadith.topic}
+                </span>
               </div>
-
-              {/* Reflection / Commentary */}
-              {hadith.reflection && (
-                <div className="mt-4 pt-3 border-t border-slate-800/80 text-xs text-slate-400 flex items-start gap-2 bg-emerald-950/20 p-3 rounded-2xl">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                  <span className="italic leading-relaxed">{hadith.reflection}</span>
-                </div>
-              )}
             </div>
           );
         })}

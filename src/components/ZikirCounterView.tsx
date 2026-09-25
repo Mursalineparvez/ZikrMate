@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ZikrItem, ThemeMode } from '../types';
 import { CircularCenterCounter } from './CircularCenterCounter';
 import { ZikrCard } from './ZikrCard';
-import { Plus, FileText, CheckCircle2, Target, ListFilter } from 'lucide-react';
+import { Plus, FileText, CheckCircle2, Target } from 'lucide-react';
 
 interface ZikirCounterViewProps {
   masterTotal: number;
@@ -64,7 +64,7 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
         themeMode={themeMode}
       />
 
-      {/* Category Pills (Exact pill style from screenshot: "Bone", "Brain expert", "Dental", etc.) */}
+      {/* Category Pills & Action Bar matching Home Page */}
       <div className="space-y-3">
         <div className="flex items-center justify-between px-1 flex-wrap gap-2">
           <div className="flex items-center gap-2">
@@ -78,7 +78,7 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
                 className={`text-xs px-2.5 py-0.5 rounded-full font-bold border ${
                   isDay
                     ? 'bg-[#e6f3f2] text-[#1c6469] border-[#cce5e2]'
-                    : 'bg-[#0f3438] text-teal-300 border-[#1a4e54]'
+                    : 'bg-[#0a262c] text-[#2dd4bf] border-[#184850]'
                 }`}
               >
                 {zikrs.length}
@@ -94,7 +94,7 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
               className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-2xl border transition active:scale-95 disabled:opacity-50 cursor-pointer ${
                 isDay
                   ? 'bg-white hover:bg-[#eef7f6] text-[#1c6469] border-[#d2ece9] shadow-sm'
-                  : 'bg-[#0e3034] hover:bg-[#133d42] text-teal-200 border-[#184a50]'
+                  : 'bg-[#0e2f36] hover:bg-[#123e47] text-[#8ebac0] border-[#1a515c]'
               }`}
               title="Export PDF Report"
             >
@@ -102,14 +102,10 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
               <span>Export PDF</span>
             </button>
 
-            {/* Add Zikr Button (Deep spruce teal from screenshot) */}
+            {/* Add Zikr Button (Signature spruce teal) */}
             <button
               onClick={onOpenAddModal}
-              className={`flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-2xl shadow-md transition active:scale-95 cursor-pointer ${
-                isDay
-                  ? 'bg-[#1c6469] hover:bg-[#154f53] text-white shadow-[#135d66]/20'
-                  : 'bg-[#14b8a6] hover:bg-[#0d9488] text-[#041f21]'
-              }`}
+              className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-2xl shadow-md transition active:scale-95 cursor-pointer bg-[#1c6469] hover:bg-[#154f53] text-white shadow-[#135d66]/20 border border-teal-400/30"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Add Zikr</span>
@@ -125,10 +121,10 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
               filterMode === 'all'
                 ? isDay
                   ? 'bg-[#1c6469] text-white border-[#1c6469] shadow-md shadow-[#135d66]/20'
-                  : 'bg-[#14b8a6] text-[#041f21] border-[#14b8a6] shadow-md'
+                  : 'bg-[#1c6469] text-white border-teal-400/50 shadow-md'
                 : isDay
-                ? 'bg-[#e6f3f2] hover:bg-[#dceedb] text-[#2e6d73] border-[#d2ece9]'
-                : 'bg-[#0e3034] text-teal-200/80 border-[#184a50]'
+                ? 'bg-[#e6f3f2] hover:bg-[#d8ece9] text-[#2d6a70] border-[#d2ece9]'
+                : 'bg-[#0a262c] hover:bg-[#10343c] text-[#8ebac0] border-[#184850]'
             }`}
           >
             All ({zikrs.length})
@@ -140,10 +136,10 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
               filterMode === 'targets'
                 ? isDay
                   ? 'bg-[#1c6469] text-white border-[#1c6469] shadow-md shadow-[#135d66]/20'
-                  : 'bg-[#14b8a6] text-[#041f21] border-[#14b8a6] shadow-md'
+                  : 'bg-[#1c6469] text-white border-teal-400/50 shadow-md'
                 : isDay
-                ? 'bg-[#e6f3f2] hover:bg-[#dceedb] text-[#2e6d73] border-[#d2ece9]'
-                : 'bg-[#0e3034] text-teal-200/80 border-[#184a50]'
+                ? 'bg-[#e6f3f2] hover:bg-[#d8ece9] text-[#2d6a70] border-[#d2ece9]'
+                : 'bg-[#0a262c] hover:bg-[#10343c] text-[#8ebac0] border-[#184850]'
             }`}
           >
             <Target className="w-3.5 h-3.5" />
@@ -156,10 +152,10 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
               filterMode === 'completed'
                 ? isDay
                   ? 'bg-[#1c6469] text-white border-[#1c6469] shadow-md shadow-[#135d66]/20'
-                  : 'bg-[#14b8a6] text-[#041f21] border-[#14b8a6] shadow-md'
+                  : 'bg-[#1c6469] text-white border-teal-400/50 shadow-md'
                 : isDay
-                ? 'bg-[#e6f3f2] hover:bg-[#dceedb] text-[#2e6d73] border-[#d2ece9]'
-                : 'bg-[#0e3034] text-teal-200/80 border-[#184a50]'
+                ? 'bg-[#e6f3f2] hover:bg-[#d8ece9] text-[#2d6a70] border-[#d2ece9]'
+                : 'bg-[#0a262c] hover:bg-[#10343c] text-[#8ebac0] border-[#184850]'
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -193,15 +189,15 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
           className={`p-10 text-center rounded-[28px] border ${
             isDay
               ? 'bg-white border-[#dcebe8] shadow-sm'
-              : 'bg-[#0a2528] border-[#164449]'
+              : 'bg-[#0e2f36] border-[#1a515c]'
           }`}
         >
-          <p className={`text-sm font-semibold ${isDay ? 'text-[#103e42]' : 'text-slate-300'}`}>
+          <p className={`text-sm font-semibold ${isDay ? 'text-[#103e42]' : 'text-teal-100'}`}>
             No zikr counters found in this filter.
           </p>
           <button
             onClick={() => setFilterMode('all')}
-            className="mt-3 px-4 py-2 rounded-xl bg-[#1c6469] text-white text-xs font-bold transition active:scale-95"
+            className="mt-3 px-4 py-2 rounded-xl bg-[#1c6469] text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-sm"
           >
             Show All Counters
           </button>

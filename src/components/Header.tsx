@@ -71,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
       className={`sticky top-0 z-40 px-3 py-2.5 sm:px-6 transition-colors duration-300 shadow-lg ${
         isDay
           ? 'bg-gradient-to-r from-[#144d52] via-[#1a5e64] to-[#257277] text-white border-b border-[#2d7d83]/40 shadow-[#135d66]/15'
-          : 'bg-gradient-to-r from-[#092b2e] via-[#0d363a] to-[#12454a] text-white border-b border-[#184e54] shadow-black/30'
+          : 'bg-gradient-to-r from-[#07191e] via-[#0b262d] to-[#10363e] text-white border-b border-[#163c46] shadow-black/60'
       }`}
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
@@ -99,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Desktop Nav Items */}
-        <nav className="hidden md:flex items-center gap-1 bg-black/15 p-1 rounded-2xl border border-white/10 backdrop-blur-md">
+        <nav className="hidden md:flex items-center gap-1 bg-white/10 p-1 rounded-2xl border border-white/20 backdrop-blur-md">
           {navItems.map((item) => {
             const isActive = activeModule === item.id;
             return (
@@ -108,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => onModuleChange(item.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition active:scale-95 cursor-pointer ${
                   isActive
-                    ? 'bg-white text-[#165a60] font-bold shadow-md shadow-black/10'
+                    ? 'bg-white text-[#165a60] font-bold shadow-md shadow-teal-900/10'
                     : 'text-teal-100/90 hover:text-white hover:bg-white/10'
                 }`}
               >
@@ -190,7 +190,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* iOS Instructions Modal */}
       {showIOSModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#082024]/75 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#12454a] border border-teal-500/50 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-white">
             <h3 className="text-base font-bold flex items-center gap-2">
               <Smartphone className="w-5 h-5 text-teal-300" />
