@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Noor Tasbeeh - Digital Zikr PWA</title>
+  <meta name="description" content="Serene Digital Zikr and Tasbeeh Progressive Web App with individual counters, master total, local persistence, haptic touch, and PDF export." />
+  <meta name="theme-color" content="#064e3b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Noor Tasbeeh" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              950: '#022c22',
+              900: '#064e3b',
+              800: '#065f46',
+              700: '#047857',
+              600: '#059669',
+              500: '#10b981',
+              400: '#34d399',
+            },
+            gold: {
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            arabic: ['Amiri', 'Traditional Arabic', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Amiri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- html2pdf.js CDN library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    body {
+      background-color: #030d0a;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .font-arabic {
+      font-family: 'Amiri', serif;
+    }
+    .islamic-pattern {
+      background-color: #030d0a;
+      background-image: radial-gradient(rgba(16, 185, 129, 0.08) 1.5px, transparent 1.5px),
+                        radial-gradient(rgba(234, 179, 8, 0.05) 1.5px, #030d0a 1.5px);
+      background-size: 36px 36px;
+      background-position: 0 0, 18px 18px;
+    }
+    .tap-active:active {
+      transform: scale(0.96);
+      transition: transform 0.08s ease;
+    }
+    /* Custom subtle pulse */
+    @keyframes softGlow {
+      0%, 100% { box-shadow: 0 0 16px rgba(16, 185, 129, 0.3); }
+      50% { box-shadow: 0 0 28px rgba(16, 185, 129, 0.6); }
+    }
+    .glow-bead {
+      animation: softGlow 2.5s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="islamic-pattern min-h-screen text-slate-100 flex flex-col">
+
+  <!-- Dynamic Web App Manifest Injection via Blob -->
+  <script>
+    (function injectManifest() {
+      const manifestObj = {
+        name: "Noor Tasbeeh - Digital Zikr PWA",
+        short_name: "NoorTasbeeh",
+        description: "Serene Digital Zikr and Tasbeeh Progressive Web Application",
+        start_url: window.location.href,
+        scope: "./",
+        display: "standalone",
+        background_color: "#030d0a",
+        theme_color: "#064e3b",
+        icons: [
+          {
+            src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23064e3b'/><circle cx='256' cy='256' r='140' fill='none' stroke='%23facc15' stroke-width='14'/><path d='M280 180 A70 70 0 1 0 280 320 A55 55 0 1 1 280 180 Z' fill='%23facc15'/></svg>",
+            sizes: "192x192 512x512",
+            type: "image/svg+xml",
+            purpose: "any"
+          }
+        ]
+      };
+      const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
+      const link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = URL.createObjectURL(blob);
+      document.head.appendChild(link);
+    })();
+  </script>
+
+  <!-- Navigation / Header Bar -->
+  <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-emerald-900/40 px-4 py-3 sm:px-6">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-900 flex items-center justify-center shadow-lg shadow-emerald-900/40 border border-emerald-500/30">
+          <svg class="w-6 h-6 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            Noor Tasbeeh
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-900/70 text-emerald-300 font-semibold border border-emerald-700/50">PWA</span>
+          </h1>
+          <p class="text-xs text-emerald-400/80 font-medium">Digital Zikr &amp; Counter Companion</p>
+        </div>
+      </div>
+
+      <!-- Quick Actions (Sound, Haptic, Install, Add) -->
+      <div class="flex items-center gap-2">
+        <button id="toggle-sound-btn" title="Toggle Bead Audio" class="p-2.5 rounded-xl bg-slate-900/90 border border-emerald-800/40 text-emerald-300 hover:bg-emerald-950 transition">
+          <svg id="sound-icon-on" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
+          <svg id="sound-icon-off" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+          </svg>
+        </button>
+
+        <button id="btn-export-pdf" title="Export PDF Report" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-900/50 hover:bg-emerald-800/70 border border-emerald-600/50 text-emerald-200 text-xs sm:text-sm font-semibold transition">
+          <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span class="hidden sm:inline">Export PDF</span>
+        </button>
+
+        <button id="btn-open-add-modal" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs sm:text-sm shadow-md shadow-emerald-900/50 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Add Zikr</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- In-App Install Banner (Shows on Supported Browsers) -->
+  <div id="pwa-install-banner" class="hidden bg-emerald-950/90 border-b border-emerald-700/50 px-4 py-2.5">
+    <div class="max-w-4xl mx-auto flex items-center justify-between gap-3 text-xs sm:text-sm">
+      <div class="flex items-center gap-2">
+        <span class="text-base">📲</span>
+        <span class="text-emerald-200">Install Noor Tasbeeh as an Android/iOS app for offline zikr.</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-trigger-install" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg transition">Install</button>
+        <button id="btn-dismiss-install" class="text-slate-400 hover:text-white">&times;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6 sm:px-6 space-y-6">
+
+    <!-- 2. CENTRAL MASTER COUNTER -->
+    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-slate-900 to-teal-950 border border-emerald-600/30 p-6 sm:p-8 shadow-2xl shadow-emerald-950/60">
+      <!-- Decorative Islamic Arch Ornament in background -->
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-400 mb-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Central Master Counter
+          </div>
+          <div class="font-arabic text-2xl sm:text-3xl text-amber-200/90 my-1">
+            بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+          </div>
+          <p class="text-xs sm:text-sm text-slate-400 max-w-md">
+            Aggregated real-time total sum of all individual Tasbeeh invocations saved in local memory.
+          </p>
+        </div>
+
+        <div class="flex items-center justify-between sm:justify-end gap-6 bg-slate-950/60 p-4 sm:p-5 rounded-2xl border border-emerald-900/50 backdrop-blur-sm">
+          <div class="text-right">
+            <div id="master-counter-display" class="text-4xl sm:text-5xl font-black text-amber-300 tracking-tight transition-all duration-150">
+              0
+            </div>
+            <div class="text-[11px] font-semibold text-emerald-400 uppercase tracking-widest mt-0.5">
+              Cumulative Count
+            </div>
+          </div>
+
+          <div class="h-10 w-px bg-slate-800"></div>
+
+          <button id="btn-global-reset" title="Reset all counters to 0" class="flex flex-col items-center justify-center p-3 rounded-xl bg-red-950/40 hover:bg-red-900/60 border border-red-800/40 text-red-300 hover:text-red-100 transition tap-active">
+            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Reset All</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subheader with Filters & Counter Overview -->
+    <div class="flex items-center justify-between px-1">
+      <div class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+        <span>Active Zikr Counters</span>
+        <span id="zikr-total-badge" class="text-xs px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/60 font-bold">4</span>
+      </div>
+      <div class="text-xs text-slate-400">
+        Tap the bead button for +1
+      </div>
+    </div>
+
+    <!-- 1. DYNAMIC INDIVIDUAL COUNTERS GRID -->
+    <div id="zikr-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+      <!-- Populated via JavaScript from localStorage -->
+    </div>
+
+    <!-- Empty State (if all deleted) -->
+    <div id="empty-state" class="hidden text-center py-16 px-4 bg-slate-900/40 rounded-3xl border border-dashed border-slate-800">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-950/80 flex items-center justify-center text-emerald-400 text-2xl border border-emerald-800/50">
+        📿
+      </div>
+      <h3 class="text-lg font-bold text-white mb-1">No Zikr Counters Available</h3>
+      <p class="text-sm text-slate-400 max-w-sm mx-auto mb-6">All items have been removed. Add your custom Zikr or restore standard defaults.</p>
+      <div class="flex justify-center gap-3">
+        <button id="btn-restore-defaults" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-medium transition">
+          Restore Defaults
+        </button>
+        <button onclick="openAddZikrModal()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold transition">
+          + Add Custom Zikr
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer with Islamic Dhikr Reminder -->
+  <footer class="mt-auto border-t border-slate-900 bg-slate-950/70 py-6 px-4 text-center text-xs text-slate-400">
+    <div class="max-w-4xl mx-auto space-y-2">
+      <div class="font-arabic text-base text-emerald-400">
+        أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ
+      </div>
+      <p class="italic text-slate-400">"Unquestionably, by the remembrance of Allah hearts are assured." — Surah Ar-Ra'd (13:28)</p>
+      <div class="text-[11px] text-slate-400">
+        Noor Tasbeeh Progressive Web Application • 100% Offline Capable &amp; Privacy-First
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: ADD / EDIT CUSTOM ZIKR -->
+  <div id="modal-zikr-form" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-emerald-700/50 rounded-3xl w-full max-w-md p-6 shadow-2xl relative">
+      <button onclick="closeZikrModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+      
+      <div class="mb-4">
+        <h3 id="modal-title" class="text-lg font-bold text-white flex items-center gap-2">
+          <span>Add Custom Zikr</span>
+        </h3>
+        <p class="text-xs text-slate-400">Create an independent counter with custom name and target.</p>
+      </div>
+
+      <!-- Quick Preset Chips -->
+      <div class="mb-4">
+        <label class="block text-xs font-semibold text-emerald-400 mb-1.5 uppercase tracking-wider">Quick Presets</label>
+        <div class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
+          <button type="button" onclick="selectPreset('La ilaha illallah', 'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ', 'Lā ilāha illallāh', 'None worthy of worship but Allah', 100)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            La ilaha illallah (100)
+          </button>
+          <button type="button" onclick="selectPreset('Salawat on Prophet ﷺ', 'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ', 'Allāhumma ṣalli ʿalā Muḥammad', 'Blessings on the Prophet', 100)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            Salawat ﷺ (100)
+          </button>
+          <button type="button" onclick="selectPreset('SubhanAllahi wa biHamdihi', 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ', 'Subḥānallāhi wa bi-ḥamdih', 'Glory & praise to Allah', 100)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            SubhanAllahi wa biHamdihi (100)
+          </button>
+          <button type="button" onclick="selectPreset('HasbunAllahu wa Ni\'mal Wakeel', 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ', 'Ḥasbunallāhu wa niʿmal-wakīl', 'Allah is sufficient for us', 40)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            HasbunAllah (40)
+          </button>
+        </div>
+      </div>
+
+      <form id="form-zikr" class="space-y-4">
+        <input type="hidden" id="form-zikr-id" value="" />
+        
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Zikr Name *</label>
+          <input type="text" id="form-name" required placeholder="e.g., SubhanAllah, Istighfar, Rabbana..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Arabic Text (Optional)</label>
+          <input type="text" id="form-arabic" dir="rtl" placeholder="سُبْحَانَ ٱللَّٰهِ" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-base font-arabic text-emerald-300 placeholder-slate-600 focus:outline-none focus:border-emerald-500" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Transliteration</label>
+            <input type="text" id="form-transliteration" placeholder="e.g. SubhanAllah" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Target Count</label>
+            <input type="number" id="form-target" min="1" max="100000" value="33" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">English Translation (Optional)</label>
+          <input type="text" id="form-meaning" placeholder="e.g. Glory be to Allah" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500" />
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeZikrModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-sm shadow-lg shadow-emerald-900/40 transition">
+            Save Zikr
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRMATION PROMPT (RESET / DELETE) -->
+  <div id="modal-confirm" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center">
+      <div id="confirm-icon" class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-amber-950/80 border border-amber-600/50 flex items-center justify-center text-2xl text-amber-400">
+        ⚠️
+      </div>
+      <h3 id="confirm-title" class="text-lg font-bold text-white mb-2">Confirm Action</h3>
+      <p id="confirm-message" class="text-xs text-slate-300 mb-6">Are you sure you want to proceed?</p>
+      
+      <div class="flex justify-center gap-3">
+        <button id="btn-confirm-cancel" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition">
+          Cancel
+        </button>
+        <button id="btn-confirm-proceed" class="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-bold shadow-lg shadow-red-950/50 transition">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OFF-SCREEN PRINT TEMPLATE CONTAINER FOR html2pdf.js -->
+  <div id="pdf-report-offscreen" style="display: none;"></div>
+
+  <!-- APPLICATION CORE JAVASCRIPT -->
+  <script>
+    // 1. Initial State & Defaults
+    const DEFAULT_ZIKRS = [
+      {
+        id: 'subhanallah',
+        name: 'SubhanAllah',
+        arabic: 'سُبْحَانَ ٱللَّٰهِ',
+        transliteration: 'Subḥān Allāh',
+        meaning: 'Glory be to Allah',
+        count: 0,
+        target: 33,
+        createdAt: 1
+      },
+      {
+        id: 'alhamdulillah',
+        name: 'Alhamdulillah',
+        arabic: 'ٱلْحَمْدُ لِلَّٰهِ',
+        transliteration: 'Al-ḥamdu lillāh',
+        meaning: 'All praise is due to Allah',
+        count: 0,
+        target: 33,
+        createdAt: 2
+      },
+      {
+        id: 'allahuakbar',
+        name: 'Allahu Akbar',
+        arabic: 'ٱللَّٰهُ أَكْبَرُ',
+        transliteration: 'Allāhu Akbar',
+        meaning: 'Allah is the Greatest',
+        count: 0,
+        target: 34,
+        createdAt: 3
+      },
+      {
+        id: 'astaghfirullah',
+        name: 'Astaghfirullah',
+        arabic: 'أَسْتَغْفِرُ ٱللَّٰهَ',
+        transliteration: 'Astaghfirullāh',
+        meaning: 'I seek forgiveness from Allah',
+        count: 0,
+        target: 100,
+        createdAt: 4
+      }
+    ];
+
+    let zikrs = [];
+    let soundEnabled = true;
+    let deferredInstallPrompt = null;
+
+    // 2. Audio Engine (Pure Web Audio API - No external file dependencies)
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      return audioCtx;
+    }
+
+    function playBeadClick() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.045);
+      } catch (e) {}
+    }
+
+    function playMilestoneChime() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+          gain.gain.setValueAtTime(0.18, ctx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.45);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.08);
+          osc.stop(ctx.currentTime + idx * 0.08 + 0.5);
+        });
+      } catch (e) {}
+    }
+
+    function triggerVibration(pattern) {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        try {
+          navigator.vibrate(pattern);
+        } catch (e) {}
+      }
+    }
+
+    // 3. Local Storage Persistence
+    function loadData() {
+      try {
+        const saved = localStorage.getItem('noor_zikr_items');
+        if (saved) {
+          zikrs = JSON.parse(saved);
+        } else {
+          zikrs = JSON.parse(JSON.stringify(DEFAULT_ZIKRS));
+          saveData();
+        }
+        const savedSound = localStorage.getItem('noor_sound_enabled');
+        if (savedSound !== null) {
+          soundEnabled = savedSound === 'true';
+        }
+      } catch (e) {
+        zikrs = JSON.parse(JSON.stringify(DEFAULT_ZIKRS));
+      }
+      updateSoundUI();
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem('noor_zikr_items', JSON.stringify(zikrs));
+        localStorage.setItem('noor_sound_enabled', String(soundEnabled));
+      } catch (e) {
+        console.error('LocalStorage error:', e);
+      }
+    }
+
+    // 4. Reactive UI Rendering
+    function updateMasterTotal() {
+      const masterTotal = zikrs.reduce((acc, item) => acc + (Number(item.count) || 0), 0);
+      const masterDisplay = document.getElementById('master-counter-display');
+      masterDisplay.textContent = masterTotal.toLocaleString();
+      document.getElementById('zikr-total-badge').textContent = zikrs.length;
+    }
+
+    function renderCards() {
+      const container = document.getElementById('zikr-cards-container');
+      const emptyState = document.getElementById('empty-state');
+
+      if (zikrs.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        updateMasterTotal();
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.innerHTML = '';
+
+      zikrs.forEach((zikr) => {
+        const card = document.createElement('div');
+        const isGoalMet = zikr.count >= zikr.target;
+        const progressPercent = Math.min(100, Math.round((zikr.count / zikr.target) * 100));
+
+        card.className = `relative rounded-3xl bg-slate-900/90 border ${isGoalMet ? 'border-amber-500/50 bg-gradient-to-br from-slate-900 via-emerald-950/40 to-slate-900' : 'border-emerald-800/40'} p-5 sm:p-6 shadow-xl flex flex-col justify-between transition-all`;
+
+        card.innerHTML = `
+          <!-- Top Row: Name, Arabic & Menu -->
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-bold text-base sm:text-lg text-white">${zikr.name}</h3>
+                ${isGoalMet ? '<span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">Goal Complete</span>' : ''}
+              </div>
+              ${zikr.transliteration ? `<div class="text-xs text-slate-400 italic">${zikr.transliteration}</div>` : ''}
+              ${zikr.meaning ? `<div class="text-[11px] text-slate-500">${zikr.meaning}</div>` : ''}
+            </div>
+
+            <div class="text-right">
+              <div class="font-arabic text-xl sm:text-2xl text-emerald-400 font-bold" dir="rtl">
+                ${zikr.arabic || ''}
+              </div>
+              <div class="text-[11px] text-slate-400 font-medium mt-0.5">
+                Target: <span class="text-emerald-300 font-semibold">${zikr.target}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center: Large Digital Counter & Progress Bar -->
+          <div class="my-2">
+            <div class="flex items-baseline justify-between mb-1.5">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Current Count</span>
+              <span class="text-xs font-bold text-emerald-400">${progressPercent}%</span>
+            </div>
+            
+            <div class="text-4xl sm:text-5xl font-black text-white tracking-tight mb-2 flex items-center justify-between">
+              <span>${zikr.count.toLocaleString()}</span>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-400">
+                ${zikr.count} / ${zikr.target}
+              </span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full h-2 rounded-full bg-slate-950 overflow-hidden border border-slate-800">
+              <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-200" style="width: ${progressPercent}%;"></div>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Primary +1 Bead Button and Secondary Controls -->
+          <div class="mt-5 pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
+            
+            <!-- Secondary Actions: -1, Reset, Edit, Delete -->
+            <div class="flex items-center gap-1 sm:gap-1.5">
+              <!-- -1 Decrement -->
+              <button onclick="decrementZikr('${zikr.id}')" title="Decrement -1" ${zikr.count === 0 ? 'disabled' : ''} class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:hover:bg-slate-800 flex items-center justify-center text-slate-200 font-bold text-base transition tap-active">
+                -1
+              </button>
+
+              <!-- Reset to 0 -->
+              <button onclick="confirmResetIndividual('${zikr.id}', '${zikr.name}')" title="Reset individual counter" class="w-10 h-10 rounded-xl bg-slate-800/70 hover:bg-amber-950/60 hover:text-amber-300 hover:border-amber-700/50 border border-slate-700/50 flex items-center justify-center text-slate-400 transition tap-active">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+
+              <!-- Edit -->
+              <button onclick="openEditZikrModal('${zikr.id}')" title="Edit Zikr" class="w-10 h-10 rounded-xl bg-slate-800/70 hover:bg-slate-700 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white transition tap-active">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+
+              <!-- Delete -->
+              <button onclick="confirmDeleteZikr('${zikr.id}', '${zikr.name}')" title="Delete Zikr" class="w-10 h-10 rounded-xl bg-slate-800/70 hover:bg-red-950/60 hover:text-red-400 hover:border-red-800/50 border border-slate-700/50 flex items-center justify-center text-slate-400 transition tap-active">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Large Primary +1 Bead Touch Button -->
+            <button onclick="incrementZikr('${zikr.id}')" class="flex-1 max-w-[170px] h-12 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-95 text-white font-black text-lg shadow-lg shadow-emerald-950/60 border border-emerald-400/40 flex items-center justify-center gap-2 transition-all tap-active select-none cursor-pointer">
+              <span class="text-xl leading-none">+1</span>
+              <span class="text-xs font-semibold uppercase tracking-wider text-emerald-100">Tap</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      updateMasterTotal();
+    }
+
+    // 5. Counter Operations
+    function incrementZikr(id) {
+      const zikr = zikrs.find(z => z.id === id);
+      if (!zikr) return;
+
+      zikr.count += 1;
+      saveData();
+      renderCards();
+
+      // Audio & Haptic
+      playBeadClick();
+      triggerVibration(25);
+
+      // Check if target goal reached
+      if (zikr.count === zikr.target) {
+        playMilestoneChime();
+        triggerVibration([40, 50, 40, 50, 100]);
+      }
+    }
+
+    function decrementZikr(id) {
+      const zikr = zikrs.find(z => z.id === id);
+      if (!zikr || zikr.count <= 0) return;
+
+      zikr.count -= 1;
+      saveData();
+      renderCards();
+
+      triggerVibration(40);
+    }
+
+    // 6. Confirmation Safety Modals
+    let confirmCallback = null;
+
+    function openConfirmModal(title, message, callback, isDanger = true) {
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-message').textContent = message;
+      const proceedBtn = document.getElementById('btn-confirm-proceed');
+      
+      if (isDanger) {
+        proceedBtn.className = "flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-bold shadow-lg shadow-red-950/50 transition";
+        proceedBtn.textContent = "Yes, Proceed";
+      } else {
+        proceedBtn.className = "flex-1 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold shadow-lg shadow-emerald-950/50 transition";
+        proceedBtn.textContent = "Confirm";
+      }
+
+      confirmCallback = callback;
+      document.getElementById('modal-confirm').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('modal-confirm').classList.add('hidden');
+      confirmCallback = null;
+    }
+
+    document.getElementById('btn-confirm-cancel').addEventListener('click', closeConfirmModal);
+    document.getElementById('btn-confirm-proceed').addEventListener('click', () => {
+      if (confirmCallback) confirmCallback();
+      closeConfirmModal();
+    });
+
+    // Global Reset
+    document.getElementById('btn-global-reset').addEventListener('click', () => {
+      openConfirmModal(
+        'Global Reset All Counters?',
+        'This will reset every individual Zikr counter back to 0. This cannot be undone.',
+        () => {
+          zikrs.forEach(z => z.count = 0);
+          saveData();
+          renderCards();
+          triggerVibration([50, 50, 50]);
+        }
+      );
+    });
+
+    // Individual Reset
+    function confirmResetIndividual(id, name) {
+      openConfirmModal(
+        `Reset "${name}"?`,
+        `Are you sure you want to reset the count for ${name} back to 0?`,
+        () => {
+          const item = zikrs.find(z => z.id === id);
+          if (item) {
+            item.count = 0;
+            saveData();
+            renderCards();
+            triggerVibration([30, 40]);
+          }
+        }
+      );
+    }
+
+    // Individual Delete
+    function confirmDeleteZikr(id, name) {
+      openConfirmModal(
+        `Delete "${name}"?`,
+        `This will permanently remove this Zikr card and its stored count.`,
+        () => {
+          zikrs = zikrs.filter(z => z.id !== id);
+          saveData();
+          renderCards();
+          triggerVibration([40, 60]);
+        }
+      );
+    }
+
+    // 7. Add / Edit Zikr Modal
+    function openAddZikrModal() {
+      document.getElementById('modal-title').textContent = 'Add Custom Zikr';
+      document.getElementById('form-zikr-id').value = '';
+      document.getElementById('form-name').value = '';
+      document.getElementById('form-arabic').value = '';
+      document.getElementById('form-transliteration').value = '';
+      document.getElementById('form-meaning').value = '';
+      document.getElementById('form-target').value = '33';
+      document.getElementById('modal-zikr-form').classList.remove('hidden');
+    }
+
+    function openEditZikrModal(id) {
+      const item = zikrs.find(z => z.id === id);
+      if (!item) return;
+      document.getElementById('modal-title').textContent = 'Edit Zikr Details';
+      document.getElementById('form-zikr-id').value = item.id;
+      document.getElementById('form-name').value = item.name;
+      document.getElementById('form-arabic').value = item.arabic || '';
+      document.getElementById('form-transliteration').value = item.transliteration || '';
+      document.getElementById('form-meaning').value = item.meaning || '';
+      document.getElementById('form-target').value = item.target || 33;
+      document.getElementById('modal-zikr-form').classList.remove('hidden');
+    }
+
+    function closeZikrModal() {
+      document.getElementById('modal-zikr-form').classList.add('hidden');
+    }
+
+    function selectPreset(name, arabic, translit, meaning, target) {
+      document.getElementById('form-name').value = name;
+      document.getElementById('form-arabic').value = arabic;
+      document.getElementById('form-transliteration').value = translit;
+      document.getElementById('form-meaning').value = meaning;
+      document.getElementById('form-target').value = target;
+    }
+
+    document.getElementById('btn-open-add-modal').addEventListener('click', openAddZikrModal);
+
+    document.getElementById('form-zikr').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('form-zikr-id').value;
+      const name = document.getElementById('form-name').value.trim();
+      const arabic = document.getElementById('form-arabic').value.trim();
+      const transliteration = document.getElementById('form-transliteration').value.trim();
+      const meaning = document.getElementById('form-meaning').value.trim();
+      const target = parseInt(document.getElementById('form-target').value, 10) || 33;
+
+      if (!name) return;
+
+      if (id) {
+        // Edit existing
+        const item = zikrs.find(z => z.id === id);
+        if (item) {
+          item.name = name;
+          item.arabic = arabic;
+          item.transliteration = transliteration;
+          item.meaning = meaning;
+          item.target = target;
+        }
+      } else {
+        // Add new
+        const newZikr = {
+          id: 'zikr_' + Date.now(),
+          name,
+          arabic,
+          transliteration,
+          meaning,
+          target,
+          count: 0,
+          createdAt: Date.now()
+        };
+        zikrs.push(newZikr);
+      }
+
+      saveData();
+      renderCards();
+      closeZikrModal();
+    });
+
+    // Restore Defaults button
+    document.getElementById('btn-restore-defaults').addEventListener('click', () => {
+      zikrs = JSON.parse(JSON.stringify(DEFAULT_ZIKRS));
+      saveData();
+      renderCards();
+    });
+
+    // 8. Sound Toggle
+    function updateSoundUI() {
+      const onIcon = document.getElementById('sound-icon-on');
+      const offIcon = document.getElementById('sound-icon-off');
+      if (soundEnabled) {
+        onIcon.classList.remove('hidden');
+        offIcon.classList.add('hidden');
+      } else {
+        onIcon.classList.add('hidden');
+        offIcon.classList.remove('hidden');
+      }
+    }
+
+    document.getElementById('toggle-sound-btn').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      saveData();
+      updateSoundUI();
+      if (soundEnabled) playBeadClick();
+    });
+
+    // 9. PDF EXPORT FUNCTIONALITY (html2pdf.js)
+    document.getElementById('btn-export-pdf').addEventListener('click', async () => {
+      if (typeof html2pdf === 'undefined') {
+        alert('The PDF generation library is still loading. Please check your internet connection and try again.');
+        return;
+      }
+
+      const masterTotal = zikrs.reduce((acc, item) => acc + (Number(item.count) || 0), 0);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+      // Build printable offscreen report
+      const reportDiv = document.createElement('div');
+      reportDiv.style.padding = '30px';
+      reportDiv.style.backgroundColor = '#ffffff';
+      reportDiv.style.color = '#0f172a';
+      reportDiv.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+
+      const rows = zikrs.map((item, idx) => {
+        const share = masterTotal > 0 ? Math.round((item.count / masterTotal) * 100) : 0;
+        return `
+          <tr style="border-bottom: 1px solid #e2e8f0; background: ${idx % 2 === 0 ? '#ffffff' : '#f8fafc'};">
+            <td style="padding: 10px; text-align: center; color: #64748b; font-size: 12px;">${idx + 1}</td>
+            <td style="padding: 10px; font-size: 13px; font-weight: 700; color: #064e3b;">
+              ${item.name}
+              ${item.transliteration ? `<div style="font-size: 11px; font-style: italic; color: #64748b;">${item.transliteration}</div>` : ''}
+            </td>
+            <td style="padding: 10px; font-family: 'Amiri', serif; font-size: 17px; direction: rtl; text-align: right; color: #047857;">
+              ${item.arabic || '-'}
+            </td>
+            <td style="padding: 10px; text-align: center; font-size: 13px;">${item.target}</td>
+            <td style="padding: 10px; text-align: right; font-size: 15px; font-weight: 800; color: #0f172a;">${item.count.toLocaleString()}</td>
+            <td style="padding: 10px; text-align: right; font-size: 13px; font-weight: 600; color: #0d9488;">${share}%</td>
+          </tr>
+        `;
+      }).join('');
+
+      reportDiv.innerHTML = `
+        <div style="border: 2px solid #059669; border-radius: 12px; padding: 24px;">
+          <div style="text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 20px;">
+            <div style="font-family: 'Amiri', serif; font-size: 24px; color: #064e3b; margin-bottom: 4px;">
+              بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+            </div>
+            <h1 style="font-size: 20px; font-weight: 800; color: #064e3b; margin: 0; text-transform: uppercase;">
+              Noor Tasbeeh — Zikr Record & Progress Report
+            </h1>
+            <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+              Generated on ${dateStr} at ${timeStr}
+            </div>
+          </div>
+
+          <div style="background: linear-gradient(135deg, #064e3b, #047857); color: white; padding: 16px 24px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+              <div style="font-size: 12px; text-transform: uppercase; font-weight: 700; opacity: 0.9;">Central Master Counter</div>
+              <div style="font-size: 13px; opacity: 0.9;">Total invocations across ${zikrs.length} individual items</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 36px; font-weight: 900; color: #fef08a;">${masterTotal.toLocaleString()}</div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 600; color: #a7f3d0;">Total Invocations</div>
+            </div>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <thead>
+              <tr style="background: #042f2e; color: white;">
+                <th style="padding: 10px; font-size: 12px;">#</th>
+                <th style="padding: 10px; font-size: 12px; text-align: left;">Zikr Item</th>
+                <th style="padding: 10px; font-size: 12px; text-align: right;">Arabic</th>
+                <th style="padding: 10px; font-size: 12px;">Target</th>
+                <th style="padding: 10px; font-size: 12px; text-align: right;">Count</th>
+                <th style="padding: 10px; font-size: 12px; text-align: right;">Share</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+            <tfoot>
+              <tr style="background: #f1f5f9; font-weight: 800; border-top: 2px solid #cbd5e1;">
+                <td colspan="4" style="padding: 10px; text-align: right; font-size: 13px;">Master Total Sum:</td>
+                <td style="padding: 10px; text-align: right; font-size: 15px; color: #064e3b;">${masterTotal.toLocaleString()}</td>
+                <td style="padding: 10px; text-align: right; font-size: 13px; color: #064e3b;">100%</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div style="text-align: center; border-top: 1px solid #e2e8f0; padding-top: 14px; font-size: 11px; color: #64748b;">
+            <div style="font-family: 'Amiri', serif; font-size: 15px; color: #047857; margin-bottom: 3px;">
+              وَٱذْكُر رَّبَّكَ كَثِيرًا وَسَبِّحْ بِٱلْعَشِىِّ وَٱلْإِبْكَٰرِ
+            </div>
+            "And remember your Lord much and glorify Him in the evening and the morning." — Surah Ali 'Imran (3:41)
+          </div>
+        </div>
+      `;
+
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `Noor-Tasbeeh-Report-${now.toISOString().slice(0, 10)}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      try {
+        const btn = document.getElementById('btn-export-pdf');
+        const origText = btn.innerHTML;
+        btn.innerHTML = '<span>Generating PDF...</span>';
+        await html2pdf().set(opt).from(reportDiv).save();
+        btn.innerHTML = origText;
+      } catch (err) {
+        console.error(err);
+        alert('Could not generate PDF. Please try again.');
+      }
+    });
+
+    // 10. PWA Install Prompt Listeners
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-trigger-install').addEventListener('click', async () => {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          document.getElementById('pwa-install-banner').classList.add('hidden');
+        }
+        deferredInstallPrompt = null;
+      }
+    });
+
+    document.getElementById('btn-dismiss-install').addEventListener('click', () => {
+      document.getElementById('pwa-install-banner').classList.add('hidden');
+    });
+
+    // Boot the application
+    window.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      renderCards();
+    });
+  </script>
+</body>
+</html>
