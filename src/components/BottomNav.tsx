@@ -1,78 +1,112 @@
 import React from 'react';
-import { Home, Clock, Settings, Plus } from 'lucide-react';
-
-export type ActiveTab = 'home' | 'history' | 'settings';
+import { NavModule } from '../types';
+import {
+  Sparkles,
+  BookOpen,
+  BookMarked,
+  Clock,
+  Heart,
+  Award,
+  Plus,
+} from 'lucide-react';
 
 interface BottomNavProps {
-  activeTab: ActiveTab;
-  onTabChange: (tab: ActiveTab) => void;
+  activeModule: NavModule;
+  onModuleChange: (mod: NavModule) => void;
   onOpenAddModal: () => void;
-  historyCount: number;
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
-  activeTab,
-  onTabChange,
+  activeModule,
+  onModuleChange,
   onOpenAddModal,
-  historyCount,
 }) => {
+  const navItems: Array<{
+    id: NavModule;
+    label: string;
+    arabic: string;
+    icon: React.ReactNode;
+  }> = [
+    {
+      id: 'zikir_counter',
+      label: 'Zikir Counter',
+      arabic: 'الذِّكْر',
+      icon: <span className="text-base">📿</span>,
+    },
+    {
+      id: 'quran',
+      label: 'Quran',
+      arabic: 'القرآن',
+      icon: <BookOpen className="w-4 h-4" />,
+    },
+    {
+      id: 'kitab',
+      label: 'Kitab',
+      arabic: 'الكتب',
+      icon: <BookMarked className="w-4 h-4" />,
+    },
+    {
+      id: 'hadith',
+      label: 'Hadith',
+      arabic: 'الحديث',
+      icon: <span className="text-base">📜</span>,
+    },
+    {
+      id: 'salat_time',
+      label: 'Salat Time',
+      arabic: 'الصلاة',
+      icon: <Clock className="w-4 h-4" />,
+    },
+    {
+      id: 'dua',
+      label: 'Dua',
+      arabic: 'الدعاء',
+      icon: <Heart className="w-4 h-4" />,
+    },
+    {
+      id: 'aamal_tracker',
+      label: 'Aamal Tracker',
+      arabic: 'الأعمال',
+      icon: <Award className="w-4 h-4" />,
+    },
+  ];
+
   return (
     <>
-      {/* Floating Add-Zikir Button (Positioned comfortably for thumb tap above bottom bar on mobile, or bottom-right on desktop) */}
-      <button
-        onClick={onOpenAddModal}
-        className="fixed bottom-20 sm:bottom-6 right-5 sm:right-8 z-40 w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 active:scale-95 text-white shadow-2xl shadow-emerald-950 flex items-center justify-center border border-emerald-300/40 transition-transform cursor-pointer"
-        aria-label="Add New Zikr"
-        title="Add New Custom Zikr"
-      >
-        <Plus className="w-7 h-7 stroke-[2.5]" />
-      </button>
+      {/* Floating Add-Zikir Button (visible when on Zikir Counter) */}
+      {activeModule === 'zikir_counter' && (
+        <button
+          onClick={onOpenAddModal}
+          className="fixed bottom-20 sm:bottom-6 right-5 sm:right-8 z-40 w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 active:scale-95 text-white shadow-2xl shadow-emerald-950 flex items-center justify-center border border-emerald-300/40 transition-transform cursor-pointer"
+          aria-label="Add New Zikr"
+          title="Add New Custom Zikr"
+        >
+          <Plus className="w-7 h-7 stroke-[2.5]" />
+        </button>
+      )}
 
-      {/* Bottom Sticky Navigation Bar for Mobile and Tablets */}
-      <nav className="fixed bottom-0 left-0 right-0 z-30 bg-slate-950/95 backdrop-blur-lg border-t border-emerald-900/40 px-4 py-2 sm:hidden">
-        <div className="max-w-md mx-auto flex items-center justify-around">
-          
-          {/* Home Tab */}
-          <button
-            onClick={() => onTabChange('home')}
-            className={`flex flex-col items-center py-1 px-4 rounded-xl transition ${
-              activeTab === 'home'
-                ? 'text-emerald-400 font-bold'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Home className="w-5 h-5 mb-0.5" />
-            <span className="text-[10px] tracking-wide">Counters</span>
-          </button>
-
-          {/* History Tab */}
-          <button
-            onClick={() => onTabChange('history')}
-            className={`flex flex-col items-center py-1 px-4 rounded-xl transition relative ${
-              activeTab === 'history'
-                ? 'text-emerald-400 font-bold'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Clock className="w-5 h-5 mb-0.5" />
-            <span className="text-[10px] tracking-wide">History</span>
-            {historyCount > 0 && (
-              <span className="absolute top-1 right-3 w-2 h-2 rounded-full bg-amber-400" />
-            )}
-          </button>
-
-          {/* Settings Tab */}
-          <button
-            onClick={() => onTabChange('settings')}
-            className={`flex flex-col items-center py-1 px-4 rounded-xl transition ${
-              activeTab === 'settings'
-                ? 'text-emerald-400 font-bold'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Settings className="w-5 h-5 mb-0.5" />
-            <span className="text-[10px] tracking-wide">Settings</span>
-          </button>
+      {/* Sticky Bottom Navigation Bar on Mobile / Tablet */}
+      <nav className="fixed bottom-0 left-0 right-0 z-30 bg-slate-950/95 backdrop-blur-xl border-t border-emerald-900/50 px-2 py-1.5 md:hidden shadow-2xl">
+        <div className="flex items-center justify-between overflow-x-auto gap-1 scrollbar-none py-1">
+          {navItems.map((item) => {
+            const isActive = activeModule === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onModuleChange(item.id)}
+                className={`flex flex-col items-center justify-center min-w-[58px] py-1 px-1.5 rounded-xl transition-all active:scale-95 cursor-pointer shrink-0 ${
+                  isActive
+                    ? 'text-emerald-300 font-bold bg-emerald-950/80 border border-emerald-700/50 shadow-md'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <div className="mb-0.5">{item.icon}</div>
+                <span className="text-[9px] tracking-tight leading-none text-center whitespace-nowrap">
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </nav>
     </>

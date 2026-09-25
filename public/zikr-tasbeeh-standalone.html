@@ -250,6 +250,31 @@
         <p class="text-xs text-slate-400">Create an independent counter with custom name and target.</p>
       </div>
 
+      <!-- Quick Quran, Hadith & Salat Presets -->
+      <div class="mb-4">
+        <label class="block text-xs font-semibold text-emerald-400 mb-1.5 uppercase tracking-wider">Quick Presets (Quran, Hadith, Salat)</label>
+        <div class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto pr-1">
+          <button type="button" onclick="selectPreset('Post-Salah Tasbeeh', 'سُبْحَانَ ٱللَّٰهِ', 'SubhanAllah', 'Sunnah after obligatory prayer', 33)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            🕌 Post-Salah (33)
+          </button>
+          <button type="button" onclick="selectPreset('Rabbana Atina (Quran)', 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً', 'Rabbana atina fid-dunya hasanah', 'Goodness in this life and the next (Al-Baqarah 2:201)', 10)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            📖 Rabbana Atina (10)
+          </button>
+          <button type="button" onclick="selectPreset('Ayat Karima - Yunus AS', 'لَّا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ', 'La ilaha illa Anta subhanaka inni kuntu minaz-zalimin', 'Dua in distress & difficulties (Al-Anbiya 21:87)', 40)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            📖 Ayat Karima (40)
+          </button>
+          <button type="button" onclick="selectPreset('Sayyidul Istighfar', 'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ', 'Allahumma Anta Rabbi la ilaha illa Ant', 'Master of forgiveness (Sahih Bukhari 6306)', 3)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            📜 Sayyidul Istighfar (3)
+          </button>
+          <button type="button" onclick="selectPreset('Salawat on Prophet ﷺ', 'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ', 'Allahumma salli \'ala Muhammad', 'Blessings upon the Prophet (Bukhari 3370)', 100)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            📜 Salawat ﷺ (100)
+          </button>
+          <button type="button" onclick="selectPreset('SubhanAllahi wa biHamdihi', 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ', 'SubhanAllahi wa bi-hamdih', 'Light on tongue, heavy on scales (Bukhari 6405)', 100)" class="text-xs px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 border border-emerald-800/40">
+            📜 SubhanAllah (100)
+          </button>
+        </div>
+      </div>
+
       <form id="form-zikr" class="space-y-4">
         <input type="hidden" id="form-zikr-id" value="" />
         

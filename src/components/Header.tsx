@@ -1,29 +1,25 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, FileText, Plus, Smartphone, Code, Home, Clock, Settings } from 'lucide-react';
+import { Volume2, VolumeX, FileText, Smartphone, Code, BookOpen, BookMarked, Clock, Heart, Award } from 'lucide-react';
 import { usePWAInstall } from '../hooks/usePWAInstall';
-import { ActiveTab } from './BottomNav';
+import { NavModule } from '../types';
 
 interface HeaderProps {
-  activeTab: ActiveTab;
-  onTabChange: (tab: ActiveTab) => void;
-  historyCount: number;
+  activeModule: NavModule;
+  onModuleChange: (mod: NavModule) => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
   onExportPdf: () => void;
   isExportingPdf: boolean;
-  onOpenAddModal: () => void;
   onOpenStandaloneModal: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  activeTab,
-  onTabChange,
-  historyCount,
+  activeModule,
+  onModuleChange,
   soundEnabled,
   onToggleSound,
   onExportPdf,
   isExportingPdf,
-  onOpenAddModal,
   onOpenStandaloneModal,
 }) => {
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
@@ -37,154 +33,133 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
+  const navItems: Array<{
+    id: NavModule;
+    label: string;
+    icon: React.ReactNode;
+  }> = [
+    { id: 'zikir_counter', label: 'Zikir Counter', icon: <span>📿</span> },
+    { id: 'quran', label: 'Quran', icon: <BookOpen className="w-3.5 h-3.5" /> },
+    { id: 'kitab', label: 'Kitab', icon: <BookMarked className="w-3.5 h-3.5" /> },
+    { id: 'hadith', label: 'Hadith', icon: <span>📜</span> },
+    { id: 'salat_time', label: 'Salat Time', icon: <Clock className="w-3.5 h-3.5" /> },
+    { id: 'dua', label: 'Dua', icon: <Heart className="w-3.5 h-3.5" /> },
+    { id: 'aamal_tracker', label: 'Aamal Tracker', icon: <Award className="w-3.5 h-3.5" /> },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-emerald-900/40 px-4 py-2.5 sm:px-6 shadow-md shadow-emerald-950/30">
-      <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
+    <header className="sticky top-0 z-40 bg-slate-950/95 backdrop-blur-xl border-b border-emerald-900/40 px-3 py-2 sm:px-6 shadow-lg shadow-emerald-950/20">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
         
         {/* Brand identity */}
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => onTabChange('home')}>
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-950 flex items-center justify-center shadow-lg shadow-emerald-900/50 border border-emerald-400/40">
-            <span className="text-xl">📿</span>
+        <div
+          className="flex items-center gap-2.5 cursor-pointer shrink-0"
+          onClick={() => onModuleChange('zikir_counter')}
+        >
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-950 flex items-center justify-center shadow-lg shadow-emerald-900/50 border border-emerald-400/40">
+            <span className="text-lg sm:text-xl">📿</span>
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-lg font-bold tracking-tight text-white">
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-base sm:text-lg font-extrabold tracking-tight text-white">
                 ZikrMate
               </h1>
-              <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 font-bold border border-emerald-700/50">
+              <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 font-bold border border-emerald-700/50">
                 PWA
               </span>
             </div>
-            <p className="text-[11px] text-emerald-400/80 font-medium hidden xs:block">
-              Digital Zikir &amp; Counter Companion
+            <p className="text-[10px] text-emerald-400/80 font-medium hidden sm:block">
+              Islamic Companion &amp; Counter
             </p>
           </div>
         </div>
 
-        {/* Center Nav tabs for Desktop & Laptop */}
-        <div className="hidden sm:flex items-center gap-1 bg-slate-900/90 p-1 rounded-2xl border border-slate-800">
-          <button
-            onClick={() => onTabChange('home')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-              activeTab === 'home'
-                ? 'bg-emerald-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Home className="w-3.5 h-3.5" />
-            <span>Counters</span>
-          </button>
+        {/* Desktop Nav Items (visible on md screens and up) */}
+        <nav className="hidden md:flex items-center gap-1 bg-slate-900/80 p-1 rounded-2xl border border-slate-800">
+          {navItems.map((item) => {
+            const isActive = activeModule === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onModuleChange(item.id)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition active:scale-95 cursor-pointer ${
+                  isActive
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                }`}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
-          <button
-            onClick={() => onTabChange('history')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-              activeTab === 'history'
-                ? 'bg-emerald-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Clock className="w-3.5 h-3.5" />
-            <span>History</span>
-            {historyCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-300 text-[10px]">
-                {historyCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => onTabChange('settings')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-              activeTab === 'settings'
-                ? 'bg-emerald-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Settings className="w-3.5 h-3.5" />
-            <span>Settings</span>
-          </button>
-        </div>
-
-        {/* Action Controls */}
+        {/* Quick Utility actions */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          
-          {/* Audio toggle button */}
+          {/* Sound toggle */}
           <button
             onClick={onToggleSound}
-            title={soundEnabled ? 'Mute bead clicks' : 'Enable wooden bead sound'}
-            className="p-2 sm:p-2.5 rounded-xl bg-slate-900/90 border border-slate-700 hover:border-emerald-600/50 text-slate-300 hover:text-emerald-300 transition active:scale-95"
-            aria-label="Toggle Sound"
+            className={`p-2 rounded-xl border text-xs font-semibold transition active:scale-95 cursor-pointer ${
+              soundEnabled
+                ? 'bg-emerald-950/60 text-emerald-300 border-emerald-800/60 hover:bg-emerald-900/60'
+                : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+            }`}
+            title={soundEnabled ? 'Mute Sounds' : 'Enable Audio Feedback'}
           >
-            {soundEnabled ? (
-              <Volume2 className="w-4 h-4 text-emerald-400" />
-            ) : (
-              <VolumeX className="w-4 h-4 text-slate-500" />
-            )}
+            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
 
-          {/* Standalone HTML Export / Code modal button */}
-          <button
-            onClick={onOpenStandaloneModal}
-            title="Single-File HTML & APK Guide"
-            className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition active:scale-95"
-          >
-            <Code className="w-3.5 h-3.5 text-teal-400" />
-            <span>Standalone HTML</span>
-          </button>
-
-          {/* PDF Report Export Button */}
+          {/* Export PDF Button */}
           <button
             onClick={onExportPdf}
             disabled={isExportingPdf}
-            title="Generate and Download PDF Report"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/50 text-emerald-200 text-xs sm:text-sm font-semibold transition active:scale-95 disabled:opacity-50"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold transition active:scale-95 cursor-pointer disabled:opacity-50"
+            title="Export PDF Report"
           >
-            <FileText className="w-4 h-4 text-amber-300" />
-            <span className="hidden lg:inline">
-              {isExportingPdf ? 'Exporting...' : 'Export PDF'}
-            </span>
-            <span className="lg:hidden">PDF</span>
+            <FileText className="w-4 h-4 text-emerald-400" />
+            <span className="hidden lg:inline">{isExportingPdf ? 'Exporting...' : 'PDF'}</span>
+          </button>
+
+          {/* APK & HTML export info */}
+          <button
+            onClick={onOpenStandaloneModal}
+            className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold transition active:scale-95 cursor-pointer hidden sm:flex"
+            title="APK Build Guide"
+          >
+            <Code className="w-4 h-4 text-teal-400" />
           </button>
 
           {/* PWA Install Button */}
-          {!isInstalled && (isInstallable || isIOS) && (
+          {(isInstallable || isIOS) && !isInstalled && (
             <button
               onClick={handleInstallClick}
-              title="Install app to your home screen"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-900/70 hover:bg-teal-800 border border-teal-500/50 text-teal-200 text-xs sm:text-sm font-semibold transition active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-md shadow-emerald-950"
+              title="Install App"
             >
-              <Smartphone className="w-4 h-4 text-teal-300" />
-              <span className="hidden sm:inline">Install</span>
+              <Smartphone className="w-3.5 h-3.5" />
+              <span>Install</span>
             </button>
           )}
-
-          {/* Add New Zikr Button */}
-          <button
-            onClick={onOpenAddModal}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs sm:text-sm font-bold shadow-md shadow-emerald-950/50 transition active:scale-95"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Zikr</span>
-          </button>
         </div>
       </div>
 
-      {/* iOS Install Instruction Modal */}
+      {/* iOS Instructions Modal */}
       {showIOSModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-sm rounded-3xl bg-slate-900 border border-emerald-700/50 p-6 shadow-2xl relative text-center">
-            <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-emerald-950 flex items-center justify-center border border-emerald-600/40 text-2xl">
-              📲
-            </div>
-            <h3 className="text-base font-bold text-white mb-2">Install on iPhone / iPad</h3>
-            <p className="text-xs text-slate-300 leading-relaxed mb-4 text-left bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-              1. Tap the <strong className="text-emerald-400">Share</strong> icon at the bottom of Safari browser toolbar.<br />
-              2. Scroll down and tap <strong className="text-emerald-400">"Add to Home Screen"</strong>.<br />
-              3. Tap <strong className="text-emerald-400">Add</strong> in the top-right corner.
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-emerald-700/50 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <Smartphone className="w-5 h-5 text-emerald-400" />
+              <span>Install ZikrMate on iOS</span>
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              1. Tap the <strong className="text-white">Share</strong> button at the bottom of Safari.<br />
+              2. Scroll down and tap <strong className="text-white">"Add to Home Screen"</strong>.<br />
+              3. Tap <strong className="text-white">"Add"</strong> in the top-right corner.
             </p>
             <button
               onClick={() => setShowIOSModal(false)}
-              className="w-full py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs transition"
+              className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition active:scale-95 cursor-pointer"
             >
               Got it
             </button>

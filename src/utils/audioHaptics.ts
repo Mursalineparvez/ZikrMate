@@ -26,7 +26,6 @@ class SoundAndHapticEngine {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
-      // Quick percussive pop imitating wooden/stone bead
       osc.type = 'sine';
       osc.frequency.setValueAtTime(420, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.04);
@@ -42,6 +41,10 @@ class SoundAndHapticEngine {
     } catch {
       // Audio not supported or blocked
     }
+  }
+
+  playTap() {
+    this.playBeadClick();
   }
 
   // Play a soft uplifting chime when milestone/target is reached (e.g. 33, 99)
@@ -74,6 +77,33 @@ class SoundAndHapticEngine {
     }
   }
 
+  playMilestone() {
+    this.playTargetChime();
+  }
+
+  playReset() {
+    try {
+      const ctx = this.getAudioContext();
+      if (!ctx) return;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(250, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.1);
+
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.11);
+    } catch {}
+  }
+
   // Trigger haptic vibration on mobile
   triggerVibration(type: 'tap' | 'decrement' | 'target' | 'reset' = 'tap') {
     if (typeof navigator === 'undefined' || !navigator.vibrate) return;
@@ -81,21 +111,26 @@ class SoundAndHapticEngine {
     try {
       switch (type) {
         case 'tap':
-          navigator.vibrate(25); // Soft tactile click
+          navigator.vibrate(25);
           break;
         case 'decrement':
           navigator.vibrate(40);
           break;
         case 'target':
-          navigator.vibrate([40, 50, 40, 50, 90]); // Celebratory rhythm
+          navigator.vibrate([40, 50, 40, 50, 90]);
           break;
         case 'reset':
           navigator.vibrate([30, 40, 30]);
           break;
       }
-    } catch {
-      // Vibration not permitted
-    }
+    } catch {}
+  }
+
+  vibrate(pattern: number | number[]) {
+    if (typeof navigator === 'undefined' || !navigator.vibrate) return;
+    try {
+      navigator.vibrate(pattern);
+    } catch {}
   }
 }
 
