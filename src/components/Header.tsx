@@ -12,9 +12,14 @@ import {
   Award,
   Sun,
   Moon,
+  Globe,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 import { usePWAInstall } from '../hooks/usePWAInstall';
-import { NavModule, ThemeMode } from '../types';
+import { NavModule, ThemeMode, ZikrLanguage } from '../types';
+import { SUPPORTED_LANGUAGES } from '../utils/constants';
+import { NAV_TRANSLATIONS } from '../utils/appTranslations';
 
 interface HeaderProps {
   activeModule: NavModule;
@@ -23,6 +28,8 @@ interface HeaderProps {
   onToggleSound: () => void;
   themeMode: ThemeMode;
   onToggleThemeMode: () => void;
+  selectedLanguage: ZikrLanguage;
+  onSelectLanguage: (lang: ZikrLanguage) => void;
   onExportPdf: () => void;
   isExportingPdf: boolean;
   onOpenStandaloneModal: () => void;
@@ -35,12 +42,15 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleSound,
   themeMode,
   onToggleThemeMode,
+  selectedLanguage = 'bn',
+  onSelectLanguage,
   onExportPdf,
   isExportingPdf,
   onOpenStandaloneModal,
 }) => {
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
   const [showIOSModal, setShowIOSModal] = useState(false);
+  const [showLangDropdown, setShowLangDropdown] = useState(false);
 
   const handleInstallClick = async () => {
     if (isInstallable) {
@@ -55,13 +65,13 @@ export const Header: React.FC<HeaderProps> = ({
     label: string;
     icon: React.ReactNode;
   }> = [
-    { id: 'zikir_counter', label: 'Zikir Counter', icon: <span>📿</span> },
-    { id: 'quran', label: 'Quran', icon: <BookOpen className="w-3.5 h-3.5" /> },
-    { id: 'kitab', label: 'Kitab', icon: <BookMarked className="w-3.5 h-3.5" /> },
-    { id: 'hadith', label: 'Hadith', icon: <span>📜</span> },
-    { id: 'salat_time', label: 'Salat Time', icon: <Clock className="w-3.5 h-3.5" /> },
-    { id: 'dua', label: 'Dua', icon: <Heart className="w-3.5 h-3.5" /> },
-    { id: 'aamal_tracker', label: 'Aamal Tracker', icon: <Award className="w-3.5 h-3.5" /> },
+    { id: 'zikir_counter', label: NAV_TRANSLATIONS.zikir_counter[selectedLanguage], icon: <span>📿</span> },
+    { id: 'quran', label: NAV_TRANSLATIONS.quran[selectedLanguage], icon: <BookOpen className="w-3.5 h-3.5" /> },
+    { id: 'kitab', label: NAV_TRANSLATIONS.kitab[selectedLanguage], icon: <BookMarked className="w-3.5 h-3.5" /> },
+    { id: 'hadith', label: NAV_TRANSLATIONS.hadith[selectedLanguage], icon: <span>📜</span> },
+    { id: 'salat_time', label: NAV_TRANSLATIONS.salat_time[selectedLanguage], icon: <Clock className="w-3.5 h-3.5" /> },
+    { id: 'dua', label: NAV_TRANSLATIONS.dua[selectedLanguage], icon: <Heart className="w-3.5 h-3.5" /> },
+    { id: 'aamal_tracker', label: NAV_TRANSLATIONS.aamal_tracker[selectedLanguage], icon: <Award className="w-3.5 h-3.5" /> },
   ];
 
   const isDay = themeMode === 'day';
@@ -144,6 +154,79 @@ export const Header: React.FC<HeaderProps> = ({
               </>
             )}
           </button>
+
+          {/* Language Selector Dropdown (Directly beside Day Button) */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowLangDropdown((prev) => !prev)}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl border text-xs font-bold transition active:scale-95 cursor-pointer backdrop-blur-md shadow-sm ${
+                isDay
+                  ? 'bg-white/20 hover:bg-white/30 text-white border-white/30'
+                  : 'bg-teal-950/80 hover:bg-teal-900 text-teal-200 border-teal-700/60'
+              }`}
+              title="উচ্চারণ ও অর্থের ভাষা নির্বাচন করুন (Select Language)"
+              aria-label="Select Language"
+            >
+              <Globe className="w-3.5 h-3.5 text-amber-300" />
+              <span className="text-[11px]">
+                {SUPPORTED_LANGUAGES.find((l) => l.code === selectedLanguage)?.label || 'বাংলা'}
+              </span>
+              <ChevronDown
+                className={`w-3 h-3 text-teal-200 transition-transform duration-200 ${
+                  showLangDropdown ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+
+            {/* Dropdown Menu */}
+            {showLangDropdown && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowLangDropdown(false)}
+                />
+                <div
+                  className={`absolute right-0 top-full mt-1.5 z-50 w-44 rounded-2xl p-1.5 border shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150 ${
+                    isDay
+                      ? 'bg-white/95 text-slate-800 border-[#cce5e2] shadow-[#135d66]/20'
+                      : 'bg-[#092226]/95 text-white border-[#1a515c] shadow-black/80'
+                  }`}
+                >
+                  <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-teal-500 dark:text-teal-400">
+                    ভাষা নির্বাচন (Language)
+                  </div>
+                  <div className="space-y-0.5">
+                    {SUPPORTED_LANGUAGES.map((lang) => {
+                      const isSelected = selectedLanguage === lang.code;
+                      return (
+                        <button
+                          key={lang.code}
+                          type="button"
+                          onClick={() => {
+                            onSelectLanguage(lang.code);
+                            setShowLangDropdown(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer text-left ${
+                            isSelected
+                              ? isDay
+                                ? 'bg-amber-400/20 text-[#164e52] font-bold'
+                                : 'bg-amber-400/20 text-amber-300 font-bold'
+                              : isDay
+                              ? 'hover:bg-[#f0f7f6] text-slate-700'
+                              : 'hover:bg-[#10343c] text-teal-100'
+                          }`}
+                        >
+                          <span>{lang.nativeName}</span>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
 
           {/* Sound Toggle */}
           <button

@@ -1,9 +1,19 @@
+export type ZikrLanguage = 'bn' | 'en' | 'ur' | 'hi' | 'id' | 'tr';
+
+export interface ZikrTranslations {
+  pronunciation?: string;
+  meaning?: string;
+}
+
 export interface ZikrItem {
   id: string;
   name: string;
   arabic?: string;
   transliteration?: string;
+  pronunciationBn?: string;
   meaning?: string;
+  meaningBn?: string;
+  translations?: Partial<Record<ZikrLanguage, ZikrTranslations>>;
   count: number;
   target?: number;
   createdAt: number;
@@ -61,6 +71,12 @@ export interface DuaItem {
   virtue?: string;
   suggestedCount?: number;
   timing?: string;
+  translations?: Partial<Record<ZikrLanguage, {
+    title?: string;
+    translation?: string;
+    virtue?: string;
+    timing?: string;
+  }>>;
 }
 
 export interface HadithItem {
@@ -74,6 +90,13 @@ export interface HadithItem {
   topic: 'Faith & Tawheed' | 'Salah & Purification' | 'Character & Akhlaq' | 'Dhikr & Dua' | 'Charity & Kindness' | 'Patience & Trials' | 'Repentance & Mercy';
   grade: 'Sahih' | 'Hasan';
   reflection?: string;
+  translations?: Partial<Record<ZikrLanguage, {
+    translation?: string;
+    reflection?: string;
+    chapter?: string;
+    topic?: string;
+    narrator?: string;
+  }>>;
 }
 
 export interface AamalCheckItem {
@@ -84,6 +107,10 @@ export interface AamalCheckItem {
   completed: boolean;
   points: number;
   details?: string;
+  translations?: Partial<Record<ZikrLanguage, {
+    label?: string;
+    details?: string;
+  }>>;
 }
 
 export interface AamalDayLog {

@@ -5,10 +5,11 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { ZikrItem, HistorySession, AppSettings, DuaItem, NavModule, ThemeMode } from './types';
-import { DEFAULT_ZIKRS } from './utils/constants';
+import { ZikrItem, HistorySession, AppSettings, DuaItem, NavModule, ThemeMode, ZikrLanguage } from './types';
+import { DEFAULT_ZIKRS, SUPPORTED_LANGUAGES } from './utils/constants';
 import { soundHaptics } from './utils/audioHaptics';
 import { generateZikrPdfReport } from './utils/exportPdf';
+import { NAV_TRANSLATIONS } from './utils/appTranslations';
 import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
 import { ZikirCounterView } from './components/ZikirCounterView';
@@ -24,14 +25,45 @@ import { StandaloneExportModal } from './components/StandaloneExportModal';
 import { BookmarkCheck, Sparkles } from 'lucide-react';
 
 export default function App() {
-  // 1. LocalStorage state persistence for Zikr Items
+  // 1. LocalStorage state persistence for Zikr Items (12 Common Zikr items merged with persisted counts)
   const [zikrs, setZikrs] = useState<ZikrItem[]>(() => {
     try {
       const saved = localStorage.getItem('noor_zikr_items');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          const parsedMap = new Map<string, any>(parsed.map((item: any) => [item.id, item]));
+          const nameMap = new Map<string, any>(
+            parsed.map((item: any) => [
+              (item.name || item.pronunciationBn || '').toLowerCase().replace(/[^a-z0-9]/g, ''),
+              item,
+            ])
+          );
+
+          // Populate all 12 Common Zikrs, restoring counts if user had already incremented them
+          const mergedList: ZikrItem[] = DEFAULT_ZIKRS.map((defaultItem) => {
+            const normalizedName = defaultItem.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const existing = parsedMap.get(defaultItem.id) || nameMap.get(normalizedName);
+            if (existing) {
+              return {
+                ...defaultItem,
+                count: typeof existing.count === 'number' ? existing.count : 0,
+                updatedAt: existing.updatedAt || defaultItem.updatedAt,
+                target: typeof existing.target === 'number' && existing.target > 0 ? existing.target : defaultItem.target,
+              };
+            }
+            return defaultItem;
+          });
+
+          // Also preserve any custom items the user may have added
+          const defaultIds = new Set(DEFAULT_ZIKRS.map((d) => d.id));
+          const customItems = parsed.filter(
+            (item: any) =>
+              !defaultIds.has(item.id) &&
+              !nameMap.has(item.name?.toLowerCase().replace(/[^a-z0-9]/g, ''))
+          );
+
+          return [...mergedList, ...customItems];
         }
       }
     } catch {
@@ -69,6 +101,24 @@ export default function App() {
       themeMode: 'night', // Black type requested by user
     };
   });
+
+  // Selected language state for Arabic pronunciation & meaning (defaults to Bengali 'bn')
+  const [selectedLanguage, setSelectedLanguage] = useState<ZikrLanguage>(() => {
+    try {
+      const saved = localStorage.getItem('noor_zikr_selected_lang');
+      if (saved && ['bn', 'en', 'ur', 'hi', 'id', 'tr'].includes(saved)) {
+        return saved as ZikrLanguage;
+      }
+    } catch {}
+    return 'bn';
+  });
+
+  // Save selected language to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('noor_zikr_selected_lang', selectedLanguage);
+    } catch {}
+  }, [selectedLanguage]);
 
   // Active module navigation
   const [activeModule, setActiveModule] = useState<NavModule>('zikir_counter');
@@ -445,13 +495,49 @@ export default function App() {
     icon: string;
     badge?: string | number;
   }> = [
-    { id: 'zikir_counter', label: 'Zikir Counter', arabic: 'الذِّكْر', icon: '📿', badge: masterTotal },
-    { id: 'quran', label: 'Quran', arabic: 'القرآن', icon: '📖' },
-    { id: 'kitab', label: 'Kitab', arabic: 'الكتب', icon: '📚' },
-    { id: 'hadith', label: 'Hadith', arabic: 'الحديث', icon: '📜' },
-    { id: 'salat_time', label: 'Salat Time', arabic: 'الصلاة', icon: '🕌' },
-    { id: 'dua', label: 'Dua', arabic: 'الدعاء', icon: '🤲' },
-    { id: 'aamal_tracker', label: 'Aamal Tracker', arabic: 'الأعمال', icon: '📋' },
+    {
+      id: 'zikir_counter',
+      label: NAV_TRANSLATIONS.zikir_counter[selectedLanguage],
+      arabic: 'الذِّكْر',
+      icon: '📿',
+      badge: masterTotal,
+    },
+    {
+      id: 'quran',
+      label: NAV_TRANSLATIONS.quran[selectedLanguage],
+      arabic: 'القرآن',
+      icon: '📖',
+    },
+    {
+      id: 'kitab',
+      label: NAV_TRANSLATIONS.kitab[selectedLanguage],
+      arabic: 'الكتب',
+      icon: '📚',
+    },
+    {
+      id: 'hadith',
+      label: NAV_TRANSLATIONS.hadith[selectedLanguage],
+      arabic: 'الحديث',
+      icon: '📜',
+    },
+    {
+      id: 'salat_time',
+      label: NAV_TRANSLATIONS.salat_time[selectedLanguage],
+      arabic: 'الصلاة',
+      icon: '🕌',
+    },
+    {
+      id: 'dua',
+      label: NAV_TRANSLATIONS.dua[selectedLanguage],
+      arabic: 'الدعاء',
+      icon: '🤲',
+    },
+    {
+      id: 'aamal_tracker',
+      label: NAV_TRANSLATIONS.aamal_tracker[selectedLanguage],
+      arabic: 'الأعمال',
+      icon: '📋',
+    },
   ];
 
   const isDay = settings.themeMode === 'day';
@@ -470,6 +556,12 @@ export default function App() {
         onToggleSound={handleToggleSound}
         themeMode={settings.themeMode}
         onToggleThemeMode={handleToggleThemeMode}
+        selectedLanguage={selectedLanguage}
+        onSelectLanguage={(lang) => {
+          setSelectedLanguage(lang);
+          const langObj = SUPPORTED_LANGUAGES.find((l) => l.code === lang);
+          showToast(`ভাষা পরিবর্তন: ${langObj?.label || lang}`);
+        }}
         onExportPdf={handleExportPdf}
         isExportingPdf={isExportingPdf}
         onOpenStandaloneModal={() => setIsStandaloneModalOpen(true)}
@@ -587,27 +679,40 @@ export default function App() {
             onExportPdf={handleExportPdf}
             isExportingPdf={isExportingPdf}
             themeMode={settings.themeMode}
+            selectedLanguage={selectedLanguage}
           />
         )}
 
         {/* 2. QURAN VIEW */}
         {activeModule === 'quran' && (
-          <QuranView soundEnabled={settings.soundEnabled} />
+          <QuranView
+            soundEnabled={settings.soundEnabled}
+            themeMode={settings.themeMode}
+            selectedLanguage={selectedLanguage}
+          />
         )}
 
         {/* 3. KITAB VIEW */}
         {activeModule === 'kitab' && (
-          <KitabView />
+          <KitabView themeMode={settings.themeMode} />
         )}
 
         {/* 4. HADITH VIEW */}
         {activeModule === 'hadith' && (
-          <HadithView soundEnabled={settings.soundEnabled} />
+          <HadithView
+            soundEnabled={settings.soundEnabled}
+            themeMode={settings.themeMode}
+            selectedLanguage={selectedLanguage}
+          />
         )}
 
         {/* 5. SALAT TIME VIEW */}
         {activeModule === 'salat_time' && (
-          <SalatTimeView soundEnabled={settings.soundEnabled} />
+          <SalatTimeView
+            soundEnabled={settings.soundEnabled}
+            themeMode={settings.themeMode}
+            selectedLanguage={selectedLanguage}
+          />
         )}
 
         {/* 6. DUA VIEW */}
@@ -616,12 +721,18 @@ export default function App() {
             onAddDuaToCounters={handleAddDuaToCounters}
             activeCounters={zikrs}
             soundEnabled={settings.soundEnabled}
+            themeMode={settings.themeMode}
+            selectedLanguage={selectedLanguage}
           />
         )}
 
         {/* 7. AAMAL TRACKER VIEW */}
         {activeModule === 'aamal_tracker' && (
-          <AamalTrackerView soundEnabled={settings.soundEnabled} />
+          <AamalTrackerView
+            soundEnabled={settings.soundEnabled}
+            themeMode={settings.themeMode}
+            selectedLanguage={selectedLanguage}
+          />
         )}
       </main>
 
@@ -670,6 +781,7 @@ export default function App() {
           setIsZikrModalOpen(true);
         }}
         themeMode={settings.themeMode}
+        selectedLanguage={selectedLanguage}
       />
 
       {/* Add / Edit Zikr Modal */}

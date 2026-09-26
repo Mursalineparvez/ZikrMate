@@ -34,11 +34,13 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { soundHaptics } from '../utils/audioHaptics';
-import { ThemeMode } from '../types';
+import { ThemeMode, ZikrLanguage } from '../types';
+import { QURAN_UI, SURAH_MEANINGS } from '../utils/appTranslations';
 
 interface QuranViewProps {
   soundEnabled: boolean;
   themeMode?: ThemeMode;
+  selectedLanguage?: ZikrLanguage;
 }
 
 type TabType = 'all' | 'meccan' | 'medinan' | 'popular' | 'bookmarks';
@@ -54,7 +56,11 @@ interface BookmarkItem {
   timestamp: number;
 }
 
-export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 'day' }) => {
+export const QuranView: React.FC<QuranViewProps> = ({
+  soundEnabled,
+  themeMode = 'day',
+  selectedLanguage = 'bn',
+}) => {
   const isDay = themeMode === 'day';
 
   // Navigation & Surah State
@@ -187,6 +193,13 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
     localStorage.setItem('noor_quran_bookmarks', JSON.stringify(bookmarks));
   }, [bookmarks]);
 
+  // Reload current Surah if user changes language while reading
+  useEffect(() => {
+    if (selectedSurahNumber !== null) {
+      loadSurah(selectedSurahNumber, currentPlayingAyahNum || undefined);
+    }
+  }, [selectedLanguage]);
+
   // Load Surah
   const loadSurah = async (surahNumber: number, initialAyahJump?: number) => {
     if (audioRef.current) {
@@ -199,7 +212,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
     setSelectedSurahNumber(surahNumber);
     setSurahLoadError(null);
 
-    const cached = getCachedSurah(surahNumber);
+    const cached = getCachedSurah(surahNumber, selectedLanguage);
     if (cached) {
       setSurahDetail(cached);
       updateLastRead(surahNumber, initialAyahJump || 1, cached.name, cached.englishName);
@@ -211,15 +224,18 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
       return;
     }
 
-    const fallback = OFFLINE_FALLBACK_SURAHS[surahNumber];
-    if (fallback) {
-      setSurahDetail(fallback);
-      updateLastRead(surahNumber, initialAyahJump || 1, fallback.name, fallback.englishName);
+    const fallbackAyahs = OFFLINE_FALLBACK_SURAHS[surahNumber];
+    if (fallbackAyahs) {
+      const meta = ALL_114_SURAHS.find((s) => s.number === surahNumber);
+      if (meta) {
+        setSurahDetail({ ...meta, ayahs: fallbackAyahs, language: selectedLanguage });
+        updateLastRead(surahNumber, initialAyahJump || 1, meta.name, meta.englishName);
+      }
     }
 
     setIsLoadingSurah(true);
     try {
-      const data = await fetchSurah(surahNumber);
+      const data = await fetchSurah(surahNumber, selectedReciterId, selectedLanguage);
       setSurahDetail(data);
       updateLastRead(surahNumber, initialAyahJump || 1, data.name, data.englishName);
       if (initialAyahJump) {
@@ -228,7 +244,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (err: any) {
-      if (!fallback) {
+      if (!fallbackAyahs) {
         setSurahLoadError('Unable to load Surah data. Please check your connection.');
       }
     } finally {
@@ -478,7 +494,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                 }`}
               >
                 <ArrowLeft className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                <span className="hidden sm:inline">All 114 Surahs</span>
+                <span className="hidden sm:inline">{QURAN_UI.backToSurahs[selectedLanguage]}</span>
                 <span className="sm:hidden">Index</span>
               </button>
 
@@ -637,7 +653,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                   >
                     {QURAN_RECITERS.map((r) => (
                       <option key={r.id} value={r.id} className={isDay ? 'bg-white text-black' : 'bg-[#0e2f36] text-white'}>
-                        {r.name} ({r.subname})
+                        {r.name} ({r.subtext})
                       </option>
                     ))}
                   </select>
@@ -661,7 +677,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                           : 'bg-[#0a262c] text-teal-300 border-[#184850]'
                       }`}
                     >
-                      English: {showTranslation ? 'ON' : 'OFF'}
+                      {QURAN_UI.translationToggle[selectedLanguage]}: {showTranslation ? 'ON' : 'OFF'}
                     </button>
                     <button
                       onClick={() => setShowTransliteration(!showTransliteration)}
@@ -673,7 +689,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                           : 'bg-[#0a262c] text-teal-300 border-[#184850]'
                       }`}
                     >
-                      Pronounce: {showTransliteration ? 'ON' : 'OFF'}
+                      {QURAN_UI.pronounceToggle[selectedLanguage]}: {showTransliteration ? 'ON' : 'OFF'}
                     </button>
                   </div>
                 </div>
@@ -727,13 +743,13 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                 {/* Meta details badge row */}
                 <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap text-xs text-teal-100 pt-1">
                   <span className="px-3 py-1 rounded-lg bg-black/20 border border-white/10 backdrop-blur-md">
-                    {surahDetail.numberOfAyahs} Verses (Ayat)
+                    {surahDetail.numberOfAyahs} {QURAN_UI.ayahs[selectedLanguage]}
                   </span>
                   <span className="px-3 py-1 rounded-lg bg-black/20 border border-white/10 backdrop-blur-md">
-                    Starts at Juz {surahDetail.startJuz}
+                    {QURAN_UI.juz[selectedLanguage]} {surahDetail.startJuz}
                   </span>
                   <span className="px-3 py-1 rounded-lg bg-black/20 border border-white/10 backdrop-blur-md">
-                    Reciter: {QURAN_RECITERS.find((r) => r.id === selectedReciterId)?.name.split(' ')[0]}
+                    {QURAN_UI.reciter[selectedLanguage]}: {QURAN_RECITERS.find((r) => r.id === selectedReciterId)?.name.split(' ')[0]}
                   </span>
                 </div>
 
@@ -746,12 +762,12 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                     {isPlaying && playingMode === 'surah' ? (
                       <>
                         <Pause className="w-5 h-5 fill-current" />
-                        <span>Pause Surah Recitation</span>
+                        <span>{QURAN_UI.pause[selectedLanguage]}</span>
                       </>
                     ) : (
                       <>
                         <Play className="w-5 h-5 fill-current" />
-                        <span>Play Complete Surah Recitation</span>
+                        <span>{QURAN_UI.playSurah[selectedLanguage]}</span>
                       </>
                     )}
                   </button>
@@ -1082,22 +1098,22 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                   <span>الْقُرْآنُ الْكَرِيمُ • The Noble Qur'an</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight drop-shadow-sm">
-                  114 Surahs • 6,236 Ayahs
+                  {QURAN_UI.bannerTitle[selectedLanguage]}
                 </h2>
                 <p className="text-xs sm:text-sm text-teal-100 max-w-xl leading-relaxed">
-                  Authentic Uthmani Arabic script, accurate English phonetic transliteration, and Sahih International translation with renowned Qari recitations.
+                  {QURAN_UI.bannerSub[selectedLanguage]}
                 </p>
 
                 {/* Stats Chips */}
                 <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
                   <span className="px-2.5 py-1 rounded-lg bg-black/20 border border-white/10 backdrop-blur-md text-white font-semibold">
-                    114 Complete Surahs
+                    114 {QURAN_UI.allSurahs[selectedLanguage]}
                   </span>
                   <span className="px-2.5 py-1 rounded-lg bg-black/20 border border-white/10 backdrop-blur-md text-teal-100">
-                    86 Meccan • 28 Medinan
+                    86 {QURAN_UI.meccan[selectedLanguage]} • 28 {QURAN_UI.medinan[selectedLanguage]}
                   </span>
                   <span className="px-2.5 py-1 rounded-lg bg-black/20 border border-white/10 backdrop-blur-md text-teal-100">
-                    30 Juz (Para)
+                    30 {QURAN_UI.juz[selectedLanguage]}
                   </span>
                 </div>
               </div>
@@ -1145,7 +1161,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search by Surah Name, Meaning, or Number (e.g. Al-Baqarah, 36, Yasin, Cave)..."
+                  placeholder={QURAN_UI.searchPlaceholder[selectedLanguage]}
                   className={`w-full rounded-2xl pl-11 pr-10 py-3 text-sm focus:outline-none transition shadow-sm border ${
                     isDay
                       ? 'bg-white border-[#cde5e2] text-[#103e42] placeholder-[#7ca2a7] focus:border-[#1c6469]'
@@ -1176,11 +1192,11 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                   }`}
                 >
                   <option value="all" className={isDay ? 'bg-white text-[#103e42]' : 'bg-[#0e2f36] text-white'}>
-                    All Juz (1 - 30)
+                    All {QURAN_UI.juz[selectedLanguage]} (1 - 30)
                   </option>
                   {Array.from({ length: 30 }, (_, i) => i + 1).map((j) => (
                     <option key={j} value={j} className={isDay ? 'bg-white text-[#103e42]' : 'bg-[#0e2f36] text-white'}>
-                      Juz {j} (Part {j})
+                      {QURAN_UI.juz[selectedLanguage]} {j}
                     </option>
                   ))}
                 </select>
@@ -1199,7 +1215,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                     : 'bg-[#0e2f36] text-[#8ebac0] border-[#1a515c] hover:text-white'
                 }`}
               >
-                All (114)
+                {QURAN_UI.allSurahs[selectedLanguage]}
               </button>
               <button
                 onClick={() => setActiveTab('popular')}
@@ -1211,7 +1227,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                     : 'bg-[#0e2f36] text-[#8ebac0] border-[#1a515c] hover:text-white'
                 }`}
               >
-                Popular &amp; Daily (10)
+                {QURAN_UI.popular[selectedLanguage]} (10)
               </button>
               <button
                 onClick={() => setActiveTab('meccan')}
@@ -1223,7 +1239,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                     : 'bg-[#0e2f36] text-[#8ebac0] border-[#1a515c] hover:text-white'
                 }`}
               >
-                Meccan / مَكِّيَّة (86)
+                {QURAN_UI.meccan[selectedLanguage]} (86)
               </button>
               <button
                 onClick={() => setActiveTab('medinan')}
@@ -1235,7 +1251,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                     : 'bg-[#0e2f36] text-[#8ebac0] border-[#1a515c] hover:text-white'
                 }`}
               >
-                Medinan / مَدَنِيَّة (28)
+                {QURAN_UI.medinan[selectedLanguage]} (28)
               </button>
               <button
                 onClick={() => setActiveTab('bookmarks')}
@@ -1248,7 +1264,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                 }`}
               >
                 <Bookmark className="w-3 h-3" />
-                <span>Bookmarks ({bookmarks.length})</span>
+                <span>{QURAN_UI.bookmarks[selectedLanguage]} ({bookmarks.length})</span>
               </button>
             </div>
           </div>
@@ -1350,14 +1366,14 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                         <p className={`text-[11px] truncate max-w-[150px] sm:max-w-[170px] ${
                           isDay ? 'text-[#507579]' : 'text-teal-200/80'
                         }`}>
-                          {surah.englishNameTranslation}
+                          {SURAH_MEANINGS[surah.number]?.[selectedLanguage] || surah.englishNameTranslation}
                         </p>
                         <div className={`flex items-center gap-2 mt-1 text-[10px] ${
                           isDay ? 'text-[#7ca2a7]' : 'text-teal-400/80'
                         }`}>
-                          <span>{surah.numberOfAyahs} Verses</span>
+                          <span>{surah.numberOfAyahs} {QURAN_UI.ayahs[selectedLanguage]}</span>
                           <span>•</span>
-                          <span>Juz {surah.startJuz}</span>
+                          <span>{QURAN_UI.juz[selectedLanguage]} {surah.startJuz}</span>
                         </div>
                       </div>
                     </div>
@@ -1376,7 +1392,7 @@ export const QuranView: React.FC<QuranViewProps> = ({ soundEnabled, themeMode = 
                           ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                           : 'bg-emerald-950/40 text-emerald-300 border-emerald-800/40'
                       }`}>
-                        {surah.revelationType}
+                        {surah.revelationType === 'Meccan' ? QURAN_UI.meccan[selectedLanguage] : QURAN_UI.medinan[selectedLanguage]}
                       </span>
                     </div>
                   </div>

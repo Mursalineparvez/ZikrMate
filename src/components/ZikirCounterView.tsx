@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ZikrItem, ThemeMode } from '../types';
+import { ZikrItem, ThemeMode, ZikrLanguage } from '../types';
 import { CircularCenterCounter } from './CircularCenterCounter';
 import { ZikrCard } from './ZikrCard';
-import { Plus, FileText, CheckCircle2, Target } from 'lucide-react';
+import { Plus, FileText, CheckCircle2, Target, RotateCcw } from 'lucide-react';
 
 interface ZikirCounterViewProps {
   masterTotal: number;
@@ -22,6 +22,7 @@ interface ZikirCounterViewProps {
   onExportPdf: () => void;
   isExportingPdf: boolean;
   themeMode?: ThemeMode;
+  selectedLanguage?: ZikrLanguage;
 }
 
 export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
@@ -41,7 +42,8 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
   onRestoreDefaults,
   onExportPdf,
   isExportingPdf,
-  themeMode = 'day',
+  themeMode = 'night',
+  selectedLanguage = 'bn',
 }) => {
   const isDay = themeMode === 'day';
   const [filterMode, setFilterMode] = useState<'all' | 'targets' | 'completed'>('all');
@@ -54,7 +56,7 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* Center: Large Circular Total Counter */}
+      {/* Center: Dedicated Circular Master Total Counter */}
       <CircularCenterCounter
         totalCount={masterTotal}
         totalZikrs={zikrs.length}
@@ -64,7 +66,7 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
         themeMode={themeMode}
       />
 
-      {/* Category Pills & Action Bar matching Home Page */}
+      {/* Category Pills & Action Bar */}
       <div className="space-y-3">
         <div className="flex items-center justify-between px-1 flex-wrap gap-2">
           <div className="flex items-center gap-2">
@@ -73,7 +75,8 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
                 isDay ? 'text-[#103e42]' : 'text-white'
               }`}
             >
-              <span>Active Counters</span>
+              <span>সাধারণ যিকির</span>
+              <span className="text-xs font-normal opacity-70 hidden sm:inline">(Common Zikr — 12 Items)</span>
               <span
                 className={`text-xs px-2.5 py-0.5 rounded-full font-bold border ${
                   isDay
@@ -86,7 +89,22 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
             </h2>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Restore Defaults button */}
+            <button
+              onClick={onRestoreDefaults}
+              className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-2xl border transition active:scale-95 cursor-pointer ${
+                isDay
+                  ? 'bg-white hover:bg-[#eef7f6] text-[#1c6469] border-[#d2ece9] shadow-sm'
+                  : 'bg-[#0e2f36] hover:bg-[#123e47] text-[#8ebac0] border-[#1a515c]'
+              }`}
+              title="১২টি ডিফল্ট যিকির পুনরুদ্ধার করুন"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">১২টি যিকির রিসেট</span>
+              <span className="sm:hidden">ডিফল্ট</span>
+            </button>
+
             {/* Export PDF Button */}
             <button
               onClick={onExportPdf}
@@ -102,13 +120,13 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
               <span>Export PDF</span>
             </button>
 
-            {/* Add Zikr Button (Signature spruce teal) */}
+            {/* Add Zikr Button */}
             <button
               onClick={onOpenAddModal}
               className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-2xl shadow-md transition active:scale-95 cursor-pointer bg-[#1c6469] hover:bg-[#154f53] text-white shadow-[#135d66]/20 border border-teal-400/30"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span>Add Zikr</span>
+              <span>যিকির যোগ</span>
             </button>
           </div>
         </div>
@@ -127,7 +145,7 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
                 : 'bg-[#0a262c] hover:bg-[#10343c] text-[#8ebac0] border-[#184850]'
             }`}
           >
-            All ({zikrs.length})
+            সকল ({zikrs.length})
           </button>
 
           <button
@@ -143,7 +161,7 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
             }`}
           >
             <Target className="w-3.5 h-3.5" />
-            <span>With Target</span>
+            <span>লক্ষ্যসহ</span>
           </button>
 
           <button
@@ -159,14 +177,14 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Completed ({completedGoals})</span>
+            <span>সম্পন্ন ({completedGoals})</span>
           </button>
         </div>
       </div>
 
-      {/* Below: List/Grid of Individual Zikr Cards */}
+      {/* Grid of Individual 12 Zikr Cards (2-column layout matching screenshot, responsive) */}
       {filteredZikrs.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           {filteredZikrs.map((zikr, index) => (
             <ZikrCard
               key={zikr.id}
@@ -175,12 +193,13 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
               totalCards={zikrs.length}
               onIncrement={onIncrement}
               onDecrement={onDecrement}
-              onReset={() => onReset(zikr)}
-              onDelete={() => onDelete(zikr)}
+              onReset={onReset}
+              onDelete={onDelete}
               onEdit={onEdit}
               onMoveUp={onMoveUp}
               onMoveDown={onMoveDown}
               themeMode={themeMode}
+              selectedLanguage={selectedLanguage}
             />
           ))}
         </div>
@@ -193,13 +212,13 @@ export const ZikirCounterView: React.FC<ZikirCounterViewProps> = ({
           }`}
         >
           <p className={`text-sm font-semibold ${isDay ? 'text-[#103e42]' : 'text-teal-100'}`}>
-            No zikr counters found in this filter.
+            কোনো যিকির পাওয়া যায়নি।
           </p>
           <button
             onClick={() => setFilterMode('all')}
             className="mt-3 px-4 py-2 rounded-xl bg-[#1c6469] text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-sm"
           >
-            Show All Counters
+            সব যিকির দেখান
           </button>
         </div>
       )}

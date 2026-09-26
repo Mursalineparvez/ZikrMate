@@ -1,5 +1,5 @@
 import React from 'react';
-import { RotateCcw, BookmarkPlus, Sparkles } from 'lucide-react';
+import { RotateCcw, BookmarkPlus, Sparkles, CheckCircle2 } from 'lucide-react';
 import { ThemeMode } from '../types';
 
 interface CircularCenterCounterProps {
@@ -41,8 +41,8 @@ export const CircularCenterCounter: React.FC<CircularCenterCounterProps> = ({
         }`}
       />
 
-      {/* Top Quranic Bismillah & Kicker */}
-      <div className="relative z-10 mb-3 space-y-1">
+      {/* Top Quranic Bismillah & Subtitle */}
+      <div className="relative z-10 mb-2 space-y-1">
         <div
           className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-1 ${
             isDay
@@ -55,24 +55,25 @@ export const CircularCenterCounter: React.FC<CircularCenterCounterProps> = ({
               isDay ? 'bg-[#1c6469]' : 'bg-[#2dd4bf]'
             }`}
           />
-          <span>Central Master Counter</span>
+          <span>Central Master Counter • সর্বমোট তাসবীহ</span>
         </div>
 
         <div
-          className={`font-arabic text-2xl sm:text-3xl font-bold tracking-wide ${
+          dir="rtl"
+          className={`font-arabic text-2xl sm:text-3xl font-bold tracking-wide select-none ${
             isDay ? 'text-[#164e52]' : 'text-[#2dd4bf]'
           }`}
         >
           بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
         </div>
         <p className={`text-xs ${isDay ? 'text-[#4e7478]' : 'text-[#90b8be]'}`}>
-          Sum of all active individual Zikir beads in real time
+          সকল সক্রিয় যিকিরের তাৎক্ষণিক সর্বমোট সমষ্টি (Real-time aggregate total)
         </p>
       </div>
 
-      {/* Large Circular Center Total Dial */}
+      {/* Large Circular Center Dial */}
       <div className="relative z-10 my-3 flex items-center justify-center">
-        {/* Outer Halo with Teal Gradient matching Home Page */}
+        {/* Outer Halo with Teal/Emerald Gradient */}
         <div
           className={`relative w-56 h-56 sm:w-64 sm:h-64 rounded-full p-2.5 transition-all shadow-2xl flex items-center justify-center ${
             isDay
@@ -101,7 +102,7 @@ export const CircularCenterCounter: React.FC<CircularCenterCounterProps> = ({
               }`}
             >
               <Sparkles className="w-3 h-3 text-amber-400" />
-              <span>Total Invocations</span>
+              <span>সর্বমোট তাসবীহ গণনা</span>
             </span>
 
             {/* Giant Digits */}
@@ -140,9 +141,10 @@ export const CircularCenterCounter: React.FC<CircularCenterCounterProps> = ({
       </div>
 
       {/* Action Controls beneath Circular Counter */}
-      <div className="relative z-10 flex flex-wrap items-center justify-center gap-3 mt-4">
+      <div className="relative z-10 flex flex-wrap items-center justify-center gap-3 mt-3">
         {/* Save Current Session to History */}
         <button
+          type="button"
           onClick={onSaveSession}
           title="Save this count snapshot into History log"
           className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold shadow-md transition active:scale-95 cursor-pointer bg-[#1c6469] hover:bg-[#154f53] text-white shadow-[#135d66]/20 border border-teal-400/30"
@@ -151,8 +153,9 @@ export const CircularCenterCounter: React.FC<CircularCenterCounterProps> = ({
           <span>Save Session to History</span>
         </button>
 
-        {/* Global Reset Button */}
+        {/* Global Reset */}
         <button
+          type="button"
           onClick={onGlobalReset}
           title="Reset all counters to 0"
           className={`flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-semibold transition active:scale-95 cursor-pointer border ${

@@ -29,12 +29,21 @@ import {
   Info,
 } from 'lucide-react';
 import { soundHaptics } from '../utils/audioHaptics';
+import { ThemeMode, ZikrLanguage } from '../types';
+import { PRAYER_NAMES, SALAT_UI } from '../utils/appTranslations';
 
 interface SalatTimeViewProps {
   soundEnabled: boolean;
+  themeMode?: ThemeMode;
+  selectedLanguage?: ZikrLanguage;
 }
 
-export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) => {
+export const SalatTimeView: React.FC<SalatTimeViewProps> = ({
+  soundEnabled,
+  themeMode = 'night',
+  selectedLanguage = 'bn',
+}) => {
+  const isDay = themeMode === 'day';
   // City and calculation parameters
   const [selectedCity, setSelectedCity] = useState<CityOption>(() => {
     try {
@@ -257,7 +266,7 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
   // Prayer Cards Data
   const prayerCards = [
     {
-      name: 'Fajr',
+      name: PRAYER_NAMES.Fajr[selectedLanguage] || 'Fajr',
       arabic: 'الفجر',
       description: 'Dawn Prayer',
       time: prayerData.fajr,
@@ -269,7 +278,7 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
       isNext: prayerData.nextPrayerName === 'Fajr',
     },
     {
-      name: 'Sunrise',
+      name: PRAYER_NAMES.Sunrise[selectedLanguage] || 'Sunrise',
       arabic: 'الشروق',
       description: 'Sun Rising (Ishraq starts in 15m)',
       time: prayerData.sunrise,
@@ -281,7 +290,7 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
       isNext: prayerData.nextPrayerName === 'Sunrise',
     },
     {
-      name: 'Dhuhr',
+      name: PRAYER_NAMES.Dhuhr[selectedLanguage] || 'Dhuhr',
       arabic: 'الظهر',
       description: 'Midday Prayer',
       time: prayerData.dhuhr,
@@ -293,7 +302,7 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
       isNext: prayerData.nextPrayerName === 'Dhuhr',
     },
     {
-      name: 'Asr',
+      name: PRAYER_NAMES.Asr[selectedLanguage] || 'Asr',
       arabic: 'العصر',
       description: isHanafi ? 'Afternoon (Hanafi)' : 'Afternoon (Standard/Shafi)',
       time: prayerData.asr,
@@ -305,7 +314,7 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
       isNext: prayerData.nextPrayerName === 'Asr',
     },
     {
-      name: 'Sunset / Maghrib',
+      name: PRAYER_NAMES.Maghrib[selectedLanguage] || 'Maghrib',
       arabic: 'المغرب',
       description: 'Sunset Prayer',
       time: prayerData.sunsetRange,
@@ -318,7 +327,7 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
       isNext: prayerData.nextPrayerName === 'Maghrib',
     },
     {
-      name: 'Isha',
+      name: PRAYER_NAMES.Isha[selectedLanguage] || 'Isha',
       arabic: 'العشاء',
       description: 'Night Prayer',
       time: prayerData.isha,
@@ -334,7 +343,7 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
   return (
     <div className="space-y-6 animate-in fade-in duration-300 max-w-4xl mx-auto pb-10">
       {/* 1. TOP BAR & HIJRI DATE CARD */}
-      <div className="bg-gradient-to-br from-slate-900 via-emerald-950/70 to-slate-900 rounded-3xl border border-emerald-500/30 p-4 sm:p-6 shadow-2xl relative overflow-hidden">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#144d52] via-[#1a5e64] to-[#257277] border border-teal-400/30 p-4 sm:p-6 shadow-xl text-white">
         {/* Decorative subtle Islamic background glow */}
         <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
@@ -344,25 +353,25 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setShowSettingsDrawer(true)}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-semibold hover:bg-emerald-500/25 transition cursor-pointer active:scale-95"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 border border-white/30 text-teal-100 text-xs font-semibold hover:bg-white/30 transition cursor-pointer active:scale-95 backdrop-blur-sm"
             >
-              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+              <MapPin className="w-3.5 h-3.5 text-amber-300" />
               <span>
                 {selectedCity.name}, {selectedCity.country}
               </span>
-              <ChevronDown className="w-3 h-3 text-emerald-400 opacity-80" />
+              <ChevronDown className="w-3 h-3 text-teal-200 opacity-80" />
             </button>
 
             <button
               onClick={handleDetectLocation}
               disabled={isLocating}
               title="Detect Current GPS Location"
-              className="p-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:bg-slate-700 transition cursor-pointer active:scale-95"
+              className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition cursor-pointer active:scale-95"
             >
-              <Navigation className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin text-emerald-400' : ''}`} />
+              <Navigation className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin text-amber-300' : ''}`} />
             </button>
 
-            <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-800/90 text-slate-400 border border-slate-700/60">
+            <span className="text-[11px] px-2 py-0.5 rounded-md bg-white/15 text-teal-100 border border-white/20">
               {isHanafi ? 'Hanafi' : 'Shafi'} • {method}
             </span>
           </div>
@@ -373,19 +382,19 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
               onClick={() => togglePlayAdhan('Adhan Recitation')}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer active:scale-95 shadow-md ${
                 isPlayingAdhan
-                  ? 'bg-rose-500/20 border-rose-500 text-rose-300 animate-pulse'
-                  : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30'
+                  ? 'bg-rose-500/30 border-rose-400 text-rose-200 animate-pulse'
+                  : 'bg-white/20 border-white/30 text-white hover:bg-white/30'
               }`}
             >
               {isPlayingAdhan ? (
                 <>
                   <VolumeX className="w-3.5 h-3.5" />
-                  <span>Stop Adhan</span>
+                  <span>{SALAT_UI.stopAdhan[selectedLanguage]}</span>
                 </>
               ) : (
                 <>
                   <Volume2 className="w-3.5 h-3.5" />
-                  <span>Play Adhan</span>
+                  <span>{SALAT_UI.adhanSound[selectedLanguage]}</span>
                 </>
               )}
             </button>
@@ -393,7 +402,7 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
             <button
               onClick={() => setShowSettingsDrawer(true)}
               title="Prayer Settings"
-              className="p-2 rounded-full bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer active:scale-95"
+              className="p-2 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 text-white transition cursor-pointer active:scale-95"
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
             </button>
@@ -401,28 +410,28 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
         </div>
 
         {/* Hijri & Gregorian Date Display */}
-        <div className="mt-4 pt-4 border-t border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="mt-4 pt-4 border-t border-white/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-emerald-400" />
+              <Calendar className="w-5 h-5 text-amber-300" />
               <span>{prayerData.hijriFormatted}</span>
             </div>
-            <div className="text-xs sm:text-sm text-emerald-300/80 font-medium mt-0.5">
+            <div className="text-xs sm:text-sm text-teal-100 font-medium mt-0.5">
               {prayerData.gregorianFormatted}
             </div>
           </div>
 
           {/* Current Solar Status Pill */}
-          <div className="flex items-center gap-2 bg-slate-950/60 border border-slate-800 rounded-2xl px-3 py-2 text-xs">
+          <div className="flex items-center gap-2 bg-black/25 border border-white/20 rounded-2xl px-3 py-2 text-xs backdrop-blur-sm">
             <div className="flex items-center gap-1.5 text-amber-300 font-semibold">
               {prayerData.isDaytime ? (
                 <>
-                  <Sun className="w-4 h-4 text-amber-400 animate-spin-slow" />
+                  <Sun className="w-4 h-4 text-amber-300 animate-spin-slow" />
                   <span>Daylight: {prayerData.daylightRemainingFormatted} left</span>
                 </>
               ) : (
                 <>
-                  <Moon className="w-4 h-4 text-indigo-400" />
+                  <Moon className="w-4 h-4 text-teal-200" />
                   <span>Night Phase • Tahajjud: {prayerData.tahajjud}</span>
                 </>
               )}
@@ -432,27 +441,35 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
       </div>
 
       {/* 2. SOLAR ARC & SUN TRACKER CARD (Centerpiece) */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 border border-emerald-500/30 p-5 sm:p-7 shadow-2xl">
+      <div className={`relative overflow-hidden rounded-3xl border p-5 sm:p-7 shadow-xl transition-colors ${
+        isDay
+          ? 'bg-white border-[#dcebe8]'
+          : 'bg-[#0e2f36] border-[#1a515c]'
+      }`}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+            <div className={`w-2.5 h-2.5 rounded-full ${isDay ? 'bg-[#1c6469]' : 'bg-teal-400'} animate-ping`} />
+            <h3 className={`text-sm font-bold uppercase tracking-wider ${isDay ? 'text-[#103e42]' : 'text-white'}`}>
               Solar Trajectory &amp; Next Prayer
             </h3>
           </div>
-          <span className="text-xs text-slate-400">
+          <span className={`text-xs ${isDay ? 'text-[#507579]' : 'text-slate-400'}`}>
             {prayerData.isDaytime ? 'Sun in Sky' : 'After Sunset'}
           </span>
         </div>
 
         {/* Next Prayer Highlight Banner */}
-        <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-slate-900/90 to-teal-950/80 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-lg">
+        <div className={`mb-6 p-4 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-md ${
+          isDay
+            ? 'bg-[#f0f7f6] border-[#cce5e2]'
+            : 'bg-[#092226] border-teal-500/30'
+        }`}>
           <div>
             <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest">
-              Upcoming Salat • الصلاة القادمة
+              {SALAT_UI.nextPrayer[selectedLanguage]} • الصلاة القادمة
             </div>
             <div className="text-2xl sm:text-3xl font-black text-white mt-0.5 flex items-center justify-center sm:justify-start gap-2">
-              <span>{prayerData.nextPrayerName}</span>
+              <span>{PRAYER_NAMES[prayerData.nextPrayerName]?.[selectedLanguage] || prayerData.nextPrayerName}</span>
               <span className="font-arabic text-emerald-400 text-lg">({prayerData.nextPrayerArabic})</span>
               <span className="text-emerald-300 font-normal text-xl sm:text-2xl">
                 {prayerData.nextPrayerFormattedTime}
@@ -463,7 +480,7 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
           <div className="flex flex-col items-center sm:items-end">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs sm:text-sm font-bold">
               <Clock className="w-4 h-4 animate-spin-slow text-emerald-400" />
-              <span>In {prayerData.timeRemainingFormatted}</span>
+              <span>{prayerData.timeRemainingFormatted} {SALAT_UI.remaining[selectedLanguage]}</span>
             </div>
             <span className="text-[10px] text-slate-400 mt-1">Live second countdown</span>
           </div>
@@ -621,11 +638,11 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
       {/* 3. PRAYER TIMINGS SCHEDULE CARDS (Precise Islamic App layout) */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
+          <h3 className={`text-base font-bold flex items-center gap-2 ${isDay ? 'text-[#103e42]' : 'text-white'}`}>
             <span>Today's Prescribed Prayers</span>
-            <span className="text-xs font-normal text-emerald-400 font-arabic">مواقيت الصلوات الخمس</span>
+            <span className={`text-xs font-normal font-arabic ${isDay ? 'text-[#1c6469]' : 'text-emerald-400'}`}>مواقيت الصلوات الخمس</span>
           </h3>
-          <span className="text-xs text-slate-400">All 5 Obligatory &amp; Solar Milestones</span>
+          <span className={`text-xs ${isDay ? 'text-[#507579]' : 'text-slate-400'}`}>All 5 Obligatory &amp; Solar Milestones</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -635,28 +652,38 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
             return (
               <div
                 key={card.name}
-                className={`relative rounded-3xl p-4 transition-all duration-300 border bg-gradient-to-br ${
+                className={`relative rounded-3xl p-4 transition-all duration-300 border ${
                   card.isActive
-                    ? 'ring-2 ring-emerald-400/80 bg-slate-900 border-emerald-400/70 shadow-xl shadow-emerald-950/40 scale-102'
+                    ? isDay
+                      ? 'ring-2 ring-[#1c6469] bg-white border-[#1c6469] shadow-lg shadow-[#135d66]/15 scale-[1.02]'
+                      : 'ring-2 ring-teal-400 bg-[#0e2f36] border-teal-400 shadow-xl shadow-teal-950/40 scale-[1.02]'
                     : card.isNext
-                    ? 'bg-slate-900/90 border-emerald-500/50 hover:border-emerald-500/80'
-                    : 'bg-slate-900/75 border-slate-800/80 hover:border-slate-700'
+                    ? isDay
+                      ? 'bg-white border-amber-400/70 shadow-sm'
+                      : 'bg-[#0e2f36] border-amber-500/70 shadow-sm'
+                    : isDay
+                    ? 'bg-white border-[#dcebe8] hover:border-[#b5dcd6] shadow-sm'
+                    : 'bg-[#0e2f36] border-[#1a515c] hover:border-[#266e7c]'
                 }`}
               >
                 {/* Active or Next Tag */}
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-2xl bg-slate-800/80 border border-slate-700/60">
+                    <div className={`p-2 rounded-2xl border ${
+                      isDay
+                        ? 'bg-[#f0f7f6] border-[#d2ece9]'
+                        : 'bg-[#092226] border-[#133c44]'
+                    }`}>
                       {card.icon}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+                      <h4 className={`text-sm font-bold flex items-center gap-1.5 ${isDay ? 'text-[#103e42]' : 'text-white'}`}>
                         <span>{card.name}</span>
-                        <span className="font-arabic text-emerald-400 text-xs font-normal">
+                        <span className={`font-arabic text-xs font-normal ${isDay ? 'text-[#165a60]' : 'text-emerald-400'}`}>
                           {card.arabic}
                         </span>
                       </h4>
-                      <p className="text-[10px] text-slate-400 line-clamp-1">
+                      <p className={`text-[10px] line-clamp-1 ${isDay ? 'text-[#6c8f93]' : 'text-slate-400'}`}>
                         {card.description}
                       </p>
                     </div>
@@ -666,10 +693,14 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
                   <button
                     onClick={() => toggleAlert(card.name)}
                     title={hasAlert ? `Disable ${card.name} notification` : `Enable ${card.name} notification`}
-                    className={`p-2 rounded-full transition cursor-pointer active:scale-90 ${
+                    className={`p-2 rounded-full transition cursor-pointer active:scale-90 border ${
                       hasAlert
-                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                        : 'bg-slate-800/60 text-slate-500 border border-slate-700 hover:text-slate-300'
+                        ? isDay
+                          ? 'bg-[#e2edea] text-[#1c6469] border-[#cbe0dc]'
+                          : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                        : isDay
+                        ? 'bg-[#f0f7f6] text-[#7a9d9b] border-[#d2ece9]'
+                        : 'bg-[#092226] text-slate-400 border-[#133c44]'
                     }`}
                   >
                     {hasAlert ? <Bell className="w-3.5 h-3.5" /> : <BellOff className="w-3.5 h-3.5" />}
@@ -678,32 +709,34 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
 
                 {/* Prayer Time Display */}
                 <div className="mt-3 flex items-baseline justify-between">
-                  <div className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  <div className={`text-xl sm:text-2xl font-black tracking-tight ${isDay ? 'text-[#103e42]' : 'text-white'}`}>
                     {card.time}
                   </div>
 
                   {/* Status Badge */}
                   {card.isActive ? (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold animate-pulse">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-500 dark:text-emerald-300 text-[10px] font-bold animate-pulse">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       Active Now
                     </span>
                   ) : card.isNext ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-bold">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-500 dark:text-amber-300 text-[10px] font-bold">
                       Next Up
                     </span>
                   ) : (
-                    <span className="text-[10px] text-slate-500">
+                    <span className={`text-[10px] ${isDay ? 'text-[#709598]' : 'text-slate-500'}`}>
                       Standard Window
                     </span>
                   )}
                 </div>
 
                 {/* Subtext info */}
-                <div className="mt-2 text-[10px] text-slate-400 border-t border-slate-800/60 pt-2 flex items-center justify-between">
+                <div className={`mt-2 text-[10px] border-t pt-2 flex items-center justify-between ${
+                  isDay ? 'border-[#e8f3f1] text-[#6c8f93]' : 'border-[#17434b] text-slate-400'
+                }`}>
                   <span>{card.timeWindow}</span>
                   {card.isActive && (
-                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                    <span className={`font-semibold flex items-center gap-1 ${isDay ? 'text-[#1c6469]' : 'text-emerald-400'}`}>
                       <CheckCircle2 className="w-3 h-3" /> Time to Pray
                     </span>
                   )}
@@ -715,7 +748,11 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
       </div>
 
       {/* 4. MODERN QIBLA COMPASS CARD */}
-      <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-emerald-500/30 p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+      <div className={`rounded-3xl border p-6 sm:p-8 shadow-xl relative overflow-hidden transition-colors ${
+        isDay
+          ? 'bg-white border-[#dcebe8]'
+          : 'bg-[#0e2f36] border-[#1a515c]'
+      }`}>
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-3 text-center md:text-left max-w-sm">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
@@ -782,15 +819,21 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
           </div>
 
           {/* Visual Compass Dial */}
-          <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 border-slate-800 bg-slate-950/90 flex items-center justify-center shadow-2xl p-2 select-none">
+          <div className={`relative w-48 h-48 sm:w-56 sm:h-56 rounded-full border-4 flex items-center justify-center shadow-xl p-2 select-none ${
+            isDay
+              ? 'border-[#d2ece9] bg-[#f0f7f6]'
+              : 'border-[#1a515c] bg-[#092226]'
+          }`}>
             {/* Outer Degree Markings Ring */}
-            <div className="absolute inset-1 rounded-full border border-slate-800/60 pointer-events-none" />
+            <div className={`absolute inset-1 rounded-full border pointer-events-none ${
+              isDay ? 'border-[#cde5e2]' : 'border-teal-500/20'
+            }`} />
 
             {/* Cardinal Points */}
-            <span className="absolute top-2 text-xs font-black text-rose-400">N</span>
-            <span className="absolute bottom-2 text-xs font-bold text-slate-400">S</span>
-            <span className="absolute left-3 text-xs font-bold text-slate-400">W</span>
-            <span className="absolute right-3 text-xs font-bold text-slate-400">E</span>
+            <span className="absolute top-2 text-xs font-black text-rose-500">N</span>
+            <span className={`absolute bottom-2 text-xs font-bold ${isDay ? 'text-[#709598]' : 'text-slate-400'}`}>S</span>
+            <span className={`absolute left-3 text-xs font-bold ${isDay ? 'text-[#709598]' : 'text-slate-400'}`}>W</span>
+            <span className={`absolute right-3 text-xs font-bold ${isDay ? 'text-[#709598]' : 'text-slate-400'}`}>E</span>
 
             {/* Kaaba Marker icon on perimeter at exact bearing */}
             <div
@@ -814,24 +857,28 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
               <div className="flex flex-col items-center">
                 <div
                   className={`w-0 h-0 border-l-[7px] border-r-[7px] border-b-[18px] border-transparent transition-colors ${
-                    isFacingKaaba ? 'border-b-amber-300 scale-110 drop-shadow-md' : 'border-b-emerald-400'
+                    isFacingKaaba ? 'border-b-amber-400 scale-110 drop-shadow-md' : 'border-b-emerald-500'
                   }`}
                 />
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 -mt-1 shadow-md shadow-emerald-400/80" />
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 -mt-1 shadow-md shadow-emerald-500/80" />
               </div>
 
               {/* South tail pointer */}
               <div className="flex flex-col items-center">
-                <div className="w-1.5 h-8 bg-slate-600 rounded-full" />
+                <div className={`w-1.5 h-8 rounded-full ${isDay ? 'bg-slate-400' : 'bg-slate-600'}`} />
               </div>
             </div>
 
             {/* Center Dial Hub */}
-            <div className="absolute w-12 h-12 rounded-full bg-slate-900 border-2 border-emerald-500/60 flex flex-col items-center justify-center text-center shadow-lg z-20">
-              <span className="text-[11px] font-black text-white leading-none">
+            <div className={`absolute w-12 h-12 rounded-full border-2 flex flex-col items-center justify-center text-center shadow-lg z-20 ${
+              isDay
+                ? 'bg-white border-[#1c6469]'
+                : 'bg-[#0e2f36] border-teal-400'
+            }`}>
+              <span className={`text-[11px] font-black leading-none ${isDay ? 'text-[#103e42]' : 'text-white'}`}>
                 {prayerData.qiblaBearing}°
               </span>
-              <span className="text-[8px] font-bold text-emerald-400 leading-none mt-0.5">
+              <span className={`text-[8px] font-bold leading-none mt-0.5 ${isDay ? 'text-[#1c6469]' : 'text-[#2dd4bf]'}`}>
                 {prayerData.qiblaCardinal}
               </span>
             </div>
@@ -842,15 +889,21 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
       {/* 5. SETTINGS DRAWER / MODAL */}
       {showSettingsDrawer && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
-          <div className="w-full max-w-md bg-slate-900 border border-emerald-500/30 rounded-3xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div className={`w-full max-w-md border rounded-3xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto ${
+            isDay
+              ? 'bg-white border-[#dcebe8] text-[#103e42]'
+              : 'bg-[#0e2f36] border-[#1a515c] text-white'
+          }`}>
+            <div className={`flex items-center justify-between pb-3 border-b ${
+              isDay ? 'border-[#e8f3f1]' : 'border-[#17434b]'
+            }`}>
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-base font-bold text-white">Prayer Calculation Settings</h3>
+                <SlidersHorizontal className={`w-4 h-4 ${isDay ? 'text-[#1c6469]' : 'text-teal-400'}`} />
+                <h3 className={`text-base font-bold ${isDay ? 'text-[#103e42]' : 'text-white'}`}>Prayer Calculation Settings</h3>
               </div>
               <button
                 onClick={() => setShowSettingsDrawer(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg"
+                className={`p-1 rounded-lg ${isDay ? 'text-[#709598] hover:text-[#103e42]' : 'text-slate-400 hover:text-white'}`}
               >
                 ✕
               </button>
@@ -858,17 +911,21 @@ export const SalatTimeView: React.FC<SalatTimeViewProps> = ({ soundEnabled }) =>
 
             {/* Search / Select City */}
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-300">
+              <label className={`block text-xs font-semibold ${isDay ? 'text-[#507579]' : 'text-slate-300'}`}>
                 Choose Location
               </label>
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+                <Search className={`w-4 h-4 absolute left-3 top-2.5 ${isDay ? 'text-[#709598]' : 'text-slate-400'}`} />
                 <input
                   type="text"
                   placeholder="Search city (e.g. Dhaka, London, Makkah)..."
                   value={citySearchQuery}
                   onChange={(e) => setCitySearchQuery(e.target.value)}
-                  className="w-full bg-slate-800/90 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                  className={`w-full rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none transition border ${
+                    isDay
+                      ? 'bg-[#f0f7f6] border-[#d2ece9] text-[#103e42] placeholder-[#709598] focus:border-[#1c6469]'
+                      : 'bg-[#092226] border-[#133c44] text-white placeholder-slate-400 focus:border-[#2dd4bf]'
+                  }`}
                 />
               </div>
 

@@ -1,4 +1,6 @@
 import { ALL_114_SURAHS, SurahMeta } from './quran114List';
+import { ZikrLanguage } from '../types';
+import { QURAN_EDITIONS } from './appTranslations';
 
 export interface QuranAyah {
   number: number;
@@ -14,6 +16,7 @@ export interface QuranAyah {
 
 export interface QuranSurahDetail extends SurahMeta {
   ayahs: QuranAyah[];
+  language?: ZikrLanguage;
 }
 
 export interface Reciter {
@@ -21,6 +24,7 @@ export interface Reciter {
   name: string;
   arabicName: string;
   subtext: string;
+  surahAudioBase?: string;
 }
 
 export const QURAN_RECITERS: Reciter[] = [
@@ -29,30 +33,35 @@ export const QURAN_RECITERS: Reciter[] = [
     name: 'Mishary Rashid Alafasy',
     arabicName: 'مشاري بن راشد العفاسي',
     subtext: 'Clear & Melodic (Default)',
+    surahAudioBase: 'https://server8.mp3quran.net/afs',
   },
   {
     id: 'ar.abdurrahmaansudais',
     name: 'Abdul Rahman Al-Sudais',
     arabicName: 'عبد الرحمن السديس',
     subtext: 'Imam of Masjid al-Haram, Makkah',
+    surahAudioBase: 'https://server11.mp3quran.net/sds',
   },
   {
     id: 'ar.mahermuaiqly',
     name: 'Maher Al-Muaiqly',
     arabicName: 'ماهر المعيقلي',
     subtext: 'Emotional & Moving',
+    surahAudioBase: 'https://server12.mp3quran.net/maher',
   },
   {
     id: 'ar.saadalghamidi',
     name: 'Saad Al-Ghamdi',
     arabicName: 'سعد الغامدي',
     subtext: 'Gentle & Rhythmic',
+    surahAudioBase: 'https://server7.mp3quran.net/s_gmd',
   },
   {
     id: 'ar.shaatree',
     name: 'Abu Bakr Ash-Shatri',
     arabicName: 'أبو بكر الشاطري',
     subtext: 'Reverent & Slow Pace',
+    surahAudioBase: 'https://server11.mp3quran.net/shatri',
   },
 ];
 
@@ -62,7 +71,7 @@ export const POPULAR_SURAHS_NUMBERS = [1, 2, 18, 36, 55, 56, 67, 112, 113, 114];
 const memoryCache = new Map<number, QuranSurahDetail>();
 
 // Local storage prefix
-const CACHE_PREFIX = 'zikrmate_quran_cache_surah_';
+const CACHE_PREFIX = 'zikrmate_quran_cache_';
 
 /**
  * Remove prefixed Bismillah from verse 1 for surahs 2..114 (except 9 which has no Bismillah)
@@ -78,15 +87,13 @@ function cleanVerse1Arabic(surahNumber: number, verseNumber: number, text: strin
 /**
  * Get Surah from cache if available (memory or localStorage)
  */
-export function getCachedSurah(surahNumber: number): QuranSurahDetail | null {
-  if (memoryCache.has(surahNumber)) {
-    return memoryCache.get(surahNumber)!;
-  }
+export function getCachedSurah(surahNumber: number, language: ZikrLanguage = 'bn'): QuranSurahDetail | null {
+  const cacheKey = `${language}_${surahNumber}`;
+  const rawKey = `${CACHE_PREFIX}${cacheKey}`;
   try {
-    const raw = localStorage.getItem(`${CACHE_PREFIX}${surahNumber}`);
+    const raw = localStorage.getItem(rawKey);
     if (raw) {
       const parsed = JSON.parse(raw) as QuranSurahDetail;
-      memoryCache.set(surahNumber, parsed);
       return parsed;
     }
   } catch (err) {
@@ -98,35 +105,34 @@ export function getCachedSurah(surahNumber: number): QuranSurahDetail | null {
 /**
  * Save surah to cache
  */
-export function saveCachedSurah(surah: QuranSurahDetail): void {
-  memoryCache.set(surah.number, surah);
+export function saveCachedSurah(surah: QuranSurahDetail, language: ZikrLanguage = 'bn'): void {
+  const cacheKey = `${language}_${surah.number}`;
+  const rawKey = `${CACHE_PREFIX}${cacheKey}`;
   try {
-    localStorage.setItem(`${CACHE_PREFIX}${surah.number}`, JSON.stringify(surah));
+    localStorage.setItem(rawKey, JSON.stringify(surah));
   } catch (err) {
     // If quota exceeded, clean up old non-vital cached surahs
     try {
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key?.startsWith(CACHE_PREFIX)) {
-          const num = parseInt(key.replace(CACHE_PREFIX, ''), 10);
-          if (!POPULAR_SURAHS_NUMBERS.includes(num)) {
-            localStorage.removeItem(key);
-          }
+          localStorage.removeItem(key);
         }
       }
-      localStorage.setItem(`${CACHE_PREFIX}${surah.number}`, JSON.stringify(surah));
+      localStorage.setItem(rawKey, JSON.stringify(surah));
     } catch {
-      // Ignore storage errors, memoryCache still holds it
+      // Ignore storage errors
     }
   }
 }
 
 /**
- * Fetch full Surah with all Ayahs (Arabic Uthmani + English Translation + Transliteration)
+ * Fetch full Surah with all Ayahs (Arabic Uthmani + Selected Language Translation + Transliteration)
  */
 export async function fetchSurah(
   surahNumber: number,
-  reciterId: string = 'ar.alafasy'
+  reciterId: string = 'ar.alafasy',
+  language: ZikrLanguage = 'bn'
 ): Promise<QuranSurahDetail> {
   const meta = ALL_114_SURAHS.find((s) => s.number === surahNumber);
   if (!meta) {
@@ -134,7 +140,7 @@ export async function fetchSurah(
   }
 
   // Check cache first
-  const cached = getCachedSurah(surahNumber);
+  const cached = getCachedSurah(surahNumber, language);
   if (cached && cached.ayahs && cached.ayahs.length === meta.numberOfAyahs) {
     // Update audio URLs if reciter changed
     const updatedAyahs = cached.ayahs.map((ayah) => ({
@@ -145,11 +151,15 @@ export async function fetchSurah(
       ...cached,
       audioUrl: `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNumber}.mp3`,
       ayahs: updatedAyahs,
+      language,
     };
   }
 
+  // Choose edition according to language
+  const editionCode = QURAN_EDITIONS[language] || 'en.sahih';
+
   // Fetch from Al-Quran Cloud API
-  const apiUrl = `https://api.alquran.cloud/v1/surah/${surahNumber}/editions/quran-uthmani,en.sahih,en.transliteration`;
+  const apiUrl = `https://api.alquran.cloud/v1/surah/${surahNumber}/editions/quran-uthmani,${editionCode},en.transliteration`;
   const response = await fetch(apiUrl);
   if (!response.ok) {
     throw new Error(`Failed to load Surah ${meta.englishName} (HTTP ${response.status})`);
@@ -189,15 +199,16 @@ export async function fetchSurah(
     ...meta,
     audioUrl: `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNumber}.mp3`,
     ayahs,
+    language,
   };
 
   // Save to cache
-  saveCachedSurah(detail);
+  saveCachedSurah(detail, language);
 
   // Prefetch next Surah in background after slight delay
   if (surahNumber < 114) {
     setTimeout(() => {
-      preloadSurah(surahNumber + 1, reciterId).catch(() => {});
+      preloadSurah(surahNumber + 1, reciterId, language).catch(() => {});
     }, 1200);
   }
 
@@ -207,10 +218,14 @@ export async function fetchSurah(
 /**
  * Preload a surah in background without blocking
  */
-export async function preloadSurah(surahNumber: number, reciterId: string = 'ar.alafasy'): Promise<void> {
-  if (getCachedSurah(surahNumber)) return;
+export async function preloadSurah(
+  surahNumber: number,
+  reciterId: string = 'ar.alafasy',
+  language: ZikrLanguage = 'bn'
+): Promise<void> {
+  if (getCachedSurah(surahNumber, language)) return;
   try {
-    await fetchSurah(surahNumber, reciterId);
+    await fetchSurah(surahNumber, reciterId, language);
   } catch {
     // Silent background catch
   }

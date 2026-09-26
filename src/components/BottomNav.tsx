@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavModule, ThemeMode } from '../types';
+import { NavModule, ThemeMode, ZikrLanguage } from '../types';
+import { NAV_TRANSLATIONS } from '../utils/appTranslations';
 import {
   BookOpen,
   BookMarked,
@@ -14,6 +15,7 @@ interface BottomNavProps {
   onModuleChange: (mod: NavModule) => void;
   onOpenAddModal: () => void;
   themeMode?: ThemeMode;
+  selectedLanguage?: ZikrLanguage;
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
@@ -21,6 +23,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onModuleChange,
   onOpenAddModal,
   themeMode = 'day',
+  selectedLanguage = 'bn',
 }) => {
   const isDay = themeMode === 'day';
 
@@ -32,43 +35,43 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   }> = [
     {
       id: 'zikir_counter',
-      label: 'Zikir Counter',
+      label: NAV_TRANSLATIONS.zikir_counter[selectedLanguage],
       arabic: 'الذِّكْر',
       icon: <span className="text-base">📿</span>,
     },
     {
       id: 'quran',
-      label: 'Quran',
+      label: NAV_TRANSLATIONS.quran[selectedLanguage],
       arabic: 'القرآن',
       icon: <BookOpen className="w-4 h-4" />,
     },
     {
       id: 'kitab',
-      label: 'Kitab',
+      label: NAV_TRANSLATIONS.kitab[selectedLanguage],
       arabic: 'الكتب',
       icon: <BookMarked className="w-4 h-4" />,
     },
     {
       id: 'hadith',
-      label: 'Hadith',
+      label: NAV_TRANSLATIONS.hadith[selectedLanguage],
       arabic: 'الحديث',
       icon: <span className="text-base">📜</span>,
     },
     {
       id: 'salat_time',
-      label: 'Salat Time',
+      label: NAV_TRANSLATIONS.salat_time[selectedLanguage],
       arabic: 'الصلاة',
       icon: <Clock className="w-4 h-4" />,
     },
     {
       id: 'dua',
-      label: 'Dua',
+      label: NAV_TRANSLATIONS.dua[selectedLanguage],
       arabic: 'الدعاء',
       icon: <Heart className="w-4 h-4" />,
     },
     {
       id: 'aamal_tracker',
-      label: 'Aamal Tracker',
+      label: NAV_TRANSLATIONS.aamal_tracker[selectedLanguage],
       arabic: 'الأعمال',
       icon: <Award className="w-4 h-4" />,
     },

@@ -1,0 +1,1274 @@
+import { ZikrLanguage, NavModule } from '../types';
+
+/**
+ * Navigation module translations across the top 6 supported languages:
+ * Bengali (bn), English (en), Urdu (ur), Hindi (hi), Indonesian (id), Turkish (tr)
+ */
+export const NAV_TRANSLATIONS: Record<NavModule, Record<ZikrLanguage, string>> = {
+  zikir_counter: {
+    bn: 'জিকির কাউন্টার',
+    en: 'Zikir Counter',
+    ur: 'ذکر کاؤنٹر',
+    hi: 'ज़िक्र काउंटर',
+    id: 'Penghitung Zikir',
+    tr: 'Zikir Sayacı',
+  },
+  quran: {
+    bn: 'আল-কোরআন',
+    en: 'Quran',
+    ur: 'قرآن کریم',
+    hi: 'अल-क़ुरआन',
+    id: 'Al-Qur\'an',
+    tr: 'Kur\'an-ı Kerim',
+  },
+  kitab: {
+    bn: 'কিতাব লাইব্রেরি',
+    en: 'Kitab Library',
+    ur: 'کتب اسلامی',
+    hi: 'किताब लाइब्रेरी',
+    id: 'Kitab Islam',
+    tr: 'İslami Kitaplar',
+  },
+  hadith: {
+    bn: 'হাদিস শরিফ',
+    en: 'Hadith',
+    ur: 'احادیث مبارکہ',
+    hi: 'हदीस शरीफ़',
+    id: 'Hadis Shahih',
+    tr: 'Hadis-i Şerif',
+  },
+  salat_time: {
+    bn: 'নামাজের সময়',
+    en: 'Salat Time',
+    ur: 'اوقات نماز',
+    hi: 'नमाज़ का समय',
+    id: 'Waktu Sholat',
+    tr: 'Namaz Vakitleri',
+  },
+  dua: {
+    bn: 'দোয়া সমূহ',
+    en: 'Dua',
+    ur: 'مسنون دعائیں',
+    hi: 'मसनून दुआएं',
+    id: 'Doa Harian',
+    tr: 'Dualar',
+  },
+  aamal_tracker: {
+    bn: 'আমল ট্র্যাকার',
+    en: 'Aamal Tracker',
+    ur: 'اعمال ٹریکر',
+    hi: 'आमाल ट्रैकर',
+    id: 'Pelacak Amal',
+    tr: 'Amel Takibi',
+  },
+};
+
+/**
+ * Salat Time translations: Prayer names & UI elements
+ */
+export const PRAYER_NAMES: Record<string, Record<ZikrLanguage, string>> = {
+  Fajr: {
+    bn: 'ফজর',
+    en: 'Fajr',
+    ur: 'فجر',
+    hi: 'फ़ज्र',
+    id: 'Subuh',
+    tr: 'İmsak',
+  },
+  Sunrise: {
+    bn: 'সূর্যোদয়',
+    en: 'Sunrise',
+    ur: 'طلوع آفتاب',
+    hi: 'सूर्योदय',
+    id: 'Terbit',
+    tr: 'Güneş',
+  },
+  Dhuhr: {
+    bn: 'যোহর',
+    en: 'Dhuhr',
+    ur: 'ظہر',
+    hi: 'ज़ुहर',
+    id: 'Dzuhur',
+    tr: 'Öğle',
+  },
+  Asr: {
+    bn: 'আসর',
+    en: 'Asr',
+    ur: 'عصر',
+    hi: 'असर',
+    id: 'Ashar',
+    tr: 'İkindi',
+  },
+  Maghrib: {
+    bn: 'মাগরিব',
+    en: 'Maghrib',
+    ur: 'مغرب',
+    hi: 'मग़रिब',
+    id: 'Maghrib',
+    tr: 'Akşam',
+  },
+  Isha: {
+    bn: 'ইশা',
+    en: 'Isha',
+    ur: 'عشاء',
+    hi: 'इशा',
+    id: 'Isya',
+    tr: 'Yatsı',
+  },
+  Tahajjud: {
+    bn: 'তাহাজ্জুদ',
+    en: 'Tahajjud',
+    ur: 'تہجد',
+    hi: 'तहज्जुद',
+    id: 'Tahajud',
+    tr: 'Teheccüd',
+  },
+  Midnight: {
+    bn: 'মধ্যরাত',
+    en: 'Midnight',
+    ur: 'نصف شب',
+    hi: 'आधी रात',
+    id: 'Tengah Malam',
+    tr: 'Gece Yarısı',
+  },
+};
+
+export const SALAT_UI: Record<string, Record<ZikrLanguage, string>> = {
+  bannerTitle: {
+    bn: 'দৈনিক সালাত ও ওয়াক্ত সময়সূচি',
+    en: 'Daily Salat Prayer Times',
+    ur: 'روزانہ نمازوں کے اوقات',
+    hi: 'दैनिक नमाज़ का समय',
+    id: 'Jadwal Sholat Harian',
+    tr: 'Günlük Ezan ve Namaz Vakitleri',
+  },
+  bannerSub: {
+    bn: 'সঠিক গণনা পদ্ধতি ও কিবলা কম্পাস সমন্বিত নির্ভরযোগ্য ইসলামিক সময়সূচি',
+    en: 'Accurate prayer times with automatic sun-angle calculations and Qibla compass',
+    ur: 'مستند حساب کتاب اور قبلہ کمپاس کے ساتھ نماز کا نظام الاوقات',
+    hi: 'सटीक गणना और क़िबला कम्पास के साथ विश्वसनीय नमाज़ समय',
+    id: 'Jadwal sholat akurat dengan perhitungan posisi matahari & kompas kiblat',
+    tr: 'Güneş açılarına göre hassas namaz vakitleri ve Kıble pusulası',
+  },
+  nextPrayer: {
+    bn: 'পরবর্তী ওয়াক্ত',
+    en: 'Next Prayer in',
+    ur: 'اگلی نماز',
+    hi: 'अगली नमाज़',
+    id: 'Sholat Berikutnya',
+    tr: 'Sıradaki Namaz',
+  },
+  currentPrayer: {
+    bn: 'বর্তমান ওয়াক্ত',
+    en: 'Current Prayer',
+    ur: 'موجودہ وقت',
+    hi: 'वर्तमान वक़्त',
+    id: 'Waktu Saat Ini',
+    tr: 'Şimdiki Vakit',
+  },
+  qiblaCompass: {
+    bn: 'কিবলা কম্পাস',
+    en: 'Qibla Direction',
+    ur: 'قبلہ رخ کمپاس',
+    hi: 'क़िबला दिशा',
+    id: 'Arah Kiblat',
+    tr: 'Kıble Yönü',
+  },
+  selectCity: {
+    bn: 'শহর পরিবর্তন',
+    en: 'Change City',
+    ur: 'شہر منتخب کریں',
+    hi: 'शहर बदलें',
+    id: 'Ubah Kota',
+    tr: 'Şehir Değiştir',
+  },
+  adhanSound: {
+    bn: 'আজান শুনুন',
+    en: 'Play Adhan',
+    ur: 'اذان سنیں',
+    hi: 'अज़ान सुनें',
+    id: 'Putar Adzan',
+    tr: 'Ezanı Dinle',
+  },
+  stopAdhan: {
+    bn: 'আজান বন্ধ করুন',
+    en: 'Stop Adhan',
+    ur: 'اذان بند کریں',
+    hi: 'अज़ान बंद करें',
+    id: 'Hentikan Adzan',
+    tr: 'Ezanı Durdur',
+  },
+  remaining: {
+    bn: 'বাকি',
+    en: 'remaining',
+    ur: 'باقی ہے',
+    hi: 'शेष है',
+    id: 'tersisa',
+    tr: 'kaldı',
+  },
+  todaySchedule: {
+    bn: 'আজকের ৫ ওয়াক্তের সময়',
+    en: 'Today\'s 5 Prescribed Prayers',
+    ur: 'آج کی پانچ نمازوں کے اوقات',
+    hi: 'आज की पाँचों नमाज़ों के औक़ात',
+    id: 'Jadwal 5 Waktu Sholat Hari Ini',
+    tr: 'Bugünün 5 Vakit Namaz Çizelgesi',
+  },
+  qiblaFacing: {
+    bn: 'পবিত্র কাবার অভিমুখী হন',
+    en: 'Align device toward Holy Kaaba',
+    ur: 'اپنے رخ کو بیت اللہ کی سمت سیدھا کریں',
+    hi: 'पवित्र काबा की दिशा में संरेखित करें',
+    id: 'Hadapkan perangkat ke arah Ka\'bah',
+    tr: 'Cihazınızı Kâbe yönüne çeviriniz',
+  },
+};
+
+/**
+ * Quran View UI Translations & Edition mappings
+ */
+export const QURAN_EDITIONS: Record<ZikrLanguage, string> = {
+  bn: 'bn.bengali',
+  en: 'en.sahih',
+  ur: 'ur.jalandhry',
+  hi: 'hi.hindi',
+  id: 'id.indonesian',
+  tr: 'tr.ates',
+};
+
+export const QURAN_UI: Record<string, Record<ZikrLanguage, string>> = {
+  bannerTitle: {
+    bn: 'পবিত্র কুরআনুল কারীম',
+    en: 'The Noble Quran',
+    ur: 'قرآن مجید فرقان حمید',
+    hi: 'पवित्र क़ुरआनुल करीम',
+    id: 'Al-Qur\'an Al-Karim',
+    tr: 'Kur\'an-ı Kerim ve Meali',
+  },
+  bannerSub: {
+    bn: 'আরবি উসমানী লিপিশৈলী, অনুবাদ, উচ্চারণ ও অডিও তিলাওয়াতসহ ১১৪টি সম্পূর্ণ সূরা',
+    en: 'Complete 114 Surahs with Arabic Uthmani text, verified translations, and crystal-clear recitations',
+    ur: 'عثمانی رسم الخط، مکمل ترجمہ، تلفظ اور روح پرور تلاوت کے ساتھ ۱۱۴ سورتیں',
+    hi: 'अरबी उस्मानी लिपि, अनुवाद, उच्चारण और ऑडियो तिलावत सहित संपूर्ण 114 सूरह',
+    id: '114 Surah lengkap dengan teks Arab Utsmani, terjemahan resmi, dan audio qari merdu',
+    tr: 'Osmanlı hattı Arapça metin, Türkçe meal ve seçkin kârilerden tilavetle 114 Sure',
+  },
+  allSurahs: {
+    bn: 'সব সূরা (১১৪)',
+    en: 'All Surahs (114)',
+    ur: 'تمام سورتیں (۱۱۴)',
+    hi: 'सभी सूरह (114)',
+    id: 'Semua Surah (114)',
+    tr: 'Tüm Sureler (114)',
+  },
+  meccan: {
+    bn: 'মাক্কী',
+    en: 'Meccan',
+    ur: 'مکی',
+    hi: 'मक्की',
+    id: 'Makkiyah',
+    tr: 'Mekke',
+  },
+  medinan: {
+    bn: 'মাদানী',
+    en: 'Medinan',
+    ur: 'مدنی',
+    hi: 'मदनी',
+    id: 'Madaniyah',
+    tr: 'Medine',
+  },
+  popular: {
+    bn: 'জনপ্রিয় সূরা',
+    en: 'Popular',
+    ur: 'مشہور سورتیں',
+    hi: 'लोकप्रिय सूरह',
+    id: 'Populer',
+    tr: 'Popüler',
+  },
+  bookmarks: {
+    bn: 'বুকমার্কসমূহ',
+    en: 'Bookmarks',
+    ur: 'محفوظ آیات',
+    hi: 'बुकमार्क',
+    id: 'Markah Buku',
+    tr: 'Yer İmleri',
+  },
+  searchPlaceholder: {
+    bn: 'সূরা খুঁজুন (নাম বা নম্বর দিয়ে)...',
+    en: 'Search Surah by name or number...',
+    ur: 'سورہ تلاش کریں (نام یا نمبر)...',
+    hi: 'सूरह खोजें (नाम या संख्या से)...',
+    id: 'Cari surah berdasarkan nama atau nomor...',
+    tr: 'Sure adı veya numarası ile ara...',
+  },
+  reciter: {
+    bn: 'ক্বারী নির্বাচন',
+    en: 'Select Reciter',
+    ur: 'قاری کا انتخاب',
+    hi: 'क़ारी का चयन',
+    id: 'Pilih Qari',
+    tr: 'Kari Seçimi',
+  },
+  ayahs: {
+    bn: 'আয়াত',
+    en: 'Ayahs',
+    ur: 'آیات',
+    hi: 'आयतें',
+    id: 'Ayat',
+    tr: 'Ayet',
+  },
+  juz: {
+    bn: 'পারা',
+    en: 'Juz',
+    ur: 'پارہ',
+    hi: 'पारा',
+    id: 'Juz',
+    tr: 'Cüz',
+  },
+  fontSize: {
+    bn: 'হরফের আকার',
+    en: 'Font Size',
+    ur: 'حروف کا سائز',
+    hi: 'अक्षर का आकार',
+    id: 'Ukuran Huruf',
+    tr: 'Yazı Boyutu',
+  },
+  translationToggle: {
+    bn: 'অনুবাদ',
+    en: 'Translation',
+    ur: 'ترجمہ',
+    hi: 'अनुवाद',
+    id: 'Terjemahan',
+    tr: 'Meal',
+  },
+  pronounceToggle: {
+    bn: 'উচ্চারণ',
+    en: 'Transliteration',
+    ur: 'تلفظ',
+    hi: 'उच्चारण',
+    id: 'Transliterasi',
+    tr: 'Okunuş',
+  },
+  playSurah: {
+    bn: 'সম্পূর্ণ সূরা চালান',
+    en: 'Play Full Surah',
+    ur: 'مکمل سورہ سنیں',
+    hi: 'पूरी सूरह सुनें',
+    id: 'Putar Seluruh Surah',
+    tr: 'Tüm Sureyi Dinle',
+  },
+  pause: {
+    bn: 'থামান',
+    en: 'Pause',
+    ur: 'روکیں',
+    hi: 'रोकें',
+    id: 'Jeda',
+    tr: 'Durdur',
+  },
+  backToSurahs: {
+    bn: 'সূরা তালিকায় ফিরুন',
+    en: 'Back to Surah List',
+    ur: 'سورتوں کی فہرست پر واپس جائیں',
+    hi: 'सूरह सूची पर वापस जाएं',
+    id: 'Kembali ke Daftar Surah',
+    tr: 'Sure Listesine Dön',
+  },
+};
+
+/**
+ * Surah name meanings in 6 languages for key surahs
+ */
+export const SURAH_MEANINGS: Record<number, Record<ZikrLanguage, string>> = {
+  1: { bn: 'সূচনা / ভূমিকা', en: 'The Opening', ur: 'افتتاح / آغاز', hi: 'प्रारंभ / शुरुआत', id: 'Pembukaan', tr: 'Açılış' },
+  2: { bn: 'গাভী', en: 'The Cow', ur: 'گائے', hi: 'गाय', id: 'Sapi Betina', tr: 'Bakara (İnek)' },
+  3: { bn: 'ইমরানের পরিবার', en: 'The Family of Imran', ur: 'آل عمران', hi: 'इमरान का परिवार', id: 'Keluarga Imran', tr: 'Âl-i İmrân' },
+  4: { bn: 'নারীগণ', en: 'The Women', ur: 'عورتیں', hi: 'महिलाएं', id: 'Wanita', tr: 'Kadınlar' },
+  18: { bn: 'গুহা', en: 'The Cave', ur: 'غار', hi: 'गुफा', id: 'Gua', tr: 'Mağara' },
+  36: { bn: 'ইয়াসীন', en: 'Ya-Seen', ur: 'یاسین', hi: 'या-सीन', id: 'Ya Sin', tr: 'Yâsîn' },
+  55: { bn: 'পরম দয়ালু', en: 'The Beneficent', ur: 'رحمان', hi: 'अत्यंत दयालु', id: 'Maha Pengasih', tr: 'Rahmân' },
+  56: { bn: 'অবশ্যম্ভাবী ঘটনা', en: 'The Inevitable', ur: 'واقعہ', hi: 'महाघटना', id: 'Hari Kiamat', tr: 'Vâkıa' },
+  67: { bn: 'সার্বভৌম কর্তৃত্ব', en: 'The Sovereignty', ur: 'بادشاہت', hi: 'संप्रभुता', id: 'Kerajaan', tr: 'Mülk (Hükümranlık)' },
+  112: { bn: 'একত্ববাদ', en: 'The Sincerity', ur: 'اخلاص', hi: 'एकेश्वरवाद', id: 'Keesaan Allah', tr: 'İhlâs' },
+  113: { bn: 'ঊষাকাল', en: 'The Daybreak', ur: 'صبح', hi: 'भोर / सवेरा', id: 'Waktu Subuh', tr: 'Felak (Şafak)' },
+  114: { bn: 'মানবজাতি', en: 'Mankind', ur: 'انسان', hi: 'मानव जाति', id: 'Manusia', tr: 'Nâs (İnsanlar)' },
+};
+
+/**
+ * Hadith translations in all 6 languages
+ */
+export const HADITH_TRANSLATIONS: Record<string, Record<ZikrLanguage, { translation: string; reflection: string }>> = {
+  bukhari_1: {
+    bn: {
+      translation: 'সকল কাজের প্রতিদান নিয়তের উপর নির্ভরশীল। প্রত্যেক ব্যক্তি কেবল সেটাই পাবে যার সে নিয়ত করেছে। সুতরাং যে ব্যক্তি পার্থিব কোনো সুবিধার জন্য বা কোনো নারীকে বিবাহ করার উদ্দেশ্যে হিজরত করল, তার হিজরত সেই উদ্দেশ্যের জন্যই গণ্য হবে।',
+      reflection: 'ইসলামে প্রতিটি কর্মের মূল হলো অন্তরের পবিত্র নিয়ত। একটি খাঁটি নিয়তের মাধ্যমে দৈনন্দিন সাধারণ কাজও ইবাদতে রূপান্তরিত হয়।',
+    },
+    en: {
+      translation: 'The rewards of deeds depend upon the intentions and every person will get the reward according to what he has intended. So whoever emigrated for worldly benefits or for a woman to marry, his emigration was for what he emigrated for.',
+      reflection: 'The foundation of all actions in Islam begins in the heart. A pure intention transforms simple daily routines into acts of worship.',
+    },
+    ur: {
+      translation: 'اعمال کا دارومدار نیتوں پر ہے اور ہر انسان کے لیے وہی ہے جس کی اس نے نیت کی۔ پس جس کی ہجرت دنیا حاصل کرنے یا کسی عورت سے نکاح کرنے کے لیے ہو، تو اس کی ہجرت اسی کے لیے ہے جس کی طرف اس نے ہجرت کی۔',
+      reflection: 'اسلام میں ہر عمل کی بنیاد دل کی نیت پر ہے۔ خالص نیت انسان کے معمولی کاموں کو بھی عبادت بنا دیتی ہے۔',
+    },
+    hi: {
+      translation: 'कर्मों का दारोमदार नीयत पर है और हर इंसान को वही मिलेगा जिसकी उसने नीयत की। तो जिसकी हिजरत दुनियावी फायदे या किसी महिला से विवाह के लिए हुई, उसकी हिजरत उसी के लिए मानी जाएगी।',
+      reflection: 'इस्लाम में सभी कार्यों की नींव दिल की नीयत पर है। एक शुद्ध नीयत सामान्य दिनचर्या को भी इबादत में बदल देती है।',
+    },
+    id: {
+      translation: 'Sesungguhnya setiap amalan tergantung pada niatnya, dan setiap orang akan mendapatkan apa yang ia niatkan. Barangsiapa hijrahnya karena dunia yang ingin diraihnya atau karena wanita yang ingin dinikahinya, maka hijrahnya sesuai dengan apa yang ia niatkan.',
+      reflection: 'Landasan seluruh amalan dalam Islam bersumber dari hati. Niat yang ikhlas mengubah rutinitas biasa menjadi ibadah bernilai pahala.',
+    },
+    tr: {
+      translation: 'Ameller ancak niyetlere göredir ve herkes için ancak niyet ettiği şey vardır. Kimin hicreti elde edeceği bir dünyalık veya evleneceği bir kadın için ise, onun hicreti ne için hicret ettiyse ona aittir.',
+      reflection: 'İslam\'da bütün amellerin temeli kalpte başlar. İhlaslı ve samimi bir niyet, gündelik işleri dahi ibadete dönüştürür.',
+    },
+  },
+  muslim_2564: {
+    bn: {
+      translation: 'নিশ্চয়ই আল্লাহ তোমাদের বাহ্যিক রূপ ও ধন-সম্পদের দিকে তাকান না, বরং তিনি তোমাদের অন্তর ও কর্মের প্রতি দৃষ্টিপাত করেন।',
+      reflection: 'বাহ্যিক পদমর্যাদা বা সৌন্দর্যের চেয়ে অন্তরের তাকওয়া ও নেক আমলই আল্লাহর কাছে সবচেয়ে বেশি মূল্যবান।',
+    },
+    en: {
+      translation: 'Verily Allah does not look at your outward appearances or your wealth, but rather He looks at your hearts and your deeds.',
+      reflection: 'Inner spiritual purity and righteous behavior outweigh any superficial worldly status or cosmetic appearance.',
+    },
+    ur: {
+      translation: 'بے شک اللہ تمہاری صورتوں اور تمہارے مالوں کو نہیں دیکھتا، بلکہ وہ تمہارے دلوں اور تمہارے اعمال کو دیکھتا ہے۔',
+      reflection: 'ظاہری شکل و صورت یا دولت کے مقابلے میں دل کا اخلاص اور نیک اعمال اللہ کے ہاں سب سے زیادہ وزنی ہیں۔',
+    },
+    hi: {
+      translation: 'निस्संदेह अल्लाह तुम्हारी सूरत और तुम्हारी दौलत को नहीं देखता, बल्कि वह तुम्हारे दिलों और तुम्हारे आमालों को देखता है।',
+      reflection: 'बाहरी दिखावे और सांसारिक दौलत से कहीं बढ़कर आंतरिक पवित्रता और नेक आचरण का महत्व है।',
+    },
+    id: {
+      translation: 'Sesungguhnya Allah tidak melihat kepada rupa kalian dan harta kalian, akan tetapi Dia melihat kepada hati kalian dan amalan kalian.',
+      reflection: 'Kemurnian hati dan amal shaleh jauh melampaui kedudukan sosial maupun penampilan fisik duniawi.',
+    },
+    tr: {
+      translation: 'Şüphesiz ki Allah sizin suretlerinize ve mallarınıza bakmaz; fakat O sizin kalplerinize ve amellerinize bakar.',
+      reflection: 'İçsel manevi temizlik ve salih ameller, fani dünyanın gösterişli makamlarından ve dış görünüşünden kat kat üstündür.',
+    },
+  },
+  bukhari_6407: {
+    bn: {
+      translation: 'যে ব্যক্তি তার প্রতিপালককে স্মরণ করে এবং যে ব্যক্তি স্মরণ করে না, তাদের দৃষ্টান্ত হলো জীবিত ও মৃতের মতো।',
+      reflection: 'জিকির হলো আত্মার সঞ্জীবনী শক্তি। আল্লাহর স্মরণবিহীন অন্তর মৃতদেহের মতো নিস্তেজ।',
+    },
+    en: {
+      translation: 'The example of the one who remembers his Lord in comparison to the one who does not remember his Lord is like that of the living and the dead.',
+      reflection: 'Dhikr is the life-breath of the soul. Without constant remembrance of Allah, the heart withers into spiritual lifelessness.',
+    },
+    ur: {
+      translation: 'اپنے رب کا ذکر کرنے والے اور ذکر نہ کرنے والے کی مثال زندہ اور مردہ کی مانند ہے۔',
+      reflection: 'ذکر روح کی زندگی ہے۔ اللہ کی یاد کے بغیر دل روحانی طور پر مردہ ہو جاتا ہے۔',
+    },
+    hi: {
+      translation: 'अपने रब का ज़िक्र करने वाले और ज़िक्र न करने वाले की मिसाल ज़िंदा और मुर्दा की तरह है।',
+      reflection: 'ज़िक्र रूह की सांस है। अल्लाह के स्मरण के बिना दिल रूहानी रूप से मुर्दा हो जाता है।',
+    },
+    id: {
+      translation: 'Perumpamaan orang yang mengingat Tuhannya dengan orang yang tidak mengingat Tuhannya adalah seperti orang yang hidup dan orang yang mati.',
+      reflection: 'Dzikir adalah nafas bagi jiwa. Tanpa mengingat Allah, hati manusia akan menjadi layu dan mati secara spiritual.',
+    },
+    tr: {
+      translation: 'Rabbini zikreden kimse ile zikretmeyen kimsenin misali, diri ile ölü gibidir.',
+      reflection: 'Zikir ruhun can damarıdır. Allah\'ı zikretmekten uzak kalan bir kalp, manen ölü hükmündedir.',
+    },
+  },
+  bukhari_6405: {
+    bn: {
+      translation: 'দুটি বাক্য এমন রয়েছে যা জিহ্বায় উচ্চারণ করা সহজ, মিজানের পাল্লায় অত্যন্ত ভারী এবং দয়াময় আল্লাহর নিকট অত্যন্ত প্রিয়: "সুবহানাল্লাহি ওয়া বিহামদিহি, সুবহানাল্লাহিল আজিম"।',
+      reflection: 'অল্প সময়ে সহজেই জিহ্বায় জারি রাখা যায় এমন জিকির যা কিয়ামতের দিনে অফুরন্ত পুণ্য এনে দেবে।',
+    },
+    en: {
+      translation: 'Two phrases are light on the tongue, heavy on the scales of judgment, and deeply beloved to the Most Merciful: SubhanAllahi wa bihamdihi, SubhanAllahil-Azeem (Glory be to Allah and His is the praise, Glory be to Allah the Almighty).',
+      reflection: 'Tremendous divine reward for very brief, consistent invocations throughout the busy hours of your day.',
+    },
+    ur: {
+      translation: 'دو کلمات زبان پر ہلکے، میزان میں بہت بھاری اور رحمان کے ہاں نہایت محبوب ہیں: "سبحان اللہ وبحمدہ، سبحان اللہ العظیم"۔',
+      reflection: 'مختصر سے کلمات جنہیں دن بھر آسانی سے پڑھا جا سکتا ہے اور یہ میزان میں بے پناہ ثواب کا سبب بنتے ہیں۔',
+    },
+    hi: {
+      translation: 'दो कलमे ज़बान पर बहुत हल्के, तराज़ू में बहुत भारी और रहमान को बेहद प्यारे हैं: "सुब्हानअल्लाहि व बिहम्दिही, सुब्हानअल्लाहिल अज़ीम"।',
+      reflection: 'व्यस्त दिनचर्या में भी आसानी से पढ़े जाने वाले ये छोटे बोल आख़िरत में भारी नेकियों का ज़रिया हैं।',
+    },
+    id: {
+      translation: 'Dua kalimat yang ringan di lisan, berat di timbangan amal, dan dicintai oleh Ar-Rahman: Subhanallahi wa bihamdihi, Subhanallahil \'Azhim.',
+      reflection: 'Pahala yang sangat agung bagi dzikir yang singkat namun istiqomah dibaca di sela-sela kesibukan hidup.',
+    },
+    tr: {
+      translation: 'Dile hafif, mizanda ağır ve Rahman olan Allah\'a pek sevimli gelen iki kelime vardır: "Sübhânallâhi ve bi-hamdihî, Sübhânallâhil-azîm".',
+      reflection: 'Günlük koşuşturmacanın içinde dilimizden düşürmeyeceğimiz bu iki cümle, ahirette terazimizi ağırlaştıracaktır.',
+    },
+  },
+  muslim_223: {
+    bn: {
+      translation: 'পবিত্রতা ঈমানের অর্ধেক। আলহামদুলিল্লাহ মিজানের পাল্লা পূরণ করে। সুবহানাল্লাহ ও আলহামদুলিল্লাহ আসমান ও জমিনের মধ্যবর্তী শূন্যস্থান পূর্ণ করে দেয়। সালাত হলো নূর, সাদাকাহ হলো দলিল, ধৈর্য হলো জ্যোতি এবং কুরআন তোমার পক্ষে বা বিপক্ষে প্রমাণ।',
+      reflection: 'দৈনন্দিন জীবনে ওজু, নামাজ, ধৈর্য, দানশীলতা ও কুরআন অধ্যয়নের এক পূর্ণাঙ্গ সোনালী রূপরেখা।',
+    },
+    en: {
+      translation: 'Purification is half of faith. Al-hamdu lillah (Praise be to Allah) fills the scale. SubhanAllah and Al-hamdu lillah fill what is between the heavens and the earth. Prayer is a radiant light, charity is proof of faith, patience is an illuminating brightness, and the Quran is an argument for you or against you.',
+      reflection: 'Comprehensive blueprint for the Muslim believer connecting physical purity, prayer, charity, perseverance, and Quranic devotion.',
+    },
+    ur: {
+      translation: 'پاکیزگی نصف ایمان ہے۔ الحمد للہ میزان کو بھر دیتا ہے۔ سبحان اللہ اور الحمد للہ آسمان اور زمین کے درمیان کے حصے کو بھر دیتے ہیں۔ نماز نور ہے، صدقہ دلیل ہے، صبر روشنی ہے اور قرآن تمہارے حق میں یا تمہارے خلاف حجت ہے۔',
+      reflection: 'ایک مومن کے لیے جامع اصول جو طہارت، نماز، صبر، خیرات اور تلاوت قرآن کو باہم جوڑتا ہے۔',
+    },
+    hi: {
+      translation: 'पाकीज़गी आधा ईमान है। अल्हम्दुलिल्लाह तराज़ू को भर देता है। सुब्हानअल्लाह और अल्हम्दुलिल्लाह ज़मीन और आसमान के दरमियान को भर देते हैं। नमाज़ नूर है, सदक़ा दलील है, सब्र रोशनी है और क़ुरआन तुम्हारे हक़ में या तुम्हारे ख़िलाफ़ गवाह है।',
+      reflection: 'पवित्रता, नमाज़, सब्र, दान और क़ुरआन के साथ जीवन संवारने का सम्पूर्ण मार्गदर्शन।',
+    },
+    id: {
+      translation: 'Kesucian adalah separuh dari iman. Alhamdulillah memenuhi timbangan. Subhanallah dan Alhamdulillah memenuhi antara langit dan bumi. Sholat adalah cahaya, sedekah adalah bukti keimanan, sabar adalah lentera yang menyinari, dan Al-Qur\'an adalah pembela bagimu atau penuntut atasmu.',
+      reflection: 'Panduan lengkap bagi seorang muslim yang menyatukan kesucian lahir batin, sholat, sedekah, kesabaran, dan Al-Qur\'an.',
+    },
+    tr: {
+      translation: 'Temizlik imanın yarısıdır. Elhamdülillâh mizanı doldurur. Sübhânallâh ve Elhamdülillâh gökler ile yer arasını doldurur. Namaz nurdur, sadaka delildir, sabır ışıktır, Kur\'an ise senin lehine ya da aleyhine bir hüccettir.',
+      reflection: 'Müminin hayatını kuşatan temizlik, namaz, infak, sabır ve Kur\'an-ı Kerim bağlılığının muhteşem özeti.',
+    },
+  },
+  tirmidhi_2003: {
+    bn: {
+      translation: 'ঈমানের দিক দিয়ে সবচেয়ে পূর্ণাঙ্গ মুমিন সে, যার চরিত্র সবচেয়ে সুন্দর। আর তোমাদের মধ্যে সর্বোত্তম ব্যক্তি সে, যে তার পরিবারের কাছে সর্বোত্তম।',
+      reflection: 'ধর্মীয় চরিত্রের আসল পরীক্ষা বাইরের মানুষের সামনে নয়, বরং নিজের ঘরের মানুষ ও পরিবারের সাথে সুন্দর ও সদয় আচরণে প্রকাশিত হয়।',
+    },
+    en: {
+      translation: 'The most complete of believers in faith is the one with the best character, and the best of you are those who are best to their wives and families.',
+      reflection: 'The truest test of religious character is not outward ritualism, but how gentleness, empathy, and honor are displayed inside one\'s home.',
+    },
+    ur: {
+      translation: 'ایمان والوں میں سب سے کامل ایمان والا وہ ہے جس کے اخلاق سب سے اچھے ہیں، اور تم میں سب سے بہترین وہ ہیں جو اپنے اہل و عیال کے لیے سب سے اچھے ہیں۔',
+      reflection: 'دین داری کا اصل امتحان گھر کی چار دیواری میں عفو و درگزر اور حسنِ سلوک کے ساتھ سامنے آتا ہے۔',
+    },
+    hi: {
+      translation: 'ईमान वालों में सबसे मुकम्मल ईमान वाला वह है जिसके अख़लाक़ सबसे बेहतर हैं, और तुम में सबसे अच्छा वह है जो अपने घर वालों के साथ सबसे अच्छा हो।',
+      reflection: 'धार्मिक चरित्र की असली परख केवल बाहरी दिखावे में नहीं, बल्कि अपने परिवार के प्रति दया और स्नेह में है।',
+    },
+    id: {
+      translation: 'Mukmin yang paling sempurna imannya adalah yang paling baik akhlaknya, dan sebaik-baik kalian adalah yang paling baik terhadap keluarganya.',
+      reflection: 'Ujian ketakwaan sejati tampak pada kelembutan budi pekerti dan rasa hormat yang ditunjukkan di dalam rumah tangga.',
+    },
+    tr: {
+      translation: 'Müminlerin iman bakımından en mükemmeli, ahlakı en güzel olanıdır. Sizin en hayırlınız ise aile fertlerine karşı en hayırlı olanınızdır.',
+      reflection: 'Gerçek dindarlık, insanın ailesine ve ev halkına gösterdiği şefkat, adalet ve nezaketle belli olur.',
+    },
+  },
+  bukhari_6011: {
+    bn: {
+      translation: 'পারস্পরিক ভালোবাসা, দয়া ও সহমর্মিতার দিক দিয়ে মুমিনদের দৃষ্টান্ত একটি দেহের মতো; যখন দেহের কোনো একটি অঙ্গ ব্যথিত হয়, তখন গোটা দেহ অনিদ্রা ও জ্বরে আক্রান্ত হয়ে সাড়া দেয়।',
+      reflection: 'বিশ্বজুড়ে নিপীড়িত ও কষ্টে থাকা সকল মানুষের প্রতি সহানুভূতি ও সংহতি প্রকাশের প্রেরণা।',
+    },
+    en: {
+      translation: 'The likeness of the believers in their mutual love, mercy, and compassion is that of a single body; when any limb suffers, the entire body responds to it with wakefulness and fever.',
+      reflection: 'Cultivating universal empathy and solidarity with suffering human beings and fellow believers worldwide.',
+    },
+    ur: {
+      translation: 'مومنوں کی آپس میں محبت، رحمت اور شفقت کی مثال ایک جسم کی مانند ہے، جب اس کا کوئی عضو تکلیف میں ہوتا ہے تو سارا جسم بیداری اور بخار کے ساتھ اس کا ساتھ دیتا ہے۔',
+      reflection: 'تمام مومنین اور مصیبت زدہ انسانوں کے دکھ درد کو اپنا سمجھنے کا درس۔',
+    },
+    hi: {
+      translation: 'आपसी प्यार, दया और सहानुभूति में मोमिनों की मिसाल एक जिस्म जैसी है; जब जिस्म का कोई एक अंग दर्द में होता है तो पूरा जिस्म बेदारी और बुखार से उसका साथ देता है।',
+      reflection: 'दुनिया भर के दुखियारों और कमजोरों के प्रति सच्ची सहानुभूति और एकजुटता की सीख।',
+    },
+    id: {
+      translation: 'Perumpamaan kaum mukminin dalam hal saling mencintai, menyayangi, dan berlemah lembut adalah bagaikan satu tubuh. Jika ada satu anggota tubuh yang sakit, maka seluruh tubuh akan merasa demam dan tidak bisa tidur.',
+      reflection: 'Menumbuhkan empati mendalam dan kepedulian tulus terhadap sesama insan yang sedang tertimpa musibah.',
+    },
+    tr: {
+      translation: 'Müminler birbirlerini sevmede, birbirlerine merhamet ve şefkat göstermede bir vücut gibidirler. Vücudun bir uzvu hastalanırsa, diğer uzuvlar da uykusuzluk ve ateşle ona ortak olur.',
+      reflection: 'Dünyanın neresinde olursa olsun sıkıntı çeken kardeşlerimizin derdini kendi derdimiz bilip dayanışma içinde olma bilinci.',
+    },
+  },
+  muslim_2699: {
+    bn: {
+      translation: 'যে ব্যক্তি জ্ঞান অর্জনের উদ্দেশ্যে কোনো পথ অবলম্বন করে, আল্লাহ তার জন্য জান্নাতের পথ সহজ করে দেন। আর যখন কোনো সম্প্রদায় আল্লাহর কোনো ঘরে সমবেত হয়ে আল্লাহর কিতাব পাঠ করে এবং পরস্পরে তা আলোচনা করে, তখন তাদের ওপর প্রশান্তি নাজিল হয়, রহমত তাদের ঢেকে নেয়, ফেরেশতারা তাদের ঘিরে রাখে এবং আল্লাহ তাঁর নৈকট্যপ্রাপ্তদের কাছে তাদের আলোচনা করেন।',
+      reflection: 'কুরআন তিলাওয়াত ও পবিত্র জ্ঞান অন্বেষণের মজলিসে যে অনাবিল আত্মিক শান্তি বর্ষিত হয় তার মহিমা।',
+    },
+    en: {
+      translation: 'Whoever travels a path seeking knowledge, Allah will make easy for him a path to Paradise. No people gather together in one of the houses of Allah, reciting the Book of Allah and studying it between them, except that tranquility descends upon them, mercy envelops them, angels surround them, and Allah mentions them to those with Him.',
+      reflection: 'The sacred tranquility that descends whenever believers pause to recite the Quran and contemplate sacred wisdom.',
+    },
+    ur: {
+      translation: 'جو شخص علم کی تلاش میں کسی راستے پر چلے تو اللہ اس کے لیے جنت کا راستہ آسان کر دیتا ہے۔ اور جو لوگ اللہ کے گھروں میں سے کسی گھر میں جمع ہو کر اللہ کی کتاب کی تلاوت کرتے ہیں اور آپس میں اسے پڑھتے پڑھاتے ہیں، ان پر سکینت نازل ہوتی ہے، رحمت انہیں ڈھانپ لیتی ہے، فرشتے انہیں گھیر لیتے ہیں اور اللہ اپنے فرشتوں کے سامنے ان کا ذکر فرماتا ہے۔',
+      reflection: 'قرآن کریم کی تلاوت اور سیکھنے سکھانے کی محافل پر اترنے والی خاص روحانی برکات۔',
+    },
+    hi: {
+      translation: 'जो व्यक्ति इल्म की तलाश में किसी रास्ते पर चले तो अल्लाह उसके लिए जन्नत का रास्ता आसान कर देता है। और जब भी लोग अल्लाह के किसी घर में एकत्र होकर क़ुरआन की तिलावत करते हैं और आपस में समझते-समझाते हैं, उन पर सुकून नाज़िल होता है, रहमत उन्हें ढांप लेती है, फ़रिश्ते उन्हें घेर लेते हैं और अल्लाह उनका ज़िक्र फ़रिश्तों में करता है।',
+      reflection: 'पवित्र ज्ञान और क़ुरआन मजीद की महफ़िलों पर उतरने वाले आत्मिक सुकून का वर्णन।',
+    },
+    id: {
+      translation: 'Barangsiapa menempuh jalan untuk menuntut ilmu, maka Allah akan memudahkan baginya jalan menuju Surga. Tidaklah suatu kaum berkumpul di salah satu rumah Allah untuk membaca Kitabullah dan mempelajarinya bersama, melainkan turun ketenangan kepada mereka, rahmat melimpahi mereka, malaikat menaungi mereka, dan Allah menyebut mereka di hadapan makhluk yang ada di sisi-Nya.',
+      reflection: 'Ketenangan ilahi yang senantiasa menaungi mereka yang tekun mempelajari Al-Qur\'an dan mengamalkannya.',
+    },
+    tr: {
+      translation: 'Kim ilim tahsil etmek için bir yola girerse, Allah ona cennete giden yolu kolaylaştırır. Bir topluluk Allah\'ın evlerinden birinde toplanıp Allah\'ın kitabını okur ve aralarında müzakere ederlerse, üzerlerine sekîne (huzur) iner, onları rahmet bürür, melekler kuşatır ve Allah onları katındakilere anar.',
+      reflection: 'Kur\'an-ı Kerim okunan ve ilim öğrenilen meclislere inen manevi huzur ve meleklerin duası.',
+    },
+  },
+  bukhari_5641: {
+    bn: {
+      translation: 'কোনো মুসলিমের ওপর যে ক্লান্তি, রোগ, দুশ্চিন্তা, শোক, কষ্ট বা মর্মপীড়া আসে—এমনকি একটি কাঁটা যা তার শরীরে ফোটে—তার বিনিময়ে আল্লাহ তার পাপসমূহ মোচন করে দেন।',
+      reflection: 'জীবনের প্রতিটি কষ্ট, দুঃখ ও মানসিক উদ্বিগ্নতাও মুমিনের জন্য আত্মশুদ্ধি ও গুনাহ মাফের উপায় হয়ে দাঁড়ায় যদি ধৈর্য ধরা হয়।',
+    },
+    en: {
+      translation: 'No fatigue, illness, worry, sorrow, harm, or grief afflicts a Muslim—even the prick of a thorn—except that Allah expiates some of his sins by means of it.',
+      reflection: 'Even silent hardships, anxiety, and mundane exhaustion become a source of divine purification when borne with patient trust.',
+    },
+    ur: {
+      translation: 'مسلمان کو جو بھی تھکن، بیماری، غم، ملال، تکلیف یا پریشانی لاحق ہوتی ہے، حتیٰ کہ کانٹا بھی چبھتا ہے، تو اللہ اس کے بدلے اس کے گناہوں کو معاف فرما دیتا ہے۔',
+      reflection: 'زندگی کی ہر پریشانی اور دکھ مومن کے لیے گناہوں کا کفارہ اور درجات کی بلندی کا ذریعہ ہے۔',
+    },
+    hi: {
+      translation: 'किसी मुसलमान को जो भी थकान, बीमारी, चिंता, शोक, तकलीफ़ या परेशानी पहुंचती है—यहाँ तक कि एक कांटा भी चुभता है—तो अल्लाह उसके बदले उसके गुनाहों को माफ़ कर देता है।',
+      reflection: 'मुसीबत और बीमारी में सब्र करने पर इंसान के पाप धुल जाते हैं और रूह पवित्र हो जाती है।',
+    },
+    id: {
+      translation: 'Tidaklah seorang muslim tertimpa rasa letih, penyakit, kesedihan, duka, gangguan, hingga duri yang menusuknya, melainkan Allah menghapuskan sebagian dosa-dosanya dengan sebab itu.',
+      reflection: 'Bahkan kelelahan kecil dan kecemasan sehari-hari menjadi sarana penghapus dosa ketika dihadapi dengan penuh kesabaran.',
+    },
+    tr: {
+      translation: 'Bir müslümanın başına gelen hiçbir yorgunluk, hastalık, tasa, keder, eziyet ve hüzün yoktur ki—hattâ kendisine batan bir diken bile olsa—Allah bununla onun hatalarını bağışlamasın.',
+      reflection: 'Müminin sabırla karşıladığı her zorluk, hastalık ve sıkıntı günahlarına kefaret ve manevi bir arınmadır.',
+    },
+  },
+  tirmidhi_2499: {
+    bn: {
+      translation: 'আল্লাহ তাআলা ঘোষণা করেন: হে আদম সন্তান! যতক্ষণ তুমি আমাকে ডাকবে এবং আমার কাছে প্রত্যাশা রাখবে, আমি তোমার পূর্বের সমস্ত গুনাহ ক্ষমা করে দেব এবং কোনো পরোয়া করব না। হে আদম সন্তান! যদি তোমার গুনাহ আকাশের মেঘমালা পর্যন্তও পৌঁছে যায়, অতঃপর তুমি আমার কাছে ক্ষমা প্রার্থনা কর, তবে আমি তোমাকে ক্ষমা করে দেব।',
+      reflection: 'আল্লাহর ক্ষমার মহাসমুদ্র অনন্ত। খাঁটি অন্তরে তওবা করলে আল্লাহ তাআলা অতীতের সকল পাপ ক্ষমা করে দেন।',
+    },
+    en: {
+      translation: 'Allah the Almighty declared: "O son of Adam, so long as you call upon Me and ask of Me, I shall forgive you for what you have done, and I shall not mind. O son of Adam, were your sins to reach the clouds of the sky and then you asked forgiveness of Me, I would forgive you."',
+      reflection: 'The ocean of divine mercy is infinite. Never despair or doubt the readiness of Allah to forgive a genuinely remorseful heart.',
+    },
+    ur: {
+      translation: 'اللہ تبارک و تعالیٰ نے فرمایا: اے ابن آدم! جب تک تو مجھے پکارتا رہے گا اور مجھ سے امید رکھے گا، میں تیرے گناہ بخشتا رہوں گا اور پروا نہیں کروں گا۔ اے ابن آدم! اگر تیرے گناہ آسمان کی بلندیوں تک بھی پہنچ جائیں پھر تو مجھ سے بخشش مانگے تو میں تجھے معاف کر دوں گا۔',
+      reflection: 'اللہ کی رحمت کا سمندر بے پایاں ہے، سچی توبہ پر گناہ بخش دیے جاتے ہیں۔',
+    },
+    hi: {
+      translation: 'अल्लाह तआला ने फ़रमाया: ऐ आदम के बेटे! जब तक तू मुझे पुकारता रहेगा और मुझसे उम्मीद रखेगा, मैं तेरे गुनाहों को माफ़ करता रहूँगा। ऐ आदम के बेटे! अगर तेरे गुनाह आसमान की ऊंचाइयों तक भी पहुंच जाएं और तू मुझसे माफ़ी मांगे, तो मैं तुझे बख़्श दूँगा।',
+      reflection: 'अल्लाह की रहमत असीम है, सच्चे दिल से की गई तौबा कभी खाली नहीं जाती।',
+    },
+    id: {
+      translation: 'Allah Ta\'ala berfirman: "Wahai anak Adam, sesungguhnya selama engkau berdoa kepada-Ku dan berharap kepada-Ku, niscaya Aku ampuni apa yang telah ada padamu dan Aku tidak peduli. Wahai anak Adam, seandainya dosa-dosamu mencapai setinggi awan di langit, kemudian engkau memohon ampunan kepada-Ku, niscaya Aku ampuni."',
+      reflection: 'Samudra pengampunan Allah teramat luas. Jangan pernah berputus asa dari rahmat-Nya bagi hati yang bersungguh-sungguh bertaubat.',
+    },
+    tr: {
+      translation: 'Yüce Allah şöyle buyurdu: "Ey Âdemoğlu! Sen bana dua edip benden umdukça, sende olan günahlara aldırmadan seni bağışlarım. Ey Âdemoğlu! Günahların gökyüzünün bulutlarına kadar ulaşsa, sonra da benden mağfiret dilesen, seni yine bağışlarım."',
+      reflection: 'İlahi rahmet deryası sonsuzdur. Samimiyetle tövbe eden bir kulun affedilmeyecek hiçbir günahı yoktur.',
+    },
+  },
+  nawawi_15: {
+    bn: {
+      translation: 'যে ব্যক্তি আল্লাহ ও শেষ দিবসের প্রতি বিশ্বাস রাখে, সে যেন ভালো কথা বলে অথবা চুপ থাকে। আর যে ব্যক্তি আল্লাহ ও শেষ দিবসের প্রতি বিশ্বাস রাখে, সে যেন তার প্রতিবেশীকে সম্মান করে। আর যে ব্যক্তি আল্লাহ ও শেষ দিবসের প্রতি বিশ্বাস রাখে, সে যেন তার মেহমানকে সম্মান করে।',
+      reflection: 'জিহ্বা নিয়ন্ত্রণ করা এবং অনর্থক ও ক্ষতিকর কথাবার্তা থেকে বিরত থাকা আখিরাতে মুক্তির অন্যতম বড় উপায়।',
+    },
+    en: {
+      translation: 'Whoever believes in Allah and the Last Day should speak good or remain silent. And whoever believes in Allah and the Last Day should be hospitable to his neighbor. And whoever believes in Allah and the Last Day should be generous to his guest.',
+      reflection: 'Guarding the tongue from harmful gossip, falsehood, and bitterness is a direct reflection of belief in the Hereafter.',
+    },
+    ur: {
+      translation: 'جو شخص اللہ اور یومِ آخرت پر ایمان رکھتا ہو اسے چاہیے کہ وہ بھلی بات کہے یا خاموش رہے۔ اور جو اللہ اور یومِ آخرت پر ایمان رکھتا ہو وہ اپنے پڑوسی کی عزت کرے، اور جو اللہ اور یومِ آخرت پر ایمان رکھتا ہو وہ اپنے مہمان کی تکریم کرے۔',
+      reflection: 'زبان کی حفاظت اور انسانوں کے حقوق کی پاسداری ایمان کا بنیادی تقاضا ہے۔',
+    },
+    hi: {
+      translation: 'जो व्यक्ति अल्लाह और आख़िरत के दिन पर ईमान रखता है, उसे चाहिए कि वह अच्छी बात कहे या ख़ामोश रहे। और जो अल्लाह और आख़िरत पर ईमान रखता है वह अपने पड़ोसी का सम्मान करे, और अपने मेहमान की इज़्ज़त करे।',
+      reflection: 'ज़बान पर नियंत्रण और बुराई से ख़ामोशी ही इंसान के ईमान की सच्ची पहचान है।',
+    },
+    id: {
+      translation: 'Barangsiapa yang beriman kepada Allah dan Hari Akhir, hendaklah ia berkata yang baik atau diam. Dan barangsiapa yang beriman kepada Allah dan Hari Akhir hendaklah ia memuliakan tetangganya, dan barangsiapa yang beriman kepada Allah dan Hari Akhir hendaklah ia memuliakan tamunya.',
+      reflection: 'Menjaga lisan dari perkataan sia-sia dan fitnah adalah cerminan langsung dari keimanan yang kokoh kepada Hari Pembalasan.',
+    },
+    tr: {
+      translation: 'Kim Allah\'a ve ahiret gününe iman ediyorsa, ya hayır söylesin ya da sussun. Kim Allah\'a ve ahiret gününe iman ediyorsa, komşusuna ikram etsin. Kim Allah\'a ve ahiret gününe iman ediyorsa, misafirini ağırlasın.',
+      reflection: 'Dili gıybetten ve faydasız lakırdıdan korumak, ahiret inancının en somut ahlaki tezahürüdür.',
+    },
+  },
+  muslim_1015: {
+    bn: {
+      translation: 'নিশ্চয়ই প্রতিটি তাসবীহ (সুবহানাল্লাহ) একটি সাদাকাহ, প্রতিটি তাকবীর (আল্লাহু আকবার) একটি সাদাকাহ, প্রতিটি তাহমীদ (আলহামদুলিল্লাহ) একটি সাদাকাহ, প্রতিটি তাহলীল (লা ইলাহা ইল্লাল্লাহ) একটি সাদাকাহ, সৎকাজের আদেশ দেওয়া একটি সাদাকাহ এবং অসৎকাজ থেকে নিষেধ করা একটি সাদাকাহ।',
+      reflection: 'সাদাকাহ কেবল ধন-সম্পদের মাঝে সীমাবদ্ধ নয়। আল্লাহর পবিত্র জিকির এবং মানুষের উপকারে আসা প্রতিটি নেক কাজই সাদাকাহ হিসেবে লিপিবদ্ধ হয়।',
+    },
+    en: {
+      translation: 'In every Tasbeeh (SubhanAllah) is charity, in every Takbeer (Allahu Akbar) is charity, in every Tahmeed (Alhamdulillah) is charity, in every Tahleel (La ilaha illallah) is charity, enjoining good is charity, and forbidding evil is charity.',
+      reflection: 'Charity is not limited to financial wealth. Every mindful praise of Allah and every supportive gesture is recorded as ongoing charity.',
+    },
+    ur: {
+      translation: 'ہر تسبیح (سبحان اللہ) صدقہ ہے، ہر تکبیر (اللہ اکبر) صدقہ ہے، ہر تحمید (الحمد للہ) صدقہ ہے، ہر تہلیل (لا الہ الا اللہ) صدقہ ہے، بھلائی کا حکم دینا صدقہ ہے اور برائی سے روکنا صدقہ ہے۔',
+      reflection: 'صدقہ صرف مال و دولت تک محدود نہیں۔ ہر ذکر الٰہی اور نیکی کی دعوت صدقہ جاریہ ہے۔',
+    },
+    hi: {
+      translation: 'हर तस्बीह (सुब्हानअल्लाह) सदक़ा है, हर तकबीर (अल्लाहु अकबर) सदक़ा है, हर तहमीद (अल्हम्दुलिल्लाह) सदक़ा है, हर तहलील (ला इलाहा इल्लल्लाह) सदक़ा है, नेकी का हुक्म देना सदक़ा है और बुराई से रोकना सदक़ा है।',
+      reflection: 'दान केवल धन का नहीं होता; ज़िक्र की हर गूंज और भलाई की हर बात सदक़े के समान है।',
+    },
+    id: {
+      translation: 'Setiap tasbih adalah sedekah, setiap takbir adalah sedekah, setiap tahmid adalah sedekah, setiap tahlil adalah sedekah, memerintahkan kebaikan adalah sedekah, dan mencegah kemungkaran adalah sedekah.',
+      reflection: 'Sedekah tidak terbatas pada materi. Setiap pujian dzikir kepada Allah dan seruan pada kebaikan tercatat sebagai pahala sedekah.',
+    },
+    tr: {
+      translation: 'Her tesbih (Sübhânallâh) bir sadakadır, her tekbir (Allâhu Ekber) bir sadakadır, her tahmid (Elhamdülillâh) bir sadakadır, her tehlil (Lâ ilâhe illallâh) bir sadakadır, iyiliği emretmek bir sadaka, kötülükten sakındırmak da bir sadakadır.',
+      reflection: 'Sadaka yalnızca maddi infaktan ibaret değildir. Dille yapılan her zikir ve insanlara uzatılan her hayırlı el sadakadır.',
+    },
+  },
+};
+
+/**
+ * Hadith Topics translated in 6 languages
+ */
+export const HADITH_TOPICS: Record<string, Record<ZikrLanguage, string>> = {
+  all: { bn: 'সব বিষয়', en: 'All Topics', ur: 'تمام موضوعات', hi: 'सभी विषय', id: 'Semua Topik', tr: 'Tüm Konular' },
+  'Faith & Tawheed': { bn: 'ঈমান ও তাওহীদ', en: 'Faith & Tawheed', ur: 'ایمان و توحید', hi: 'ईमान और तौहीद', id: 'Iman & Tauhid', tr: 'İman ve Tevhid' },
+  'Salah & Purification': { bn: 'নামাজ ও পবিত্রতা', en: 'Salah & Purification', ur: 'نماز و طہارت', hi: 'नमाज़ और पाकीज़गी', id: 'Sholat & Bersuci', tr: 'Namaz ve Temizlik' },
+  'Character & Akhlaq': { bn: 'উত্তম চরিত্র ও শিষ্টাচার', en: 'Character & Akhlaq', ur: 'اخلاق و آداب', hi: 'सदाचार व अख़लाक़', id: 'Akhlak Mulia', tr: 'Ahlak ve Nezaket' },
+  'Dhikr & Dua': { bn: 'জিকির ও দোয়া', en: 'Dhikr & Dua', ur: 'ذکر و دعا', hi: 'ज़िक्र और दुआ', id: 'Dzikir & Doa', tr: 'Zikir ve Dua' },
+  'Charity & Kindness': { bn: 'দান ও দয়া', en: 'Charity & Kindness', ur: 'صدقہ و سخاوت', hi: 'दान और दयालुता', id: 'Sedekah & Kebaikan', tr: 'Sadaka ve İyilik' },
+  'Patience & Trials': { bn: 'ধৈর্য ও পরীক্ষা', en: 'Patience & Trials', ur: 'صبر و استقامت', hi: 'धैर्य और परीक्षा', id: 'Sabar & Ujian', tr: 'Sabır ve İmtihan' },
+  'Repentance & Mercy': { bn: 'তওবা ও আল্লাহর ক্ষমা', en: 'Repentance & Mercy', ur: 'توبہ و رحمت', hi: 'तौबा और दया', id: 'Taubat & Rahmat', tr: 'Tövbe ve Merhamet' },
+};
+
+export const HADITH_UI: Record<string, Record<ZikrLanguage, string>> = {
+  bannerTitle: {
+    bn: 'সহিহ হাদিস ভাণ্ডার',
+    en: 'Authentic Hadith Treasury',
+    ur: 'صحیح احادیث کا خزانہ',
+    hi: 'प्रामाणिक हदीस संग्रह',
+    id: 'Kumpulan Hadis Shahih',
+    tr: 'Mübarek Hadis Hazinesi',
+  },
+  bannerSub: {
+    bn: 'সহিহ বুখারী, মুসলিম ও সুনান গ্রন্থসমূহ থেকে রাসূলুল্লাহ ﷺ-এর অমর বাণী ও জীবনাদর্শ',
+    en: 'Priceless sayings, guidance, and character insights of the Prophet Muhammad ﷺ from Sahih al-Bukhari and classical compendiums',
+    ur: 'صحیح بخاری، صحیح مسلم اور کتبِ احادیث سے رسول اللہ ﷺ کے ارشادات اور اخلاق کریمہ',
+    hi: 'सहीह बुखारी और मुस्लिम से नबी करीम ﷺ के पवित्र उपदेश और जीवन आदर्श',
+    id: 'Mutiara sabda dan teladan mulia Rasulullah ﷺ dari Sahih Bukhari, Muslim, dan kitab mu\'tabar',
+    tr: 'Sahih-i Buhari ve Sahih-i Müslim\'den Peygamber Efendimiz ﷺ\'in nurlu hadis ve tavsiyeleri',
+  },
+  dailyHadith: {
+    bn: 'আজকের নির্বাচিত হাদিস',
+    en: 'Hadith of the Day',
+    ur: 'آج کی حدیث مبارکہ',
+    hi: 'आज की हदीस',
+    id: 'Hadis Hari Ini',
+    tr: 'Günün Hadis-i Şerifi',
+  },
+  searchPlaceholder: {
+    bn: 'হাদিস, বিষয়বস্তু বা রাবি খুঁজুন...',
+    en: 'Search hadith, topic, or narrator...',
+    ur: 'حدیث یا راوی تلاش کریں...',
+    hi: 'हदीस, विषय या वर्णनकर्ता खोजें...',
+    id: 'Cari hadis, tema, atau perawi...',
+    tr: 'Hadis, konu veya ravi ara...',
+  },
+  narrator: {
+    bn: 'বর্ণনাকারী',
+    en: 'Narrator',
+    ur: 'راوی',
+    hi: 'वर्णनकर्ता',
+    id: 'Perawi',
+    tr: 'Ravi',
+  },
+  grade: {
+    bn: 'মান',
+    en: 'Grade',
+    ur: 'درجہ',
+    hi: 'दर्जा',
+    id: 'Derajat',
+    tr: 'Sıhhat',
+  },
+  copy: {
+    bn: 'কপি',
+    en: 'Copy',
+    ur: 'کاپی',
+    hi: 'कॉपी',
+    id: 'Salin',
+    tr: 'Kopyala',
+  },
+  copied: {
+    bn: 'কপি হয়েছে',
+    en: 'Copied',
+    ur: 'کاپی ہو گیا',
+    hi: 'कॉपी किया गया',
+    id: 'Tersalin',
+    tr: 'Kopyalandı',
+  },
+  reflection: {
+    bn: 'শিক্ষা ও উপলব্ধি',
+    en: 'Spiritual Reflection',
+    ur: 'حکمت و سبق',
+    hi: 'आध्यात्मिक सीख',
+    id: 'Renungan Spiritual',
+    tr: 'Manevi İbret',
+  },
+};
+
+/**
+ * Dua translations in all 6 languages
+ */
+export const DUA_TRANSLATIONS: Record<string, Record<ZikrLanguage, { title: string; translation: string; virtue?: string; timing?: string }>> = {
+  post_salah_tasbeeh: {
+    bn: {
+      title: 'ফরজ সালাত পরবর্তী তাসবীহ (৩৩-৩৩-৩৩-১)',
+      timing: 'ফরজ সালাতের সমাপ্তির পরপরই',
+      translation: 'আল্লাহ পবিত্র ও মহিমান্বিত (৩৩ বার), সমস্ত প্রশংসা আল্লাহর জন্য (৩৩ বার), আল্লাহ সর্বশ্রেষ্ঠ (৩৩ বার), অতঃপর: "আল্লাহ ব্যতীত কোনো সত্য উপাস্য নেই, তিনি একক, তাঁর কোনো শরিক নেই; সমস্ত রাজত্ব ও প্রশংসা একমাত্র তাঁরই, এবং তিনি সকল কিছুর ওপর ক্ষমতাবান।"',
+      virtue: 'যে ব্যক্তি প্রত্যেক ফরজ সালাতের পর এটি পাঠ করবে, তার পাপ সমুদ্রের ফেনার ন্যায় হলেও ক্ষমা করে দেওয়া হবে (সহিহ মুসলিম)।',
+    },
+    en: {
+      title: 'Tasbeeh After Fard Salah (Sunnah 33-33-33-1)',
+      timing: 'Immediately after concluding obligatory prayer',
+      translation: 'Glory be to Allah (33 times), Praise be to Allah (33 times), Allah is the Greatest (33 times), followed by: "There is no true deity except Allah alone, without partner; to Him belongs all sovereignty and praise, and He has power over all things."',
+      virtue: 'Whoever recites this after every prescribed prayer will have his sins forgiven even if they are like the foam of the sea.',
+    },
+    ur: {
+      title: 'فرض نماز کے بعد کی تسبیحات (۳۳-۳۳-۳۳-۱)',
+      timing: 'فرض نماز مکمل ہوتے ہی',
+      translation: 'اللہ پاک ہے (۳۳ بار)، تمام تعریفیں اللہ کے لیے ہیں (۳۳ بار)، اللہ سب سے بڑا ہے (۳۳ بار)، اور آخر میں: "اللہ کے سوا کوئی معبود نہیں، وہ یکتا ہے، اس کا کوئی شریک نہیں، اسی کے لیے بادشاہت اور اسی کے لیے حمد ہے اور وہ ہر چیز پر قادر ہے۔"',
+      virtue: 'جو شخص ہر فرض نماز کے بعد یہ پڑھے گا اس کے گناہ معاف کر دیے جائیں گے چاہے وہ سمندر کی جھاگ کے برابر ہی کیوں نہ ہوں۔',
+    },
+    hi: {
+      title: 'फ़र्ज़ नमाज़ के बाद की तस्बीह (33-33-33-1)',
+      timing: 'फ़र्ज़ नमाज़ पूरी करने के तुरंत बाद',
+      translation: 'अल्लाह पवित्र है (33 बार), सभी प्रशंसा अल्लाह के लिए है (33 बार), अल्लाह सबसे बड़ा है (33 बार), फिर: "अल्लाह के सिवा कोई सच्चा पूज्य नहीं, वह अकेला है, उसका कोई साझी नहीं; उसी का राज्य है और उसी की प्रशंसा है, और वह हर चीज़ पर सर्वशक्तिमान है।"',
+      virtue: 'जो हर फ़र्ज़ नमाज़ के बाद इसे पढ़ता है उसके गुनाह समुद्र के झाग के बराबर भी हों तो क्षमा कर दिए जाते हैं।',
+    },
+    id: {
+      title: 'Tasbih Setelah Sholat Fardhu (Sunnah 33-33-33-1)',
+      timing: 'Segera setelah salam sholat fardhu',
+      translation: 'Maha Suci Allah (33x), Segala puji bagi Allah (33x), Allah Maha Besar (33x), dilanjutkan: "Tidak ada sesembahan yang berhak disembah selain Allah semata, tiada sekutu bagi-Nya. Bagi-Nya segala kerajaan dan pujian, dan Dia Maha Kuasa atas segala sesuatu."',
+      virtue: 'Barangsiapa membacanya setiap selesai sholat fardhu, dosa-dosanya akan diampuni meskipun sebanyak buih di lautan.',
+    },
+    tr: {
+      title: 'Farz Namazın Ardından Tesbihat (33-33-33-1)',
+      timing: 'Farz namazı tamamlar tamamlamaz',
+      translation: 'Allah her kusurdan uzaktır (33 defa), Hamd Allah\'a mahsustur (33 defa), Allah en büyüktür (33 defa), ve ardından: "Allah\'tan başka ilah yoktur, O tektir, ortağı yoktur; mülk O\'nundur, hamd O\'na mahsustur ve O her şeye kadirdir."',
+      virtue: 'Kim her farz namazın peşinden bunu okursa, deniz köpüğü kadar günahı olsa dahi bağışlanır.',
+    },
+  },
+  post_salah_ayatul_kursi: {
+    bn: {
+      title: 'প্রত্যেক ফরজ নামাজের পর আয়াতুল কুরসী',
+      timing: 'ফরজ নামাজ শেষে',
+      translation: 'আল্লাহ! তিনি ব্যতীত কোনো সত্য উপাস্য নেই, তিনি চিরঞ্জীব, সর্বসত্তার ধারক। তন্দ্রা বা নিদ্রা তাঁকে স্পর্শ করে না। আসমান ও জমিনে যা কিছু আছে সব তাঁরই...',
+      virtue: 'রাসূলুল্লাহ ﷺ বলেছেন: যে ব্যক্তি প্রত্যেক ফরজ সালাতের পর আয়াতুল কুরসী পাঠ করবে, তার জান্নাতে প্রবেশের পথে মৃত্যু ব্যতীত আর কোনো বাধা থাকবে না।',
+    },
+    en: {
+      title: 'Ayat al-Kursi After Every Obligatory Prayer',
+      timing: 'After every Fard prayer',
+      translation: 'Allah! There is no deity except Him, the Ever-Living, the Sustainer of all existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth...',
+      virtue: 'The Messenger of Allah ﷺ said: "Whoever recites Ayat al-Kursi immediately after each prescribed prayer, there will be nothing between him and his entering Paradise except death."',
+    },
+    ur: {
+      title: 'ہر فرض نماز کے بعد آیت الکرسی',
+      timing: 'ہر فرض نماز کے بعد',
+      translation: 'اللہ! اس کے سوا کوئی معبود نہیں، وہ ہمیشہ زندہ اور قائم رکھنے والا ہے۔ نہ اسے اونگھ آتی ہے نہ نیند۔ اسی کا ہے جو آسمانوں اور زمین میں ہے...',
+      virtue: 'رسول اللہ ﷺ نے فرمایا: جس نے ہر فرض نماز کے بعد آیت الکرسی پڑھی، اس کے اور جنت میں داخلے کے درمیان سوائے موت کے کوئی رکاوٹ نہیں ہوگی۔',
+    },
+    hi: {
+      title: 'हर फ़र्ज़ नमाज़ के बाद आयतुल कुर्सी',
+      timing: 'हर फ़र्ज़ नमाज़ के बाद',
+      translation: 'अल्लाह! उसके सिवा कोई सच्चा पूज्य नहीं, वह सदा जीवित और सब का संभालने वाला है। न उसे ऊंघ आती है और न नींद। आकाशों और धरती में जो कुछ है उसी का है...',
+      virtue: 'रसूलुल्लाह ﷺ ने फ़रमाया: जिसने हर फ़र्ज़ नमाज़ के बाद आयतुल कुर्सी पढ़ी, उसे जन्नत में दाखिल होने से मौत के सिवा कुछ नहीं रोक सकता।',
+    },
+    id: {
+      title: 'Ayat Kursi Setiap Selesai Sholat Fardhu',
+      timing: 'Setelah setiap sholat wajib',
+      translation: 'Allah, tidak ada tuhan selain Dia, Yang Maha Hidup, Yang terus-menerus mengurus makhluk-Nya. Tidak mengantuk dan tidak tidur. Milik-Nya apa yang ada di langit dan di bumi...',
+      virtue: 'Rasulullah ﷺ bersabda: "Barangsiapa membaca Ayat Kursi setiap selesai sholat wajib, tidak ada yang menghalanginya masuk surga selain kematian."',
+    },
+    tr: {
+      title: 'Her Farz Namazın Ardından Ayetü\'l-Kürsi',
+      timing: 'Her farz namazın peşinden',
+      translation: 'Allah, O\'ndan başka ilah yoktur; diridir, her şeyi varlıkta tutandır. O\'nu ne bir uyuklama ne de bir uyku tutar. Göklerde ve yerde ne varsa hepsi O\'nundur...',
+      virtue: 'Peygamber Efendimiz ﷺ: "Kim her farz namazdan sonra Ayetü\'l-Kürsi\'yi okursa, cennete girmesine ancak ölüm engel olur" buyurmuştur.',
+    },
+  },
+  post_salah_istighfar: {
+    bn: {
+      title: 'সালাতের সালাম ফেরানোর পর ইস্তেগফার ও শান্তি প্রার্থনা',
+      timing: 'সালাতের সালাম ফিরিয়েই',
+      translation: 'আমি আল্লাহর কাছে ক্ষমা চাই (৩ বার)। হে আল্লাহ, আপনিই শান্তি এবং আপনার পক্ষ থেকেই শান্তি আসে। হে মহিমান্বিত ও মর্যাদার অধিকারী, আপনি বরকতময়।',
+      virtue: 'সালাত শেষেই আল্লাহর দরবারে রাসূলুল্লাহ ﷺ-এর শেখানো বিনম্র আকুতি।',
+    },
+    en: {
+      title: 'Istighfar & Peace Invocation After Tasleem',
+      timing: 'Immediately upon completing Salah',
+      translation: 'I seek forgiveness from Allah (3 times). O Allah, You are Peace and from You comes peace. Blessed are You, O Owner of majesty and honor.',
+      virtue: 'Sunnah uttered by the Prophet ﷺ immediately upon turning from prayer.',
+    },
+    ur: {
+      title: 'نماز کے بعد استغفار اور سلامتی کی دعا',
+      timing: 'نماز سے سلام پھیرتے ہی',
+      translation: 'میں اللہ سے بخشش مانگتا ہوں (۳ بار)۔ اے اللہ! تو ہی سراپا سلامتی ہے اور تیری طرف سے ہی سلامتی ہے، تو بڑی برکت والا ہے، اے جلال اور بزرگی والے۔',
+      virtue: 'نماز مکمل ہوتے ہی نبی کریم ﷺ کی مبارک سنت۔',
+    },
+    hi: {
+      title: 'नमाज़ के बाद इस्तग़फ़ार और सलामती की दुआ',
+      timing: 'नमाज़ का सलाम फेरते ही',
+      translation: 'मैं अल्लाह से माफ़ी मांगता हूँ (3 बार)। ऐ अल्लाह, तू ही सलामती है और तेरी तरफ़ से ही सलामती है। तू बड़ी बरकत वाला है, ऐ जलाल और इज़्ज़त वाले।',
+      virtue: 'नमाज़ पूरी होने पर नबी करीम ﷺ की प्यारी सुन्नत।',
+    },
+    id: {
+      title: 'Istighfar & Doa Keselamatan Pasca Sholat',
+      timing: 'Segera setelah salam sholat',
+      translation: 'Aku memohon ampun kepada Allah (3 kali). Ya Allah, Engkau adalah Maha Penyelamat dan dari-Mu lah datangnya keselamatan. Maha Berkah Engkau, wahai Dzat Pemilik Keagungan dan Kemuliaan.',
+      virtue: 'Sunnah yang senantiasa dilafalkan oleh Rasulullah ﷺ setelah menyelesaikan sholat.',
+    },
+    tr: {
+      title: 'Namazdan Sonra İstiğfar ve Selamet Duası',
+      timing: 'Selam verir vermez',
+      translation: 'Allah\'tan mağfiret dilerim (3 defa). Allah\'ım, Sen selamsın, selamet de ancak Sendedir. Ey celal ve ikram sahibi Rabbimiz, Sen ne yücesin!',
+      virtue: 'Peygamber Efendimiz ﷺ namazı bitirince ilk olarak bu istiğfar ve duayı okurdu.',
+    },
+  },
+  quran_rabbana_dunya_akhirah: {
+    bn: {
+      title: 'রাব্বানা আতিনা ফিদ-দুনয়া হাসানাহ (উভয় জাহানের কল্যাণ)',
+      timing: 'তাওয়াফে, নামাজের পর ও যেকোনো দোয়ায়',
+      translation: 'হে আমাদের প্রতিপালক! আমাদের দুনিয়াতেও কল্যাণ দান করুন এবং আখিরাতেও কল্যাণ দান করুন এবং আমাদেরকে জাহান্নামের আগুন থেকে রক্ষা করুন।',
+      virtue: 'রাসূলুল্লাহ ﷺ-এর সবচেয়ে বেশি পঠিত সর্বশ্রেষ্ঠ সমন্বিত দোয়া (সহিহ বুখারী)।',
+    },
+    en: {
+      title: 'Rabbana Atina fid-Dunya Hasanatan',
+      timing: 'During Tawaf, after prayers, and in daily remembrance',
+      translation: 'Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire.',
+      virtue: 'The most frequent supplication of the Prophet Muhammad ﷺ (Sahih al-Bukhari 6389).',
+    },
+    ur: {
+      title: 'ربنا آتنا فی الدنیا حسنۃ (دنیا و آخرت کی بھلائی)',
+      timing: 'طواف میں، نماز کے بعد اور ہر دعا میں',
+      translation: 'اے ہمارے رب! ہمیں دنیا میں بھی بھلائی عطا فرما اور آخرت میں بھی بھلائی عطا فرما اور ہمیں آگ کے عذاب سے بچا۔',
+      virtue: 'نبی کریم ﷺ کی سب سے کثرت سے پڑھی جانے والی مبارک دعا۔',
+    },
+    hi: {
+      title: 'रब्बना आतीना फ़िद-दुनिया हसनतन (दोनों जहान की भलाई)',
+      timing: 'तवाफ़ में, नमाज़ों के बाद और हर दुआ में',
+      translation: 'ऐ हमारे रब! हमें इस दुनिया में भी भलाई दे और आख़िरत में भी भलाई दे और हमें आग के अज़ाब से बचा।',
+      virtue: 'रसूलुल्लाह ﷺ की सबसे पसंदीदा और कसरत से पढ़ी जाने वाली दुआ।',
+    },
+    id: {
+      title: 'Rabbana Atina fid-Dunya Hasanah (Kebaikan Dunia & Akhirat)',
+      timing: 'Saat Thawaf, setelah sholat, dan dalam setiap doa',
+      translation: 'Wahai Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari siksa api neraka.',
+      virtue: 'Doa sapu jagat yang paling sering dipanjatkan oleh Nabi Muhammad ﷺ.',
+    },
+    tr: {
+      title: 'Rabbena Atina fid-Dünya Haseneten (Dünya ve Ahiret İyiliği)',
+      timing: 'Tavafta, namaz sonralarında ve her duada',
+      translation: 'Rabbimiz! Bize dünyada da iyilik ve güzellik ver, ahirette de iyilik ve güzellik ver ve bizi cehennem azabından koru.',
+      virtue: 'Peygamber Efendimiz ﷺ\'in en çok okuduğu ve tavsiye buyurduğu kapsamlı dua.',
+    },
+  },
+  quran_yunus_dua: {
+    bn: {
+      title: 'আয়াতুল কারীমা — ইউনুস (আ.)-এর দোআ',
+      timing: 'বিপদাপদ, জটিল সমস্যা ও দুশ্চিন্তার সময়',
+      translation: 'আপনি ব্যতীত কোনো সত্য উপাস্য নেই; আপনি পবিত্র ও মহান। নিশ্চয়ই আমি জালিমদের অন্তর্ভুক্ত ছিলাম।',
+      virtue: 'রাসূলুল্লাহ ﷺ বলেছেন: কোনো মুসলিম বিপদে পড়ে এই দোয়া করলে আল্লাহ তার দোয়া অবশ্যই কবুল করেন (তিরমিযী)।',
+    },
+    en: {
+      title: 'Ayat Karima — Dua of Prophet Yunus (Jonah)',
+      timing: 'During distress, anxiety, difficulties, or need',
+      translation: 'There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.',
+      virtue: 'Prophet Muhammad ﷺ said: "No Muslim supplicates with this in any difficulty except that Allah answers his call."',
+    },
+    ur: {
+      title: 'آیت کریمہ — حضرت یونس علیہ السلام کی دعا',
+      timing: 'پریشانی، مصیبت اور تنگی کے وقت',
+      translation: 'تیرے سوا کوئی معبود نہیں، تو پاک ہے، بے شک میں ہی ظالموں میں سے تھا۔',
+      virtue: 'رسول اللہ ﷺ نے فرمایا: کوئی بھی مسلمان مصیبت میں یہ دعا مانگے تو اللہ اس کی پکار ضرور سنتا ہے۔',
+    },
+    hi: {
+      title: 'आयते करीमा — हज़रत यूनुस (अ.स.) की दुआ',
+      timing: 'मुसीबत, चिंता और कठिन समय में',
+      translation: 'तेरे सिवा कोई सच्चा माबूद नहीं, तू पवित्र है; निस्संदेह मैं ही ज़ालिमों में से था।',
+      virtue: 'नबी करीम ﷺ ने फ़रमाया: कोई भी मुसलमान मुश्किल में यह दुआ मांगे तो अल्लाह उसकी पुकार ज़रूर सुनता है।',
+    },
+    id: {
+      title: 'Ayat Karima — Doa Nabi Yunus AS',
+      timing: 'Saat tertimpa kesusahan, musibah, dan kegundahan',
+      translation: 'Tidak ada Tuhan selain Engkau, Maha Suci Engkau, sungguh aku termasuk orang-orang yang zhalim.',
+      virtue: 'Nabi ﷺ bersabda: "Tidaklah seorang muslim berdoa dengannya dalam suatu kesulitan melainkan Allah akan mengabulkannya."',
+    },
+    tr: {
+      title: 'Âyet-i Kerîme — Yunus Aleyhisselam\'ın Duası',
+      timing: 'Darlıkta, kederde ve zor zamanlarda',
+      translation: 'Senden başka hiçbir ilah yoktur; Seni tenzih ederim, şüphesiz ben haksızlık edenlerden oldum.',
+      virtue: 'Resûlullah ﷺ: "Bir müslüman bir sıkıntıya düştüğünde bu duayı okursa Allah mutlaka onun duasını kabul eder" buyurmuştur.',
+    },
+  },
+  hadith_sayyidul_istighfar: {
+    bn: {
+      title: 'সাইয়্যিদুল ইস্তিগফার (ক্ষমা প্রার্থনার শ্রেষ্ঠ দোয়া)',
+      timing: 'সকালে ও সন্ধ্যায় অন্তত ১ বার',
+      translation: 'হে আল্লাহ! আপনিই আমার প্রতিপালক, আপনি ব্যতীত কোনো সত্য উপাস্য নেই। আপনি আমাকে সৃষ্টি করেছেন এবং আমি আপনার দাস। আমি সাধ্যমতো আপনার অঙ্গীকারে অবিচল রয়েছি...',
+      virtue: 'রাসূলুল্লাহ ﷺ বলেছেন: যে ব্যক্তি বিশ্বাসের সাথে সকালে এটি পড়বে এবং সন্ধ্যায় মারা যাবে সে জান্নাতী হবে, এবং যে সন্ধ্যায় পড়বে ও সকালে মারা যাবে সে জান্নাতী হবে।',
+    },
+    en: {
+      title: 'Sayyidul Istighfar — Master of Forgiveness',
+      timing: 'Recited once in the morning and once in the evening',
+      translation: 'O Allah, You are my Lord; none has the right to be worshipped but You. You created me and I am Your slave, and I abide by Your covenant and promise as best I can...',
+      virtue: 'Whoever recites this in morning with firm faith and dies before evening will enter Paradise; and whoever recites it in evening and dies will enter Paradise.',
+    },
+    ur: {
+      title: 'سید الاستغفار (توبہ کی سب سے افضل دعا)',
+      timing: 'صبح اور شام ایک بار',
+      translation: 'اے اللہ! تو ہی میرا رب ہے، تیرے سوا کوئی معبود نہیں۔ تو نے مجھے پیدا کیا اور میں تیرا بندہ ہوں اور میں اپنی طاقت کے مطابق تیرے عہد اور وعدے پر قائم ہوں...',
+      virtue: 'جس نے صبح یا شام یقین کے ساتھ اسے پڑھا اور اسی دن فوت ہوا تو وہ اہل جنت میں سے ہوگا۔',
+    },
+    hi: {
+      title: 'सैय्यिदुल इस्तग़फ़ार (माफ़ी की सर्वश्रेष्ठ दुआ)',
+      timing: 'सुबह और शाम एक बार',
+      translation: 'ऐ अल्लाह! तू ही मेरा रब है, तेरे सिवा कोई पूज्य नहीं। तूने मुझे पैदा किया और मैं तेरा बंदा हूँ, और मैं अपनी ताकत के अनुसार तेरे वादे पर क़ायम हूँ...',
+      virtue: 'जो सुबह या शाम सच्चे यक़ीन से इसे पढ़े और उसी दिन फ़ौत हो जाए तो वह जन्नत वालों में से होगा।',
+    },
+    id: {
+      title: 'Sayyidul Istighfar (Penghulu Istighfar)',
+      timing: 'Dibaca pagi dan petang hari',
+      translation: 'Ya Allah, Engkaulah Tuhanku, tidak ada tuhan selain Engkau. Engkau yang menciptakan aku dan aku adalah hamba-Mu, dan aku senantiasa berada dalam ikrar dan janji-Mu semampuku...',
+      virtue: 'Barangsiapa membacanya di waktu pagi atau petang dengan penuh keyakinan lalu meninggal, maka ia termasuk penghuni surga.',
+    },
+    tr: {
+      title: 'Seyyidü\'l-İstiğfar (Tevbelerin Efendisi)',
+      timing: 'Sabah ve akşam en az birer defa',
+      translation: 'Allah\'ım! Sen benim Rabbimsin; Senden başka ilah yoktur. Beni Sen yarattın, ben Senin kulunum ve gücüm yettiğince Sana verdiğim ahit ve vaat üzereyim...',
+      virtue: 'Kim bunu sabah veya akşam inanarak okur da o gün vefat ederse cennet ehlinden olur.',
+    },
+  },
+};
+
+export const DUA_CATEGORIES: Record<string, Record<ZikrLanguage, string>> = {
+  all: { bn: 'সব দোয়া', en: 'All Duas', ur: 'تمام دعائیں', hi: 'सभी दुआएं', id: 'Semua Doa', tr: 'Tüm Dualar' },
+  morning_evening: { bn: 'সকাল-সন্ধ্যার জিকির', en: 'Morning & Evening', ur: 'صبح و شام کے اذکار', hi: 'सुबह और शाम के अज़कार', id: 'Pagi & Petang', tr: 'Sabah & Akşam' },
+  salat: { bn: 'নামাজের দোয়া', en: 'Salat & Prayer', ur: 'نماز کی دعائیں', hi: 'नमाज़ की दुआएं', id: 'Doa Sholat', tr: 'Namaz Duaları' },
+  sleep_wake: { bn: 'ঘুমানো ও ওঠার দোয়া', en: 'Sleep & Wakeup', ur: 'سونے اور جاگنے کی دعائیں', hi: 'सोने व जागने की दुआएं', id: 'Tidur & Bangun', tr: 'Uyku & Uyanma' },
+  protection: { bn: 'সুরক্ষা ও নিরাপত্তা', en: 'Protection & Ruqyah', ur: 'حفاظت اور دم', hi: 'सुरक्षा और हिफ़ाज़त', id: 'Perlindungan & Ruqyah', tr: 'Korunma ve Şifa' },
+  forgiveness: { bn: 'ক্ষমা ও তওবা', en: 'Forgiveness (Istighfar)', ur: 'استغفار و توبہ', hi: 'माफ़ी और इस्तग़फ़ार', id: 'Ampunan & Istighfar', tr: 'Bağışlanma ve Tövbe' },
+  hardship: { bn: 'বিপদ ও চিন্তা মুক্তি', en: 'Anxiety & Hardship', ur: 'پریشانی سے نجات', hi: 'मुसीबत व परेशानी', id: 'Kesusahan & Cemas', tr: 'Sıkıntı ve Zorluk' },
+  daily_living: { bn: 'দৈনন্দিন জীবন', en: 'Daily Life', ur: 'روزمرہ کی دعائیں', hi: 'दैनिक जीवन', id: 'Sehari-hari', tr: 'Günlük Hayat' },
+};
+
+export const DUA_UI: Record<string, Record<ZikrLanguage, string>> = {
+  bannerTitle: {
+    bn: 'মাসনুন ও কোরআনি দোয়া',
+    en: 'Masnoon & Quranic Duas',
+    ur: 'مسنون اور قرآنی دعائیں',
+    hi: 'मसनून व क़ुरआनी दुआएं',
+    id: 'Doa Masnoon & Al-Qur\'an',
+    tr: 'Kur\'an ve Sünnetten Dualar',
+  },
+  bannerSub: {
+    bn: 'কুরআন ও সুন্নাহ থেকে সংকলিত বিশুদ্ধ দোয়া সমূহ, সরাসরি জিকির কাউন্টারে যুক্ত করার সুবিধা',
+    en: 'Authentic supplications from the Quran and Sunnah with tap repetition counters and one-touch integration with your Zikr Tasbeeh counters',
+    ur: 'قرآن و سنت سے مستند دعائیں اور ذکر کاؤنٹر میں شامل کرنے کی سہولت',
+    hi: 'क़ुरआन और सुन्नत से प्रामाणिक दुआएं और सीधे ज़िक्र काउंटर में जोड़ने की सुविधा',
+    id: 'Kumpulan doa shahih dari Al-Qur\'an & Sunnah dengan penghitung ketukan dan integrasi tasbih',
+    tr: 'Kur\'an ve Sünnetten sahih dualar, sayaç ile tekrar etme ve tasbih listesine tek tıkla ekleme imkanı',
+  },
+  addToCounter: {
+    bn: '+ কাউন্টার',
+    en: '+ Counter',
+    ur: '+ کاؤنٹر',
+    hi: '+ काउंटर',
+    id: '+ Penghitung',
+    tr: '+ Sayaç',
+  },
+  inCounter: {
+    bn: 'কাউন্টারে যুক্ত',
+    en: 'In Counters',
+    ur: 'کاؤنٹر میں شامل',
+    hi: 'काउंटर में शामिल',
+    id: 'Sudah di Counter',
+    tr: 'Sayaçta Var',
+  },
+  oneBead: {
+    bn: '+১ পাঠ',
+    en: '+1 Bead',
+    ur: '+۱ دانہ',
+    hi: '+1 माला',
+    id: '+1 Butir',
+    tr: '+1 Tane',
+  },
+  recited: {
+    bn: 'পড়া হয়েছে',
+    en: 'Recited',
+    ur: 'پڑھا گیا',
+    hi: 'पढ़ा गया',
+    id: 'Dibaca',
+    tr: 'Okundu',
+  },
+  searchPlaceholder: {
+    bn: 'দোয়া, অর্থ বা ফজিলত দিয়ে খুঁজুন...',
+    en: 'Search duas by title, meaning, Arabic, or virtue...',
+    ur: 'دعا، ترجمہ یا فضیلت سے تلاش کریں...',
+    hi: 'दुआ, अर्थ या फ़ज़ीलत से खोजें...',
+    id: 'Cari doa berdasarkan judul, arti, atau fadhilah...',
+    tr: 'Dua, anlam veya fazilet ile ara...',
+  },
+};
+
+/**
+ * Aamal Tracker translations
+ */
+export const AAMAL_ITEM_TRANSLATIONS: Record<string, Record<ZikrLanguage, { label: string; details: string }>> = {
+  fajr: {
+    bn: { label: 'ফজর সালাত (صلاة الفجر)', details: 'সূর্যোদয়ের পূর্বে যথাসময়ে ২ রাকাত সুন্নত ও ২ রাকাত ফরজ সালাত আদায়' },
+    en: { label: 'Fajr Prayer (صلاة الفجر)', details: '2 Sunnah + 2 Fardh prayed on time before sunrise' },
+    ur: { label: 'نماز فجر (صلاة الفجر)', details: 'طلوع آفتاب سے پہلے وقت پر ۲ سنت اور ۲ فرض نماز کی ادائیگی' },
+    hi: { label: 'फ़ज्र की नमाज़ (صلاة الفجر)', details: 'सूर्योदय से पूर्व समय पर 2 सुन्नत और 2 फ़र्ज़ नमाज़' },
+    id: { label: 'Sholat Subuh (صلاة الفجر)', details: '2 rakaat Sunnah + 2 rakaat Fardhu tepat waktu sebelum terbit matahari' },
+    tr: { label: 'Sabah Namazı (صلاة الفجر)', details: 'Güneş doğmadan önce vaktinde kılınan 2 sünnet + 2 farz namaz' },
+  },
+  dhuhr: {
+    bn: { label: 'যোহর সালাত (صلاة الظهر)', details: '৪ রাকাত ফরজ (+ আগের ও পরের সুন্নত সালাত)' },
+    en: { label: 'Dhuhr Prayer (صلاة الظهر)', details: '4 Fardh (+ Sunnah before & after)' },
+    ur: { label: 'نماز ظہر (صلاة الظهر)', details: '۴ رکعت فرض (+ سنتیں قبل و بعد)' },
+    hi: { label: 'ज़ुहर की नमाज़ (صلاة الظهر)', details: '4 फ़र्ज़ (+ पहले और बाद की सुन्नतें)' },
+    id: { label: 'Sholat Dzuhur (صلاة الظهر)', details: '4 rakaat Fardhu (+ sunnah qabliyah dan ba\'diyah)' },
+    tr: { label: 'Öğle Namazı (صلاة الظهر)', details: '4 rekat farz (+ öncesi ve sonrasındaki sünnetler)' },
+  },
+  asr: {
+    bn: { label: 'আসর সালাত (صلاة العصر)', details: 'বিকেলে যথাসময়ে ৪ রাকাত ফরজ সালাত আদায়' },
+    en: { label: 'Asr Prayer (صلاة العصر)', details: '4 Fardh prayed on time in the afternoon' },
+    ur: { label: 'نماز عصر (صلاة العصر)', details: 'سہ پہر کے وقت ۴ رکعت فرض کی بروقت ادائیگی' },
+    hi: { label: 'असर की नमाज़ (صلاة العصر)', details: 'दोपहर बाद समय पर 4 फ़र्ज़ नमाज़' },
+    id: { label: 'Sholat Ashar (صلاة العصر)', details: '4 rakaat Fardhu tepat waktu di waktu petang' },
+    tr: { label: 'İkindi Namazı (صلاة العصر)', details: 'İkindi vaktinde geciktirmeden kılınan 4 rekat farz' },
+  },
+  maghrib: {
+    bn: { label: 'মাগরিব সালাত (صلاة المغرب)', details: 'সূর্যাস্তের পরপর ৩ রাকাত ফরজ (+ ২ রাকাত সুন্নত)' },
+    en: { label: 'Maghrib Prayer (صلاة المغرب)', details: '3 Fardh (+ 2 Sunnah after)' },
+    ur: { label: 'نماز مغرب (صلاة المغرب)', details: 'غروب آفتاب کے بعد ۳ رکعت فرض (+ ۲ سنت)' },
+    hi: { label: 'मग़रिब की नमाज़ (صلاة المغرب)', details: 'सूर्यास्त के तुरंत बाद 3 फ़र्ज़ (+ 2 सुन्नत)' },
+    id: { label: 'Sholat Maghrib (صلاة المغرب)', details: '3 rakaat Fardhu (+ 2 rakaat sunnah ba\'diyah)' },
+    tr: { label: 'Akşam Namazı (صلاة المغرب)', details: 'Güneş battıktan sonra 3 rekat farz (+ 2 rekat son sünnet)' },
+  },
+  isha: {
+    bn: { label: 'ইশা ও বিতর সালাত (صلاة العشاء والوتر)', details: '৪ রাকাত ফরজ + ২ রাকাত সুন্নত + ঘুমানোর আগে বিতর সালাত' },
+    en: { label: 'Isha & Witr (صلاة العشاء والوتر)', details: '4 Fardh + 2 Sunnah + Witr before sleeping' },
+    ur: { label: 'نماز عشاء و وتر (صلاة العشاء والوتر)', details: '۴ رکعت فرض + ۲ سنت + سونے سے قبل وتر کی نماز' },
+    hi: { label: 'इशा व वित्र (صلاة العشاء والوتر)', details: '4 फ़र्ज़ + 2 सुन्नत + सोने से पहले वित्र की नमाज़' },
+    id: { label: 'Sholat Isya & Witir (صلاة العشاء والوتر)', details: '4 rakaat Fardhu + 2 Sunnah + Witir sebelum tidur' },
+    tr: { label: 'Yatsı ve Vitir (صلاة العشاء والوتر)', details: '4 rekat farz + 2 rekat son sünnet + uyumadan önce vitir namazı' },
+  },
+  tahajjud: {
+    bn: { label: 'তাহাজ্জুদ / কিয়ামুল লাইল (قيام الليل)', details: 'রাতের শেষ তৃতীয়াংশে নফল সালাত আদায়' },
+    en: { label: 'Tahajjud / Qiyam al-Layl (قيام الليل)', details: 'Voluntary night prayer in the last third of the night' },
+    ur: { label: 'تہجد و قیام اللیل (قيام الليل)', details: 'رات کے آخری تہائی حصے میں نفل نماز کی ادائیگی' },
+    hi: { label: 'तहज्जुद / क़ियामुल लैल (قيام الليل)', details: 'रात के अंतिम प्रहर में नफ़्ल नमाज़' },
+    id: { label: 'Tahajud / Qiyamul Lail (قيام الليل)', details: 'Sholat malam di sepertiga malam terakhir' },
+    tr: { label: 'Teheccüd / Gece Namazı (قيام الليل)', details: 'Gecenin son üçte birinde kılınan nafile gece namazı' },
+  },
+  duha: {
+    bn: { label: 'সালাতুদ দুহা / চাশতের নামাজ (صلاة الضحى)', details: 'সকালের সূর্য ওঠার পর ৩৬০টি অস্থিসন্ধির সদকা স্বরূপ ২ বা ৪ রাকাত নফল' },
+    en: { label: 'Duha Prayer (صلاة الضحى)', details: '2 or 4 rak\'ahs mid-morning charity for 360 joints' },
+    ur: { label: 'نماز چاشت / ضحیٰ (صلاة الضحى)', details: '۳۶۰ جوڑوں کے صدقے کے لیے چاشت کی ۲ یا ۴ رکعت نفل' },
+    hi: { label: 'नमाज़े चाश्त / दुहा (صلاة الضحى)', details: 'शरीर के 360 जोड़ों के सदक़े के लिए 2 या 4 रकात नमाज़' },
+    id: { label: 'Sholat Dhuha (صلاة الضحى)', details: '2 atau 4 rakaat di waktu dhuha sebagai sedekah bagi 360 persendian' },
+    tr: { label: 'Duha / Kuşluk Namazı (صلاة الضحى)', details: '360 eklemin sadakası niyetine sabah kılınan 2 veya 4 rekat nafile namaz' },
+  },
+  quran_recitation: {
+    bn: { label: 'দৈনিক কুরআন তিলাওয়াত (تلاوة القرآن)', details: 'প্রতিদিন অন্তত ১ রুকু, ১ পারা বা সূরা মূলক তিলাওয়াত করা' },
+    en: { label: 'Daily Quran Tilawah (تلاوة القرآن)', details: 'Recite at least 1 Rub/Hizb or Surah Al-Mulk' },
+    ur: { label: 'روزانہ تلاوت قرآن (تلاوة القرآن)', details: 'روزانہ کم از کم ایک رکوع، پارہ یا سورہ ملک کی تلاوت' },
+    hi: { label: 'दैनिक क़ुरआन तिलावत (تلاوة القرآن)', details: 'रोज़ाना कम से कम 1 रुकू, पारा या सूरह मुल्क की तिलावत' },
+    id: { label: 'Tilawah Al-Qur\'an Harian (تلاوة القرآن)', details: 'Membaca setidaknya 1 ruku\', juz, atau Surah Al-Mulk setiap hari' },
+    tr: { label: 'Günlük Kur\'an Tilaveti (تلاوة القرآن)', details: 'Her gün en azından birkaç sayfa veya Mülk Suresi okumak' },
+  },
+  morning_evening_adhkar: {
+    bn: { label: 'সকাল ও সন্ধ্যার মাসনুন জিকির (أذكار الصباح والمساء)', details: 'হিসনুল মুসলিম থেকে সুরক্ষামূলক দৈনন্দিন দোয়া ও জিকির পাঠ' },
+    en: { label: 'Morning & Evening Adhkar (أذكار الصباح والمساء)', details: 'Protective fortress adhkar from Hisnul Muslim' },
+    ur: { label: 'صبح و شام کے اذکار (أذكار الصباح والمساء)', details: 'حصن المسلم سے مسنون حفاظتی دعائیں اور اذکار' },
+    hi: { label: 'सुबह और शाम के अज़कार (أذكار الصباح والمساء)', details: 'हिस्नुल मुस्लिम से सुबह और शाम की हिफ़ाज़ती दुआएं' },
+    id: { label: 'Dzikir Pagi & Petang (أذكار الصباح والمساء)', details: 'Dzikir perlindungan harian dari kitab Hisnul Muslim' },
+    tr: { label: 'Sabah ve Akşam Zikirleri (أذكار الصباح والمساء)', details: 'Hisnu\'l-Müslim\'den koruyucu sabah-akşam duaları ve zikirleri' },
+  },
+  salawat_prophet: {
+    bn: { label: 'নবী ﷺ-এর ওপর ১০০ বার দরুদ শরিফ (الصلاة على النبي)', details: 'আল্লাহুম্মা সাল্লি আলা সাইয়্যিদিনা মুহাম্মাদ ওয়ালা আলি মুহাম্মাদ' },
+    en: { label: '100x Salawat upon Prophet ﷺ (الصلاة على النبي)', details: 'Allāhumma ṣalli \'alā Sayyidinā Muḥammad' },
+    ur: { label: 'نبی کریم ﷺ پر ۱۰۰ بار درود شریف (الصلاة على النبي)', details: 'اللهم صل على سيدنا محمد وعلى آل محمد' },
+    hi: { label: 'नबी करीम ﷺ पर 100 बार दुरूद शरीफ़ (الصلاة على النبي)', details: 'अल्लाहुम्मा स़ल्लि अला सय्यिदिना मुहम्मद' },
+    id: { label: '100x Sholawat atas Nabi ﷺ (الصلاة على النبي)', details: 'Allahumma shalli \'ala sayyidina Muhammad wa \'ala ali Muhammad' },
+    tr: { label: 'Peygamberimiz ﷺ\'e 100 Salavat (الصلاة على النبي)', details: 'Allâhümme salli alâ seyyidinâ Muhammedin ve alâ âli Muhammed' },
+  },
+  istighfar_100: {
+    bn: { label: 'প্রতিদিন ১০০ বার ইস্তিগফার (الاستغفار اليومي)', details: 'আস্তাগফিরুল্লাহ ওয়া আতূবু ইলাইহি' },
+    en: { label: '100x Daily Istighfar (الاستغفار اليومي)', details: 'Astaghfirullāha wa atūbu ilayh' },
+    ur: { label: 'روزانہ ۱۰۰ بار استغفار (الاستغفار اليومي)', details: 'أستغفر الله وأتوب إليه' },
+    hi: { label: 'प्रतिदिन 100 बार इस्तग़फ़ार (الاستغفار اليومي)', details: 'अस्तग़फ़िरुल्लाह व अतूबु इलैह' },
+    id: { label: '100x Istighfar Harian (الاستغفار اليومي)', details: 'Astaghfirullah wa atubu ilaih' },
+    tr: { label: 'Günde 100 İstiğfar (الاستغفار اليومي)', details: 'Estağfirullâhe ve etûbu ileyh' },
+  },
+  sadaqah_kindness: {
+    bn: { label: 'সাদাকাহ ও মানুষের সাথে উত্তম আচরণ (الصدقة والإحسان)', details: 'অর্থ সাহায্য, হাসি মুখে কথা বলা, বা অন্যের কষ্ট লাঘব করা' },
+    en: { label: 'Sadaqah & Kind Deeds (الصدقة والإحسان)', details: 'Financial charity, cheerful smile, helping a person in need' },
+    ur: { label: 'صدقہ و حسن سلوک (الصدقة والإحسان)', details: 'مالی مدد، مسکرا کر ملنا، یا کسی ضرورت مند کی مدد کرنا' },
+    hi: { label: 'सदक़ा और भलाई के काम (الصدقة والإحسان)', details: 'आर्थिक दान, मुस्कुरा कर बात करना, या किसी की मदद करना' },
+    id: { label: 'Sedekah & Kebaikan (الصدقة والإحسان)', details: 'Sedekah harta, senyuman tulus, membantu orang yang membutuhkan' },
+    tr: { label: 'Sadaka ve İyilik (الصدقة والإحسان)', details: 'Maddi infak, güler yüzle selamlaşma veya bir muhtaca yardım eli uzatma' },
+  },
+};
+
+export const AAMAL_UI: Record<string, Record<ZikrLanguage, string>> = {
+  bannerTitle: {
+    bn: 'দৈনিক আমল ট্র্যাকার',
+    en: 'Daily Aamal Tracker',
+    ur: 'روزانہ اعمال ٹریکر',
+    hi: 'दैनिक आमाल ट्रैकर',
+    id: 'Pelacak Amal Harian',
+    tr: 'Günlük Amel Takibi',
+  },
+  bannerSub: {
+    bn: 'ফরজ সালাত, সুন্নত, কুরআন তিলাওয়াত ও নেক আমলের আত্মপর্যালোচনা ও নিয়মানুবর্তিতা রক্ষা',
+    en: 'Track daily prayers, sunnah, quran tilawah, and good deeds with habit consistency',
+    ur: 'پانچ نمازوں، تلاوت قرآن اور نیکیوں کی پابندی کے لیے روزانہ کا احتساب',
+    hi: 'दैनिक नमाज़ों, सुन्नत, क़ुरआन तिलावत और नेक आमालों की निरंतरता बनाए रखें',
+    id: 'Pantau sholat 5 waktu, sunnah, tilawah Qur\'an, dan amal shaleh secara istiqomah',
+    tr: 'Farz namazlar, sünnetler, Kur\'an tilaveti ve salih amellerinizi istikrarla takip edin',
+  },
+  dailyProgress: {
+    bn: 'আজকের অগ্রগতি',
+    en: 'Daily Progress',
+    ur: 'آج کی پیشرفت',
+    hi: 'दैनिक प्रगति',
+    id: 'Kemajuan Hari Ini',
+    tr: 'Bugünkü İlerleme',
+  },
+  streak: {
+    bn: 'টানা আমল (দিন)',
+    en: 'Day Streak',
+    ur: 'مسلسل دن',
+    hi: 'लगातार दिन',
+    id: 'Rentetan Hari',
+    tr: 'Günlük Seri',
+  },
+  points: {
+    bn: 'অর্জিত পয়েন্ট',
+    en: 'Points Earned',
+    ur: 'حاصل کردہ پوائنٹس',
+    hi: 'अर्जित अंक',
+    id: 'Poin Diraih',
+    tr: 'Kazanılan Puan',
+  },
+  completed: {
+    bn: 'সম্পন্ন',
+    en: 'Completed',
+    ur: 'مکمل',
+    hi: 'पूर्ण',
+    id: 'Selesai',
+    tr: 'Tamamlandı',
+  },
+  resetToday: {
+    bn: 'আজকের তালিকা রিসেট',
+    en: 'Reset Today',
+    ur: 'آج ری سیٹ کریں',
+    hi: 'आज का रीसेट करें',
+    id: 'Atur Ulang Hari Ini',
+    tr: 'Bugünü Sıfırla',
+  },
+  pts: {
+    bn: 'পয়েন্ট',
+    en: 'pts',
+    ur: 'پوائنٹس',
+    hi: 'अंक',
+    id: 'poin',
+    tr: 'puan',
+  },
+};
